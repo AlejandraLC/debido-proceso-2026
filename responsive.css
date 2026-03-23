@@ -1,0 +1,165 @@
+/* 📱 MEJORES ESTILOS PARA TABLETS Y MÓVILES - Debido Proceso MEP 2026 */
+
+:root {
+  --touch-target: 44px;
+}
+
+/* ── NAVEGACIÓN (Case Nav / Step Bar) ── */
+/* Mantenemos todos los botones en una sola línea con scroll horizontal en pantallas pequeñas */
+#case-nav {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  gap: 0.5rem !important;
+  padding: 0.6rem 1rem !important;
+  background: #112a52 !important; /* Un poco más oscuro para contraste */
+  scrollbar-width: none; /* Firefox */
+}
+#case-nav::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+.case-nav-title {
+  position: sticky;
+  left: 0;
+  background: #112a52;
+  padding-right: 0.5rem;
+  z-index: 5;
+  margin-right: 0.2rem !important;
+}
+.page-btn {
+  flex: 0 0 auto !important;
+  padding: 0.5rem 0.9rem !important; /* Más grandes para touch */
+  font-size: 0.78rem !important;
+}
+
+/* ── TOPBAR ── */
+@media screen and (max-width: 900px) {
+  #topbar {
+    padding: 0 0.8rem !important;
+    gap: 0.5rem !important;
+  }
+  #topbar .brand {
+    font-size: 0.8rem !important;
+  }
+  #topbar .case-info {
+    display: none; /* Ocultar info extra en pantallas muy pequeñas */
+  }
+  #deadline-timer {
+    display: none !important; /* Ocultar timer por espacio */
+  }
+}
+
+/* ── LAYOUT (APP) ── */
+/* En tablets Landscape (hasta 1100px) permitimos 2 columnas pero ajustamos anchos */
+@media screen and (min-width: 801px) and (max-width: 1100px) {
+  #app {
+    grid-template-columns: 320px 1fr !important;
+  }
+  #panel-form, #panel-editor {
+    width: 320px !important;
+  }
+}
+
+/* En tablets Portrait y Móviles (< 800px) pasamos a 1 columna */
+@media screen and (max-width: 800px) {
+  #app {
+    grid-template-columns: 1fr !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  #panel-form, #panel-editor {
+    width: 100% !important;
+    max-height: 60vh !important; /* Un poco más de espacio para el formulario */
+    border-right: none !important;
+    border-bottom: 2px solid var(--borde) !important;
+    flex: none !important;
+  }
+  #panel-preview {
+    width: 100% !important;
+    padding: 1rem !important;
+    flex: 1 !important;
+  }
+  .carta {
+    width: 98vw !important;
+    transform: scale(0.95);
+    transform-origin: top center;
+    margin-bottom: 0 !important;
+  }
+}
+
+/* ── ELEMENTOS DE FORMULARIO PARA TOUCH ── */
+.fg input, .fg select, .fg textarea, .form-group input, .form-group select {
+  padding: 0.6rem 0.75rem !important; /* Más área de toque */
+  font-size: 0.95rem !important; /* Evitar zoom automático en iOS y mejorar legibilidad */
+}
+.btn-primary, .btn-secondary, .btn-gold, .btn-danger, .btn-new {
+  padding: 0.7rem 1.2rem !important;
+  min-height: var(--touch-target);
+  font-size: 0.9rem !important;
+}
+
+/* ── MODALES ── */
+@media screen and (max-width: 700px) {
+  #modal {
+    width: 95% !important;
+    padding: 0 !important;
+  }
+  .modal-body {
+    grid-template-columns: 1fr !important; /* 1 columna en móvil */
+    padding: 1rem !important;
+  }
+}
+
+/* ── DASHBOARD (Grillas) ── */
+@media screen and (max-width: 600px) {
+  #cases-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .stats-bar {
+    justify-content: space-between !important;
+  }
+  .stat-card {
+    min-width: 45% !important;
+  }
+}
+
+/* ── SCROLLBARS (Premium Look) ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--gris);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--borde);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--azul-cl);
+}
+
+/* ── DICTADO / MICRÓFONO (Optimized for Tablet) ── */
+.mic-btn-main, #mic-btn {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+.mic-btn-main:active, #mic-btn:active {
+  transform: scale(0.9) !important;
+}
+
+/* ── BUTTON TAP FEEDBACK ── */
+.page-btn, .btn-primary, .btn-secondary, .btn-gold, .btn-danger {
+  transition: transform 0.1s ease, background 0.2s ease !important;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.page-btn:active, .btn-primary:active, .btn-secondary:active, .btn-gold:active, .btn-danger:active {
+  transform: scale(0.96) !important;
+}
+
+/* ── MOBILE MODAL SCROLL FIX ── */
+#modal-overlay {
+  -webkit-overflow-scrolling: touch;
+}
