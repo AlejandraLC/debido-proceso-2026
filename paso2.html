@@ -1,347 +1,878 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Paso 2 – Notificación Testigos | Debido Proceso MEP</title>
-<style>
-@font-face{font-family:'Henderson Sans Basic';src:url('Logo/Henderson Sans Basic Light.ttf') format('truetype');font-weight:300}
-@font-face{font-family:'Henderson Sans Basic';src:url('Logo/Henderson Sans Basic SemiBd.ttf') format('truetype');font-weight:600}
-@font-face{font-family:'Henderson Sans Basic';src:url('Logo/Henderson Sans Basic Bold.ttf') format('truetype');font-weight:700}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Paso 2 – Notificación Testigos | Debido Proceso MEP</title>
+  <style>
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic Light.ttf') format('truetype');
+      font-weight: 300
+    }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --azul:#1c2847;--azul-cl:#273966;--rojo:#C8102E;--oro:#C9A86A;
-  --gris:#f0f4f9;--borde:#cbd5e0;--texto:#0f1a2e;--blanco:#fff;
-  --sombra:0 4px 24px rgba(28,40,71,.13);
-}
-body, input, select, textarea, button {font-family:'Henderson Sans Basic',sans-serif;}
-body{background:var(--gris);color:var(--texto);min-height:100vh}
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic SemiBd.ttf') format('truetype');
+      font-weight: 600
+    }
 
-/* ── TOPBAR ── */
-#topbar{background:var(--azul);color:var(--blanco);display:flex;align-items:center;
-  gap:.75rem;padding:0 1.5rem;height:54px;position:sticky;top:0;z-index:200;
-  box-shadow:0 2px 12px rgba(0,0,0,.35)}
-#topbar .brand{font-size:.9rem;font-weight:800;letter-spacing:.05em;color:var(--oro);margin-right:auto}
-#topbar .case-info{font-size:.78rem;opacity:.75;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#topbar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);
-  color:var(--blanco);padding:.3rem .9rem;border-radius:6px;font-size:.78rem;
-  font-weight:600;cursor:pointer;transition:background .2s;font-family:'Henderson Sans Basic',sans-serif}
-#topbar button:hover{background:rgba(255,255,255,.25)}
-.btn-gold{background:var(--oro)!important;color:var(--azul)!important;border-color:var(--oro)!important}
-.btn-gold:hover{background:#e0a800!important}
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic Bold.ttf') format('truetype');
+      font-weight: 700
+    }
 
-/* ── LAYOUT ── */
-#app{display:grid;grid-template-columns:390px 1fr;gap:0;min-height:calc(100vh - 54px)}
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-/* ── PANEL IZQUIERDO ── */
-#panel-form{background:var(--blanco);border-right:2px solid var(--borde);
-  overflow-y:auto;display:flex;flex-direction:column}
-.panel-head{background:linear-gradient(135deg,var(--azul),var(--azul-cl));
-  color:var(--blanco);padding:1.1rem 1.3rem}
-.panel-head h2{font-size:.95rem;font-weight:800;letter-spacing:.03em}
-.panel-head p{font-size:.72rem;opacity:.75;margin-top:.2rem}
-.panel-body{padding:1.1rem;display:flex;flex-direction:column;gap:1rem;flex:1}
+    :root {
+      --azul: #1c2847;
+      --azul-cl: #273966;
+      --rojo: #C8102E;
+      --oro: #C9A86A;
+      --gris: #f0f4f9;
+      --borde: #cbd5e0;
+      --texto: #0f1a2e;
+      --blanco: #fff;
+      --sombra: 0 4px 24px rgba(28, 40, 71, .13);
+    }
 
-.sec{border:1.5px solid var(--borde);border-radius:10px;overflow:hidden}
-.sec-hdr{background:var(--gris);padding:.55rem .9rem;font-size:.72rem;font-weight:700;
-  text-transform:uppercase;letter-spacing:.06em;color:var(--azul);
-  display:flex;align-items:center;gap:.4rem}
-.sec-body{padding:.85rem .9rem;display:flex;flex-direction:column;gap:.75rem}
+    body,
+    input,
+    select,
+    textarea,
+    button {
+      font-family: 'Henderson Sans Basic', sans-serif;
+    }
 
-.fg{display:flex;flex-direction:column;gap:.3rem}
-.fg label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#555}
-.fg input,.fg select,.fg textarea{border:1.5px solid var(--borde);border-radius:7px;
-  padding:.45rem .75rem;font-size:.83rem;font-family:'Henderson Sans Basic',sans-serif;
-  background:#fafbfc;transition:border-color .2s;color:var(--texto)}
-.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--azul-cl);background:var(--blanco)}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+    body {
+      background: var(--gris);
+      color: var(--texto);
+      min-height: 100vh
+    }
 
-/* Tabla de testigos */
-.testigo-card{background:#f8faff;border:1.5px solid #dde6fa;border-radius:8px;
-  padding:.6rem .75rem;display:flex;flex-direction:column;gap:.35rem}
-.testigo-card .tc-name{font-size:.82rem;font-weight:700;color:var(--azul)}
-.testigo-card .tc-detail{font-size:.73rem;color:#666}
-.testigo-card .tc-edit{border:1.5px solid var(--borde);border-radius:6px;
-  padding:.32rem .55rem;font-size:.79rem;font-family:'Henderson Sans Basic',sans-serif;width:100%;background:#fff}
-.no-testigos{font-size:.75rem;color:#aaa;text-align:center;padding:.8rem;font-style:italic}
+    /* ── TOPBAR ── */
+    #topbar {
+      background: var(--azul);
+      color: var(--blanco);
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: 0 1.5rem;
+      height: 54px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .35)
+    }
 
-/* Switch & File Buttons */
-.switch{position:relative;display:inline-block;width:34px;height:20px}
-.switch input{opacity:0;width:0;height:0}
-.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;transition:.4s;border-radius:34px}
-.slider:before{position:absolute;content:"";height:14px;width:14px;left:3px;bottom:3px;background-color:white;transition:.4s;border-radius:50%}
-input:checked + .slider{background-color:var(--azul)}
-input:checked + .slider:before{transform:translateX(14px)}
-.file-btn{display:flex;align-items:center;gap:.4rem;font-size:.7rem;color:var(--azul);
-  cursor:pointer;background:#eef2ff;padding:.3rem .6rem;border-radius:6px;border:1px dashed var(--azul-cl)}
-.file-name-label{font-size:.62rem;color:#666;margin-top:.2rem}
+    #topbar .brand {
+      font-size: .9rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      color: var(--oro);
+      margin-right: auto
+    }
 
-/* Botones */
-.action-bar{padding:.75rem 0 0;border-top:none;display:flex;gap:.6rem;flex-wrap:wrap}
-.btn-primary{background:var(--azul);color:var(--blanco);border:none;border-radius:8px;
-  padding:.5rem 1.1rem;font-size:.8rem;font-weight:700;cursor:pointer;
-  font-family:'Henderson Sans Basic',sans-serif;transition:background .2s}
-.btn-primary:hover{background:var(--azul-cl)}
-.btn-secondary{background:var(--blanco);border:1.5px solid var(--borde);border-radius:8px;
-  padding:.45rem 1rem;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--texto);
-  transition:all .2s;font-family:'Henderson Sans Basic',sans-serif}
-.btn-secondary:hover{border-color:var(--azul-cl);color:var(--azul-cl)}
+    #topbar .case-info {
+      font-size: .78rem;
+      opacity: .75;
+      max-width: 340px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
 
-/* ── PANEL PREVIEW ── */
-#panel-preview{background:#dde3ed;overflow-y:auto;padding:2rem;
-  display:flex;flex-direction:column;align-items:center;gap:1.5rem}
-.preview-label{font-size:.72rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:.07em;color:#8898aa;align-self:flex-start}
+    #topbar button {
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .25);
+      color: var(--blanco);
+      padding: .3rem .9rem;
+      border-radius: 6px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+      font-family: 'Henderson Sans Basic', sans-serif
+    }
 
-/* ── CARTA LETTER (21.59 × 27.94 cm) con fondo.png ── */
-.carta{width:21.59cm;height:27.94cm;
-  background:var(--blanco) url('fondo.png') no-repeat top center;
-  background-size:100% auto;
-  box-shadow:var(--sombra);border-radius:3px;
-  font-family:'Henderson Sans Basic',sans-serif;font-size:11pt;line-height:1.7;
-  color:#111;overflow:hidden;flex-shrink:0}
-.carta-inner{padding:3.2cm 2.5cm 2cm 2.5cm;height:100%;
-  display:flex;flex-direction:column;overflow:hidden}
-.folio-line{display:flex;justify-content:flex-end;font-size:7.5pt;color:#555;margin-bottom:.4cm}
-.folio-line b{color:var(--azul)}
+    #topbar button:hover {
+      background: rgba(255, 255, 255, .25)
+    }
 
-/* Contenido de la notificación */
-.notif-titulo{font-size:10.5pt;font-weight:800;color:var(--azul);text-transform:uppercase;
-  text-align:center;letter-spacing:.02em;margin-bottom:0.6cm;line-height:1.4}
-.notif-fecha{font-size:10.5pt;margin-bottom:.5cm}
-.notif-dest{font-size:10.5pt;margin-bottom:.35cm;line-height:1.6}
-.notif-dest span{display:block}
-.notif-dest b{color:var(--azul)}
-.notif-cuerpo{font-size:10.5pt;line-height:1.75;text-align:justify;margin-bottom:.45cm}
-.notif-nota{background:#fff8f0;border-left:3px solid var(--oro);padding:.3cm .4cm;
-  font-size:9.5pt;line-height:1.6;color:#555;margin-bottom:.45cm;border-radius:0 6px 6px 0}
-.notif-nota b{color:var(--azul-cl)}
-.notif-despedida{font-size:10.5pt;margin-bottom:1cm}
-/* Firmas */
-.notif-firmas-top{display:grid;grid-template-columns:1fr;margin-bottom:.7cm}
-.notif-firmas-bot{display:grid;grid-template-columns:1fr 1fr;gap:1.2cm;margin-top:.3cm}
-.firma-bloque{display:flex;flex-direction:column;align-items:flex-start;gap:.1cm}
-.firma-bloque.centro{align-items:center}
-.firma-linea{width:7cm;border-bottom:1.5px solid #555;margin-bottom:.1cm}
-.firma-eta{font-size:9pt;color:#555;font-style:normal}
-.firma-nombre{font-size:9pt;font-weight:700;color:var(--azul)}
+    .btn-gold {
+      background: var(--oro) !important;
+      color: var(--azul) !important;
+      border-color: var(--oro) !important
+    }
 
-/* ── PRINT ── */
-@media print{
-  @page{size:letter;margin:0}
-  html,body{margin:0;padding:0;background:white!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-  #topbar,#panel-form,#case-nav,.preview-label,#toast,button{display:none!important}
-  #app{display:block;margin:0;padding:0;width:100%}
-  #panel-preview{display:block!important;padding:0;background:white!important;width:100%}
-  .carta{width:21.59cm!important;height:27.94cm!important;box-shadow:none!important;
-    page-break-after:always;break-after:page;border:none!important;
-    background-image:url('fondo.png')!important;background-size:100% auto!important;
-    -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-  .carta:last-child{page-break-after:auto!important;break-after:auto!important}
-  .carta-inner{padding:3.2cm 2.5cm 2cm 2.5cm}
-}
-@media screen and (max-width:1100px){
-  #app{grid-template-columns:1fr}
-  #panel-form{max-height:50vh}
-  .carta{width:95vw;height:auto;min-height:27.94cm}
-  .carta-inner{padding:2rem 1.2rem}
-}
+    .btn-gold:hover {
+      background: #e0a800 !important
+    }
 
-/* ── CASE NAV (Step Bar) ── */
-#case-nav{background:#1a3a6b;color:var(--blanco);display:flex;align-items:center;
-  gap:.35rem;padding:.5rem 1.5rem;flex-wrap:wrap;border-bottom:2px solid var(--azul)}
-.case-nav-title{font-size:.75rem;font-weight:700;color:var(--oro);white-space:nowrap;margin-right:.5rem}
-.page-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
-  color:rgba(255,255,255,.85);padding:.28rem .7rem;border-radius:5px;font-size:.72rem;
-  font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Henderson Sans Basic',sans-serif}
-.page-btn:hover{background:rgba(255,255,255,.2)}
-.page-btn.active{background:var(--oro);color:var(--azul);border-color:var(--oro)}
-.page-btn.locked{opacity:.4;cursor:not-allowed}
-.page-btn-print{background:var(--rojo);border-color:var(--rojo);margin-left:auto;color:white}
-.page-btn-print:hover{background:#a00d23}
+    /* ── LAYOUT ── */
+    #app {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 0;
+      min-height: calc(100vh - 54px)
+    }
 
-/* TOAST */
-#toast{position:fixed;bottom:2rem;right:2rem;background:var(--azul);color:var(--oro);
-  padding:.7rem 1.4rem;border-radius:8px;font-size:.83rem;font-weight:700;
-  box-shadow:0 4px 20px rgba(0,0,0,.3);z-index:9999;opacity:0;
-  transition:opacity .3s;pointer-events:none;font-family:'Henderson Sans Basic',sans-serif}
-</style>
+    /* ── PANEL IZQUIERDO ── */
+    #panel-form {
+      background: var(--blanco);
+      border-right: 2px solid var(--borde);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column
+    }
+
+    .panel-head {
+      background: linear-gradient(135deg, var(--azul), var(--azul-cl));
+      color: var(--blanco);
+      padding: 1.1rem 1.3rem
+    }
+
+    .panel-head h2 {
+      font-size: .95rem;
+      font-weight: 800;
+      letter-spacing: .03em
+    }
+
+    .panel-head p {
+      font-size: .72rem;
+      opacity: .75;
+      margin-top: .2rem
+    }
+
+    .panel-body {
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1
+    }
+
+    .sec {
+      border: 1.5px solid var(--borde);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    .sec-hdr {
+      background: var(--gris);
+      padding: .55rem .9rem;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--azul);
+      display: flex;
+      align-items: center;
+      gap: .4rem
+    }
+
+    .sec-body {
+      padding: .85rem .9rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem
+    }
+
+    .fg label {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #555
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      border: 1.5px solid var(--borde);
+      border-radius: 7px;
+      padding: .45rem .75rem;
+      font-size: .83rem;
+      font-family: 'Henderson Sans Basic', sans-serif;
+      background: #fafbfc;
+      transition: border-color .2s;
+      color: var(--texto)
+    }
+
+    .fg input:focus,
+    .fg select:focus,
+    .fg textarea:focus {
+      outline: none;
+      border-color: var(--azul-cl);
+      background: var(--blanco)
+    }
+
+    .row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .65rem
+    }
+
+    /* Tabla de testigos */
+    .testigo-card {
+      background: #f8faff;
+      border: 1.5px solid #dde6fa;
+      border-radius: 8px;
+      padding: .6rem .75rem;
+      display: flex;
+      flex-direction: column;
+      gap: .35rem
+    }
+
+    .testigo-card .tc-name {
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--azul)
+    }
+
+    .testigo-card .tc-detail {
+      font-size: .73rem;
+      color: #666
+    }
+
+    .testigo-card .tc-edit {
+      border: 1.5px solid var(--borde);
+      border-radius: 6px;
+      padding: .32rem .55rem;
+      font-size: .79rem;
+      font-family: 'Henderson Sans Basic', sans-serif;
+      width: 100%;
+      background: #fff
+    }
+
+    .no-testigos {
+      font-size: .75rem;
+      color: #aaa;
+      text-align: center;
+      padding: .8rem;
+      font-style: italic
+    }
+
+    /* Switch & File Buttons */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 34px;
+      height: 20px
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%
+    }
+
+    input:checked+.slider {
+      background-color: var(--azul)
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(14px)
+    }
+
+    .file-btn {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .7rem;
+      color: var(--azul);
+      cursor: pointer;
+      background: #eef2ff;
+      padding: .3rem .6rem;
+      border-radius: 6px;
+      border: 1px dashed var(--azul-cl)
+    }
+
+    .file-name-label {
+      font-size: .62rem;
+      color: #666;
+      margin-top: .2rem
+    }
+
+    /* Botones */
+    .action-bar {
+      padding: .75rem 0 0;
+      border-top: none;
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap
+    }
+
+    .btn-primary {
+      background: var(--azul);
+      color: var(--blanco);
+      border: none;
+      border-radius: 8px;
+      padding: .5rem 1.1rem;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Henderson Sans Basic', sans-serif;
+      transition: background .2s
+    }
+
+    .btn-primary:hover {
+      background: var(--azul-cl)
+    }
+
+    .btn-secondary {
+      background: var(--blanco);
+      border: 1.5px solid var(--borde);
+      border-radius: 8px;
+      padding: .45rem 1rem;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--texto);
+      transition: all .2s;
+      font-family: 'Henderson Sans Basic', sans-serif
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--azul-cl);
+      color: var(--azul-cl)
+    }
+
+    /* ── PANEL PREVIEW ── */
+    #panel-preview {
+      background: #dde3ed;
+      overflow-y: auto;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem
+    }
+
+    .preview-label {
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: #8898aa;
+      align-self: flex-start
+    }
+
+    /* ── CARTA LETTER (21.59 × 27.94 cm) con fondo.png ── */
+    .carta {
+      width: 21.59cm;
+      height: 27.94cm;
+      background: var(--blanco) url('fondo.png') no-repeat top center;
+      background-size: 100% auto;
+      box-shadow: var(--sombra);
+      border-radius: 3px;
+      font-family: 'Henderson Sans Basic', sans-serif;
+      font-size: 11pt;
+      line-height: 1.7;
+      color: #111;
+      overflow: hidden;
+      flex-shrink: 0
+    }
+
+    .carta-inner {
+      padding: 3.2cm 2.5cm 2cm 2.5cm;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .folio-line {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 7.5pt;
+      color: #555;
+      margin-bottom: .4cm
+    }
+
+    .folio-line b {
+      color: var(--azul)
+    }
+
+    /* Contenido de la notificación */
+    .notif-titulo {
+      font-size: 10.5pt;
+      font-weight: 800;
+      color: var(--azul);
+      text-transform: uppercase;
+      text-align: center;
+      letter-spacing: .02em;
+      margin-bottom: 0.6cm;
+      line-height: 1.4
+    }
+
+    .notif-fecha {
+      font-size: 10.5pt;
+      margin-bottom: .5cm
+    }
+
+    .notif-dest {
+      font-size: 10.5pt;
+      margin-bottom: .35cm;
+      line-height: 1.6
+    }
+
+    .notif-dest span {
+      display: block
+    }
+
+    .notif-dest b {
+      color: var(--azul)
+    }
+
+    .notif-cuerpo {
+      font-size: 10.5pt;
+      line-height: 1.75;
+      text-align: justify;
+      margin-bottom: .45cm
+    }
+
+    .notif-nota {
+      background: #fff8f0;
+      border-left: 3px solid var(--oro);
+      padding: .3cm .4cm;
+      font-size: 9.5pt;
+      line-height: 1.6;
+      color: #555;
+      margin-bottom: .45cm;
+      border-radius: 0 6px 6px 0
+    }
+
+    .notif-nota b {
+      color: var(--azul-cl)
+    }
+
+    .notif-despedida {
+      font-size: 10.5pt;
+      margin-bottom: 1cm
+    }
+
+    /* Firmas */
+    .notif-firmas-top {
+      display: grid;
+      grid-template-columns: 1fr;
+      margin-bottom: .7cm
+    }
+
+    .notif-firmas-bot {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2cm;
+      margin-top: .3cm
+    }
+
+    .firma-bloque {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: .1cm
+    }
+
+    .firma-bloque.centro {
+      align-items: center
+    }
+
+    .firma-linea {
+      width: 7cm;
+      border-bottom: 1.5px solid #555;
+      margin-bottom: .1cm
+    }
+
+    .firma-eta {
+      font-size: 9pt;
+      color: #555;
+      font-style: normal
+    }
+
+    .firma-nombre {
+      font-size: 9pt;
+      font-weight: 700;
+      color: var(--azul)
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      @page {
+        size: letter;
+        margin: 0
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important
+      }
+
+      #topbar,
+      #panel-form,
+      #case-nav,
+      .preview-label,
+      #toast,
+      button {
+        display: none !important
+      }
+
+      #app {
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 100%
+      }
+
+      #panel-preview {
+        display: block !important;
+        padding: 0;
+        background: white !important;
+        width: 100%
+      }
+
+      .carta {
+        width: 21.59cm !important;
+        height: 27.94cm !important;
+        box-shadow: none !important;
+        page-break-after: always;
+        break-after: page;
+        border: none !important;
+        background-image: url('fondo.png') !important;
+        background-size: 100% auto !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important
+      }
+
+      .carta:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important
+      }
+
+      .carta-inner {
+        padding: 3.2cm 2.5cm 2cm 2.5cm
+      }
+    }
+
+    @media screen and (max-width:1100px) {
+      #app {
+        grid-template-columns: 1fr
+      }
+
+      #panel-form {
+        max-height: 50vh
+      }
+
+      .carta {
+        width: 95vw;
+        height: auto;
+        min-height: 27.94cm
+      }
+
+      .carta-inner {
+        padding: 2rem 1.2rem
+      }
+    }
+
+    /* ── CASE NAV (Step Bar) ── */
+    #case-nav {
+      background: #1a3a6b;
+      color: var(--blanco);
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .5rem 1.5rem;
+      flex-wrap: wrap;
+      border-bottom: 2px solid var(--azul)
+    }
+
+    .case-nav-title {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--oro);
+      white-space: nowrap;
+      margin-right: .5rem
+    }
+
+    .page-btn {
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .18);
+      color: rgba(255, 255, 255, .85);
+      padding: .28rem .7rem;
+      border-radius: 5px;
+      font-size: .72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+      font-family: 'Henderson Sans Basic', sans-serif
+    }
+
+    .page-btn:hover {
+      background: rgba(255, 255, 255, .2)
+    }
+
+    .page-btn.active {
+      background: var(--oro);
+      color: var(--azul);
+      border-color: var(--oro)
+    }
+
+    .page-btn.locked {
+      opacity: .4;
+      cursor: not-allowed
+    }
+
+    .page-btn-print {
+      background: var(--rojo);
+      border-color: var(--rojo);
+      margin-left: auto;
+      color: white
+    }
+
+    .page-btn-print:hover {
+      background: #a00d23
+    }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--azul);
+      color: var(--oro);
+      padding: .7rem 1.4rem;
+      border-radius: 8px;
+      font-size: .83rem;
+      font-weight: 700;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, .3);
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity .3s;
+      pointer-events: none;
+      font-family: 'Henderson Sans Basic', sans-serif
+    }
+  </style>
   <link rel="stylesheet" href="responsive.css">
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1c2847">
 </head>
+
 <body>
 
-<header id="topbar">
-  <span class="brand">📋 Debido Proceso MEP</span>
-  <span class="case-info" id="case-info-label">—</span>
-  <button onclick="location.href='index.html'">← Expedientes</button>
+  <header id="topbar">
+    <span class="brand">📋 Debido Proceso MEP</span>
+    <span class="case-info" id="case-info-label">—</span>
+    <button onclick="location.href='index.html'">← Expedientes</button>
     <button class="btn-gold" onclick="window.print()" title="Imprimir este documento">🖨 Imprimir</button>
-    <div id="deadline-timer" style="margin-left: 1rem; border-left: 1px solid rgba(255,255,255,.2); padding-left: 1rem; display: flex; align-items: center; gap: .5rem; font-size: .8rem;">
+    <div id="deadline-timer"
+      style="margin-left: 1rem; border-left: 1px solid rgba(255,255,255,.2); padding-left: 1rem; display: flex; align-items: center; gap: .5rem; font-size: .8rem;">
       <span style="opacity: .6;">⏳ Plazo (Art. 150b):</span>
       <span id="dt-label" style="font-weight: 700; color: #fff;">Calculando...</span>
       <span id="dt-status" style="width: 10px; height: 10px; border-radius: 50%; background: #999;"></span>
     </div>
   </header>
 
-<nav id="case-nav">
-  <span class="case-nav-title">Expediente</span>
-  <button class="page-btn" onclick="irIndice('portada')">1. Portada</button>
-  <button class="page-btn" onclick="irIndice('tdc')">2. Tabla Contenidos</button>
-  <button class="page-btn" onclick="irPaso1()">3. Com. Prof. Guía</button>
-  <button class="page-btn active" onclick="irPaso2()">4. Notif. Testigos</button>
-  <button class="page-btn" onclick="irPaso3()">5–6. Actas/Declara.</button>
-  <button class="page-btn" onclick="irAnexos()">7. Anexos</button>
-  <button class="page-btn" onclick="irPaso4()">8. Resultado Inv.</button>
-  <button class="page-btn" onclick="irPaso5()">9. Notif. Apertura</button>
+  <nav id="case-nav">
+    <span class="case-nav-title">Expediente</span>
+    <button class="page-btn" onclick="irIndice('portada')">1. Portada</button>
+    <button class="page-btn" onclick="irIndice('tdc')">2. Tabla Contenidos</button>
+    <button class="page-btn" onclick="irPaso1()">3. Com. Prof. Guía</button>
+    <button class="page-btn active" onclick="irPaso2()">4. Notif. Testigos</button>
+    <button class="page-btn" onclick="irPaso3()">5–6. Actas/Declara.</button>
+    <button class="page-btn" onclick="irAnexos()">7. Anexos</button>
+    <button class="page-btn" onclick="irPaso4()">8. Resultado Inv.</button>
+    <button class="page-btn" onclick="irPaso5()">9. Notif. Apertura</button>
     <button class="page-btn" onclick="irPaso6()">10. Boleta Apertura</button>
     <button class="page-btn" onclick="irPaso7()">11. Solicitud Copia</button>
     <button class="page-btn" onclick="irPaso9()">12. Descargos y Pruebas</button>
     <button class="page-btn" onclick="irPaso8()">13. Dec. Estudiante</button>
-</nav>
+  </nav>
 
-<div id="app">
+  <div id="app">
 
-<!-- ════ PANEL FORM ════ -->
-<aside id="panel-form">
-  <div class="panel-head">
-    <h2>📨 Paso 2 — Notificación a Encargados de Testigos</h2>
-    <p>Art. 150 inc. b) — REAC MEP 2026</p>
-  </div>
-  <div class="panel-body">
-
-    <!-- SECCIÓN: INFO GENERAL -->
-    <div class="sec">
-      <div class="sec-hdr"><span>📅</span> Información del Caso</div>
-      <div class="sec-body">
-        <p style="font-size:.75rem; color:#555">Seleccione la fecha de comunicación y los datos de la cita para cada testigo en la lista de abajo.</p>
+    <!-- ════ PANEL FORM ════ -->
+    <aside id="panel-form">
+      <div class="panel-head">
+        <h2>📨 Paso 2 — Notificación a Encargados de Testigos</h2>
+        <p>Art. 150 inc. b) — REAC MEP 2026</p>
       </div>
-    </div>
+      <div class="panel-body">
 
-    <!-- SECCIÓN: TESTIGOS ESTUDIANTES -->
-    <div class="sec">
-      <div class="sec-hdr"><span>👥</span> Testigos a notificar</div>
-      <div class="sec-body">
-        <p style="font-size:.69rem;color:#888;line-height:1.5">Configure la cita (fecha, hora y lugar) para cada testigo individualmente.</p>
-        <div id="lista-testigos-form"></div>
+        <!-- SECCIÓN: INFO GENERAL -->
+        <div class="sec">
+          <div class="sec-hdr"><span>📅</span> Información del Caso</div>
+          <div class="sec-body">
+            <p style="font-size:.75rem; color:#555">Seleccione la fecha de comunicación y los datos de la cita para cada
+              testigo en la lista de abajo.</p>
+          </div>
+        </div>
+
+        <!-- SECCIÓN: TESTIGOS ESTUDIANTES -->
+        <div class="sec">
+          <div class="sec-hdr"><span>👥</span> Testigos a notificar</div>
+          <div class="sec-body">
+            <p style="font-size:.69rem;color:#888;line-height:1.5">Configure la cita (fecha, hora y lugar) para cada
+              testigo individualmente.</p>
+            <div id="lista-testigos-form"></div>
+          </div>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="action-bar">
+          <button class="btn-primary" onclick="guardar()">💾 Guardar</button>
+          <button class="btn-secondary" onclick="irPaso3()">➡️ Siguiente Paso</button>
+          <button class="btn-secondary" onclick="renderPreview()">🔄 Actualizar</button>
+        </div>
+
       </div>
-    </div>
+    </aside>
 
-    <!-- BOTONES -->
-    <div class="action-bar">
-      <button class="btn-primary" onclick="guardar()">💾 Guardar</button>
-      <button class="btn-secondary" onclick="irPaso3()">➡️ Siguiente Paso</button>
-      <button class="btn-secondary" onclick="renderPreview()">🔄 Actualizar</button>
-    </div>
-
+    <!-- ════ PANEL PREVIEW ════ -->
+    <main id="panel-preview">
+      <div class="preview-label">Vista previa — Una carta por testigo</div>
+      <div id="cartas-output" style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;width:100%"></div>
+    </main>
   </div>
-</aside>
 
-<!-- ════ PANEL PREVIEW ════ -->
-<main id="panel-preview">
-  <div class="preview-label">Vista previa — Una carta por testigo</div>
-  <div id="cartas-output" style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;width:100%"></div>
-</main>
-</div>
+  <div id="toast"></div>
 
-<div id="toast"></div>
+  <script>
+    /* ══ ESTADO Y CONSTANTES ══ */
+    const LS_CASOS = 'mep_dp_casos_v2';
+    const LS_PASO1 = 'mep_dp_paso1_v1';
+    const LS_PASO2 = 'mep_dp_paso2_v1';
+    const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
-<script>
-/* ══ ESTADO Y CONSTANTES ══ */
-const LS_CASOS  = 'mep_dp_casos_v2';
-const LS_PASO1  = 'mep_dp_paso1_v1';
-const LS_PASO2  = 'mep_dp_paso2_v1';
-const MESES = ['enero','febrero','marzo','abril','mayo','junio',
-  'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    let caso = null;
+    let testigos = [];
 
-let caso = null;
-let testigos = [];
+    /* ══ INIT ══ */
+    function init() {
+      const id = new URLSearchParams(location.search).get('id');
+      try {
+        const casos = JSON.parse(localStorage.getItem(LS_CASOS)) || [];
+        caso = id ? casos.find(c => c.id === id) : casos[0];
+      } catch { caso = null; }
 
-/* ══ INIT ══ */
-function init(){
-  const id = new URLSearchParams(location.search).get('id');
-  try{
-    const casos = JSON.parse(localStorage.getItem(LS_CASOS))||[];
-    caso = id ? casos.find(c=>c.id===id) : casos[0];
-  }catch{ caso=null; }
+      if (caso) {
+        document.getElementById('case-info-label').textContent =
+          `${caso.expediente || 'Sin N°'} — ${caso.estudiante || 'Estudiante'}`;
+      }
 
-  if(caso){
-    document.getElementById('case-info-label').textContent =
-      `${caso.expediente||'Sin N°'} — ${caso.estudiante||'Estudiante'}`;
-  }
-
-  // Cargar testigos estudiantes desde paso1
-  const keyP1 = LS_PASO1 + (caso?.id ? '_'+caso.id : '');
-  try{
-    const d = JSON.parse(localStorage.getItem(keyP1));
-    if(d?.testigos){
-      testigos = d.testigos
-        .filter(t=>t.tipo==='estudiante')
-        .map((t,idx)=>({
-          uid: 't_' + idx,
-          nombre:   t.nombre   || '',
-          seccion:  t.seccion  || '',
-          encargado:t.encargado|| '',
-          encargadoEdit: t.encargado || '',
-          fechaNotif: '',
-          fechaCita: '',
-          horaCita: '',
-          lugarCita: '',
-          noAsiste: false,
-          cedulaEncargado: '',
-          nombreAutorizado: '',
-          cedulaAutorizado: '',
-          fileAuthName: ''
-        }));
-    }
-  }catch{}
-
-  // Cargar datos guardados de paso2
-  const keyP2 = LS_PASO2 + (caso?.id ? '_'+caso.id : '');
-  try{
-    const d2 = JSON.parse(localStorage.getItem(keyP2));
-    if(d2 && d2.infoTestigos){
-      testigos.forEach(t => {
-        const s = d2.infoTestigos[t.uid];
-        if(s){
-          t.fechaNotif = s.fechaNotif || '';
-          t.encargadoEdit = s.encargado || t.encargadoEdit;
-          t.fechaCita = s.fechaCita || '';
-          t.horaCita = s.horaCita || '';
-          t.lugarCita = s.lugarCita || '';
-          t.noAsiste = !!s.noAsiste;
-          t.cedulaEncargado = s.cedulaEncargado || '';
-          t.nombreAutorizado = s.nombreAutorizado || '';
-          t.cedulaAutorizado = s.cedulaAutorizado || '';
-          t.fileAuthName = s.fileAuthName || '';
+      // Cargar testigos estudiantes desde paso1
+      const keyP1 = LS_PASO1 + (caso?.id ? '_' + caso.id : '');
+      try {
+        const d = JSON.parse(localStorage.getItem(keyP1));
+        if (d?.testigos) {
+          testigos = d.testigos
+            .filter(t => t.tipo === 'estudiante')
+            .map((t, idx) => ({
+              uid: 't_' + idx,
+              nombre: t.nombre || '',
+              seccion: t.seccion || '',
+              encargado: t.encargado || '',
+              encargadoEdit: t.encargado || '',
+              fechaNotif: '',
+              fechaCita: '',
+              horaCita: '',
+              lugarCita: '',
+              noAsiste: false,
+              cedulaEncargado: '',
+              nombreAutorizado: '',
+              cedulaAutorizado: '',
+              fileAuthName: ''
+            }));
         }
-      });
+      } catch { }
+
+      // Cargar datos guardados de paso2
+      const keyP2 = LS_PASO2 + (caso?.id ? '_' + caso.id : '');
+      try {
+        const d2 = JSON.parse(localStorage.getItem(keyP2));
+        if (d2 && d2.infoTestigos) {
+          testigos.forEach(t => {
+            const s = d2.infoTestigos[t.uid];
+            if (s) {
+              t.fechaNotif = s.fechaNotif || '';
+              t.encargadoEdit = s.encargado || t.encargadoEdit;
+              t.fechaCita = s.fechaCita || '';
+              t.horaCita = s.horaCita || '';
+              t.lugarCita = s.lugarCita || '';
+              t.noAsiste = !!s.noAsiste;
+              t.cedulaEncargado = s.cedulaEncargado || '';
+              t.nombreAutorizado = s.nombreAutorizado || '';
+              t.cedulaAutorizado = s.cedulaAutorizado || '';
+              t.fileAuthName = s.fileAuthName || '';
+            }
+          });
+        }
+      } catch { }
+
+      renderFormTestigos();
+      renderPreview();
     }
-  }catch{}
 
-  renderFormTestigos();
-  renderPreview();
-}
+    function irPaso1() {
+      const id = new URLSearchParams(location.search).get('id');
+      location.href = 'paso1.html' + (id ? '?id=' + id : '');
+    }
 
-function irPaso1(){
-  const id = new URLSearchParams(location.search).get('id');
-  location.href = 'paso1.html' + (id ? '?id='+id : '');
-}
-
-/* ══ FORM DE TESTIGOS ══ */
-function renderFormTestigos(){
-  const c = document.getElementById('lista-testigos-form');
-  if(!testigos.length){
-    c.innerHTML='<p class="no-testigos">No hay testigos estudiantes registrados en el Paso 1.</p>';
-    return;
-  }
-  c.innerHTML = testigos.map((t,i)=>`
+    /* ══ FORM DE TESTIGOS ══ */
+    function renderFormTestigos() {
+      const c = document.getElementById('lista-testigos-form');
+      if (!testigos.length) {
+        c.innerHTML = '<p class="no-testigos">No hay testigos estudiantes registrados en el Paso 1.</p>';
+        return;
+      }
+      c.innerHTML = testigos.map((t, i) => `
     <div class="testigo-card" style="gap:.8rem; padding: 1.2rem">
       <div style="border-bottom: 1px solid #dee; padding-bottom: .4rem">
-        <div class="tc-name">👤 ${escH(t.nombre||'(sin nombre)')}</div>
-        <div class="tc-detail">Sección: <b>${escH(t.seccion||'—')}</b></div>
+        <div class="tc-name">👤 ${escH(t.nombre || '(sin nombre)')}</div>
+        <div class="tc-detail">Sección: <b>${escH(t.seccion || '—')}</b></div>
       </div>
       
       <div class="fg">
@@ -376,7 +907,7 @@ function renderFormTestigos(){
       <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:.7rem; margin-top:.3rem">
         <div style="display:flex; align-items:center; gap:.6rem; margin-bottom:.6rem">
           <label class="switch">
-            <input type="checkbox" ${t.noAsiste?'checked':''} onchange="testigos[${i}].noAsiste=this.checked;renderFormTestigos();renderPreview()"/>
+            <input type="checkbox" ${t.noAsiste ? 'checked' : ''} onchange="testigos[${i}].noAsiste=this.checked;renderFormTestigos();renderPreview()"/>
             <span class="slider"></span>
           </label>
           <span style="font-size:.72rem; font-weight:700; color:var(--azul)">¿El padre no se presentará?</span>
@@ -403,58 +934,58 @@ function renderFormTestigos(){
         ` : ''}
       </div>
     </div>`).join('');
-}
-
-function handleFile(idx, input){
-  if(input.files && input.files[0]){
-    testigos[idx].fileAuthName = input.files[0].name;
-    document.getElementById('fname_'+idx).textContent = input.files[0].name;
-    renderPreview();
-  }
-}
-
-/* ══ RENDER PREVIEW ══ */
-function renderPreview(){
-  autoSave();
-  updateDeadlineAlarm();
-  const profe = escH(caso?.profe || '______________________________');
-  const exp   = escH(caso?.expediente || '—');
-  const anio  = escH(caso?.anio || '2026');
-
-  const out = document.getElementById('cartas-output');
-  out.innerHTML = '';
-
-  if(!testigos.length){
-    out.innerHTML = `<div style="color:#aaa;font-size:.9rem;font-style:italic;padding:2rem">No hay testigos registrados.</div>`;
-    return;
-  }
-
-  // 1. Obtener punto de partida del foleo desde Paso 1
-  let totalFolio = 2;
-  try {
-    const keyP1 = LS_PASO1 + (caso?.id ? '_'+caso.id : '');
-    const d1 = JSON.parse(localStorage.getItem(keyP1));
-    if(d1?.totalFoliosP1) {
-      totalFolio = d1.totalFoliosP1 + 1;
     }
-  } catch(e){}
 
-  const folioIniNotif = totalFolio;
+    function handleFile(idx, input) {
+      if (input.files && input.files[0]) {
+        testigos[idx].fileAuthName = input.files[0].name;
+        document.getElementById('fname_' + idx).textContent = input.files[0].name;
+        renderPreview();
+      }
+    }
 
-  const cleanDate = (dStr) => {
-    if(!dStr) return {d:'__', m:'________', a:'____'};
-    const d=new Date(dStr+'T12:00:00');
-    return {d:d.getDate(), m:MESES[d.getMonth()], a:d.getFullYear()};
-  };
+    /* ══ RENDER PREVIEW ══ */
+    function renderPreview() {
+      autoSave();
+      updateDeadlineAlarm();
+      const profe = escH(caso?.profe || '______________________________');
+      const exp = escH(caso?.expediente || '—');
+      const anio = escH(caso?.anio || '2026');
 
-  // 2. PRIMERO: TODAS LAS NOTIFICACIONES
-  testigos.forEach((t, i) => {
-    const fNotif = fmtFecha(t.fechaNotif);
-    const cdt = cleanDate(t.fechaCita);
+      const out = document.getElementById('cartas-output');
+      out.innerHTML = '';
 
-    const art = document.createElement('article');
-    art.className = 'carta';
-    art.innerHTML = `
+      if (!testigos.length) {
+        out.innerHTML = `<div style="color:#aaa;font-size:.9rem;font-style:italic;padding:2rem">No hay testigos registrados.</div>`;
+        return;
+      }
+
+      // 1. Obtener punto de partida del foleo desde Paso 1
+      let totalFolio = 2;
+      try {
+        const keyP1 = LS_PASO1 + (caso?.id ? '_' + caso.id : '');
+        const d1 = JSON.parse(localStorage.getItem(keyP1));
+        if (d1?.totalFoliosP1) {
+          totalFolio = d1.totalFoliosP1 + 1;
+        }
+      } catch (e) { }
+
+      const folioIniNotif = totalFolio;
+
+      const cleanDate = (dStr) => {
+        if (!dStr) return { d: '__', m: '________', a: '____' };
+        const d = new Date(dStr + 'T12:00:00');
+        return { d: d.getDate(), m: MESES[d.getMonth()], a: d.getFullYear() };
+      };
+
+      // 2. PRIMERO: TODAS LAS NOTIFICACIONES
+      testigos.forEach((t, i) => {
+        const fNotif = fmtFecha(t.fechaNotif);
+        const cdt = cleanDate(t.fechaCita);
+
+        const art = document.createElement('article');
+        art.className = 'carta';
+        art.innerHTML = `
       <div class="carta-inner">
         <div class="folio-line">
           <span>Exp. N.° <b>${exp}</b> · Año <b>${anio}</b> · Folio <b>${totalFolio++}</b></span>
@@ -469,7 +1000,7 @@ function renderPreview(){
         </div>
         <p class="notif-cuerpo">
           Por este medio se le solicita presentarse el d&iacute;a <u>&nbsp;<b>${cdt.d}</b>&nbsp;</u> del mes de
-          <u>&nbsp;<b>${cdt.m}</b>&nbsp;</u> del a&ntilde;o en curso a las <u>&nbsp;<b>${t.horaCita||'____'}</b>&nbsp;</u>
+          <u>&nbsp;<b>${cdt.m}</b>&nbsp;</u> del a&ntilde;o en curso a las <u>&nbsp;<b>${t.horaCita || '____'}</b>&nbsp;</u>
           en <u>&nbsp;${escH(t.lugarCita || '______________________')}&nbsp;</u>
           para ser atendido(a) por el (la) docente gu&iacute;a <u>&nbsp;<b>${profe}</b>&nbsp;</u>
           con el fin de tomarle una declaraci&oacute;n a la persona estudiante por usted representada, para recibir el testimonio.
@@ -490,23 +1021,23 @@ function renderPreview(){
           <div class="firma-bloque"><div class="firma-linea" style="width:4cm"></div><div class="firma-eta">Fecha</div></div>
         </div>
       </div>`;
-    
-    const lbl = document.createElement('div');
-    lbl.className = 'preview-label';
-    lbl.textContent = `Notificación — ${t.nombre}`;
-    out.appendChild(lbl);
-    out.appendChild(art);
-  });
 
-  const folioIniActas = totalFolio;
+        const lbl = document.createElement('div');
+        lbl.className = 'preview-label';
+        lbl.textContent = `Notificación — ${t.nombre}`;
+        out.appendChild(lbl);
+        out.appendChild(art);
+      });
 
-  // 3. SEGUNDO: TODAS LAS ACTAS DE AUSENCIA
-  testigos.filter(t => t.noAsiste).forEach((t, i) => {
-    const cdt = cleanDate(t.fechaCita);
+      const folioIniActas = totalFolio;
 
-    const art2 = document.createElement('article');
-    art2.className = 'carta';
-    art2.innerHTML = `
+      // 3. SEGUNDO: TODAS LAS ACTAS DE AUSENCIA
+      testigos.filter(t => t.noAsiste).forEach((t, i) => {
+        const cdt = cleanDate(t.fechaCita);
+
+        const art2 = document.createElement('article');
+        art2.className = 'carta';
+        art2.innerHTML = `
       <div class="carta-inner">
         <div class="folio-line">
           <span>Exp. N.° <b>${exp}</b> · Año <b>${anio}</b> · Folio <b>${totalFolio++}</b></span>
@@ -537,140 +1068,140 @@ function renderPreview(){
           </div>
           <div class="firma-bloque centro"><div class="firma-linea" style="width:11cm"></div><div class="firma-eta">Firma del docente guía</div></div>
         </div>
-        ${t.fileAuthName ? `<div style="margin-top:auto; font-size:8pt; color:#666; font-style:italic">* Se adjunta documento: "${escH(t.fileAuthName)}"</div>` : ''}
       </div>`;
-    
-    const lbl2 = document.createElement('div');
-    lbl2.className = 'preview-label';
-    lbl2.style.marginTop = '1rem';
-    lbl2.textContent = `Acta de Ausencia — ${t.nombre}`;
-    out.appendChild(lbl2);
-    out.appendChild(art2);
-  });
-}
 
-/* ══ GUARDAR ══ */
-function guardar(silent = false){
-  const infoTestigos = {};
-  testigos.forEach(t => {
-    infoTestigos[t.uid] = {
-      fechaNotif: t.fechaNotif,
-      encargado: t.encargadoEdit,
-      fechaCita: t.fechaCita,
-      horaCita: t.horaCita,
-      lugarCita: t.lugarCita,
-      noAsiste: t.noAsiste,
-      cedulaEncargado: t.cedulaEncargado,
-      nombreAutorizado: t.nombreAutorizado,
-      cedulaAutorizado: t.cedulaAutorizado,
-      fileAuthName: t.fileAuthName
-    };
-  });
+        const lbl2 = document.createElement('div');
+        lbl2.className = 'preview-label';
+        lbl2.style.marginTop = '1rem';
+        lbl2.textContent = `Acta de Ausencia — ${t.nombre}`;
+        out.appendChild(lbl2);
+        out.appendChild(art2);
+      });
+    }
 
-  // Calcular folios para TDC
-  let fIniNotif = 2;
-  try {
-    const keyP1 = LS_PASO1 + (caso?.id ? '_'+caso.id : '');
-    const d1 = JSON.parse(localStorage.getItem(keyP1));
-    if(d1?.totalFoliosP1) fIniNotif = d1.totalFoliosP1 + 1;
-  } catch(e){}
-  
-  const fIniActas = fIniNotif + testigos.length;
-  const totalPaginasP2 = testigos.length + testigos.filter(t=>t.noAsiste).length;
+    /* ══ GUARDAR ══ */
+    function guardar(silent = false) {
+      const infoTestigos = {};
+      testigos.forEach(t => {
+        infoTestigos[t.uid] = {
+          fechaNotif: t.fechaNotif,
+          encargado: t.encargadoEdit,
+          fechaCita: t.fechaCita,
+          horaCita: t.horaCita,
+          lugarCita: t.lugarCita,
+          noAsiste: t.noAsiste,
+          cedulaEncargado: t.cedulaEncargado,
+          nombreAutorizado: t.nombreAutorizado,
+          cedulaAutorizado: t.cedulaAutorizado,
+          fileAuthName: t.fileAuthName
+        };
+      });
 
-  const dataP2 = {
-    infoTestigos,
-    folioIniNotif: fIniNotif,
-    folioIniActas: fIniActas,
-    totalFoliosP2: totalPaginasP2
-  };
+      // Calcular folios para TDC
+      let fIniNotif = 2;
+      try {
+        const keyP1 = LS_PASO1 + (caso?.id ? '_' + caso.id : '');
+        const d1 = JSON.parse(localStorage.getItem(keyP1));
+        if (d1?.totalFoliosP1) fIniNotif = d1.totalFoliosP1 + 1;
+      } catch (e) { }
 
-  localStorage.setItem(LS_PASO2+(caso?.id?'_'+caso.id:''), JSON.stringify(dataP2));
-  if(!silent) toast('✔ Paso 2 guardado correctamente');
-}
+      const fIniActas = fIniNotif + testigos.length;
+      const totalPaginasP2 = testigos.length + testigos.filter(t => t.noAsiste).length;
 
-function trySave() {
-  if (typeof guardar === 'function') {
-    try { guardar(true); } catch(e){}
-  } else if (typeof guardarDatos === 'function') {
-    try { guardarDatos(true); } catch(e){}
-  }
-}
-function irIndice(pag) { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './index.html?id=' + (id||'') + '&page=' + (pag||'portada'); }
-function irPaso1() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso1.html' + (id ? '?id='+id : ''); }
-function irPaso2() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso2.html' + (id ? '?id='+id : ''); }
-function irPaso3() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso3.html' + (id ? '?id='+id : ''); }
-function irPaso4() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso4.html' + (id ? '?id='+id : ''); }
-function irPaso5() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso5.html' + (id ? '?id='+id : ''); }
-function irPaso6() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso6.html' + (id ? '?id='+id : ''); }
-function irPaso7() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso7.html' + (id ? '?id='+id : ''); }
-function irPaso8() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso8.html' + (id ? '?id='+id : ''); }
-function irPaso9() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso9.html' + (id ? '?id='+id : ''); }
-function irAnexos() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './anexos.html' + (id ? '?id='+id : ''); }
+      const dataP2 = {
+        infoTestigos,
+        folioIniNotif: fIniNotif,
+        folioIniActas: fIniActas,
+        totalFoliosP2: totalPaginasP2
+      };
 
-/* ══ UTILIDADES ══ */
-function fmtFecha(val){
-  if(!val) return '______________________';
-  const d=new Date(val+'T12:00:00');
-  return `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
-}
-function escH(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function toast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.style.opacity='1';
-  clearTimeout(t._t); t._t=setTimeout(()=>t.style.opacity='0', 2800);
-}
+      localStorage.setItem(LS_PASO2 + (caso?.id ? '_' + caso.id : ''), JSON.stringify(dataP2));
+      if (!silent) toast('✔ Paso 2 guardado correctamente');
+    }
 
-/* ══════════════════════════════════════
-   AUTO-GUARDADO Y ALARMAS
- ══════════════════════════════════════ */
-let autoSaveTimeout;
-function autoSave(){
-  clearTimeout(autoSaveTimeout);
-  autoSaveTimeout = setTimeout(() => { guardar(true); }, 1000);
-}
+    function trySave() {
+      if (typeof guardar === 'function') {
+        try { guardar(true); } catch (e) { }
+      } else if (typeof guardarDatos === 'function') {
+        try { guardarDatos(true); } catch (e) { }
+      }
+    }
+    function irIndice(pag) { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './index.html?id=' + (id || '') + '&page=' + (pag || 'portada'); }
+    function irPaso1() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso1.html' + (id ? '?id=' + id : ''); }
+    function irPaso2() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso2.html' + (id ? '?id=' + id : ''); }
+    function irPaso3() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso3.html' + (id ? '?id=' + id : ''); }
+    function irPaso4() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso4.html' + (id ? '?id=' + id : ''); }
+    function irPaso5() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso5.html' + (id ? '?id=' + id : ''); }
+    function irPaso6() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso6.html' + (id ? '?id=' + id : ''); }
+    function irPaso7() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso7.html' + (id ? '?id=' + id : ''); }
+    function irPaso8() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso8.html' + (id ? '?id=' + id : ''); }
+    function irPaso9() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso9.html' + (id ? '?id=' + id : ''); }
+    function irAnexos() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './anexos.html' + (id ? '?id=' + id : ''); }
 
-function updateDeadlineAlarm() {
-  const lbl = document.getElementById('dt-label');
-  const dot = document.getElementById('dt-status');
-  if(!caso || !caso.fechaApertura) {
-    lbl.textContent = 'Sin fecha apertura';
-    dot.style.background = '#aaa';
-    return;
-  }
+    /* ══ UTILIDADES ══ */
+    function fmtFecha(val) {
+      if (!val) return '______________________';
+      const d = new Date(val + 'T12:00:00');
+      return `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+    }
+    function escH(s) { if (!s) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.style.opacity = '1';
+      clearTimeout(t._t); t._t = setTimeout(() => t.style.opacity = '0', 2800);
+    }
 
-  const fApertura = new Date(caso.fechaApertura + 'T12:00:00');
-  const hoy = new Date();
-  
-  // Plazo Paso 2 & 3: ~15 días hábiles para investigación (Estimado REAC)
-  const limite = calcularHabiles(fApertura, 15);
-  const diffTiempo = limite - hoy;
-  const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
+    /* ══════════════════════════════════════
+       AUTO-GUARDADO Y ALARMAS
+     ══════════════════════════════════════ */
+    let autoSaveTimeout;
+    function autoSave() {
+      clearTimeout(autoSaveTimeout);
+      autoSaveTimeout = setTimeout(() => { guardar(true); }, 1000);
+    }
 
-  if (diffDias < 0) {
-    lbl.textContent = `Vencido (${Math.abs(diffDias)}d)`;
-    dot.style.background = '#C8102E';
-  } else if (diffDias <= 2) {
-    lbl.textContent = `¡Vence pronto!`;
-    dot.style.background = '#E0A800';
-  } else {
-    lbl.textContent = `${diffDias} días restantes`;
-    dot.style.background = '#166534';
-  }
-}
+    function updateDeadlineAlarm() {
+      const lbl = document.getElementById('dt-label');
+      const dot = document.getElementById('dt-status');
+      if (!caso || !caso.fechaApertura) {
+        lbl.textContent = 'Sin fecha apertura';
+        dot.style.background = '#aaa';
+        return;
+      }
 
-function calcularHabiles(fecha, dias) {
-  let f = new Date(fecha.getTime());
-  let count = 0;
-  while (count < dias) {
-    f.setDate(f.getDate() + 1);
-    const d = f.getDay();
-    if (d !== 0 && d !== 6) count++;
-  }
-  return f;
-}
+      const fApertura = new Date(caso.fechaApertura + 'T12:00:00');
+      const hoy = new Date();
 
-init();
-</script>
+      // Plazo Paso 2 & 3: ~15 días hábiles para investigación (Estimado REAC)
+      const limite = calcularHabiles(fApertura, 15);
+      const diffTiempo = limite - hoy;
+      const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
+
+      if (diffDias < 0) {
+        lbl.textContent = `Vencido (${Math.abs(diffDias)}d)`;
+        dot.style.background = '#C8102E';
+      } else if (diffDias <= 2) {
+        lbl.textContent = `¡Vence pronto!`;
+        dot.style.background = '#E0A800';
+      } else {
+        lbl.textContent = `${diffDias} días restantes`;
+        dot.style.background = '#166534';
+      }
+    }
+
+    function calcularHabiles(fecha, dias) {
+      let f = new Date(fecha.getTime());
+      let count = 0;
+      while (count < dias) {
+        f.setDate(f.getDate() + 1);
+        const d = f.getDay();
+        if (d !== 0 && d !== 6) count++;
+      }
+      return f;
+    }
+
+    init();
+  </script>
 </body>
+
 </html>
