@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Paso 7 – Solicitud Copia Expediente | Debido Proceso MEP</title>
+  <style>
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic Light.ttf') format('truetype');
+      font-weight: 300
+    }
+
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic SemiBd.ttf') format('truetype');
+      font-weight: 600
+    }
+
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic Bold.ttf') format('truetype');
+      font-weight: 700
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --azul: #1c2847;
+      --azul-cl: #273966;
+      --rojo: #C8102E;
+      --oro: #C9A86A;
+      --gris: #f0f4f9;
+      --borde: #cbd5e0;
+      --texto: #0f1a2e;
+      --blanco: #fff;
+      --sombra: 0 4px 24px rgba(28, 40, 71, .13);
+    }
+
+    body,
+    input,
+    select,
+    textarea,
+    button {
+      font-family: 'Henderson Sans Basic', sans-serif;
+    }
+
+    body {
+      background: var(--gris);
+      color: var(--texto);
+      min-height: 100vh
+    }
+
+    /* ── TOPBAR ── */
+    #topbar {
+      background: var(--azul);
+      color: var(--blanco);
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: 0 1.5rem;
+      height: 54px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .35)
+    }
+
+    #topbar .brand {
+      font-size: .9rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      color: var(--oro);
+      margin-right: auto
+    }
+
+    #topbar .case-info {
+      font-size: .78rem;
+      opacity: .75;
+      max-width: 340px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    #topbar button {
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .25);
+      color: var(--blanco);
+      padding: .3rem .9rem;
+      border-radius: 6px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    #topbar button:hover {
+      background: rgba(255, 255, 255, .25)
+    }
+
+    .btn-gold {
+      background: var(--oro) !important;
+      color: var(--azul) !important;
+      border-color: var(--oro) !important
+    }
+
+    .btn-gold:hover {
+      background: #e0a800 !important
+    }
+
+    /* ── CASE NAV ── */
+    #case-nav {
+      background: #1a3a6b;
+      color: var(--blanco);
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .5rem 1.5rem;
+      flex-wrap: wrap;
+      border-bottom: 2px solid var(--azul)
+    }
+
+    .case-nav-title {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--oro);
+      white-space: nowrap;
+      margin-right: .5rem
+    }
+
+    .page-btn {
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .18);
+      color: rgba(255, 255, 255, .85);
+      padding: .28rem .7rem;
+      border-radius: 5px;
+      font-size: .72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+
+    .page-btn:hover {
+      background: rgba(255, 255, 255, .2)
+    }
+
+    .page-btn.active {
+      background: var(--oro);
+      color: var(--azul);
+      border-color: var(--oro)
+    }
+
+    /* ── LAYOUT ── */
+    #app {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 0;
+      min-height: calc(100vh - 100px)
+    }
+
+    /* ── PANEL EDITOR ── */
+    #panel-editor {
+      background: var(--blanco);
+      border-right: 2px solid var(--borde);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column
+    }
+
+    .panel-body {
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem
+    }
+
+    .sec {
+      border: 1.5px solid var(--borde);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    .sec-hdr {
+      background: var(--gris);
+      padding: .55rem .9rem;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--azul);
+      display: flex;
+      align-items: center;
+      gap: .4rem
+    }
+
+    .sec-body {
+      padding: .85rem .9rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem
+    }
+
+    .fg label {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #555
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      border: 1.5px solid var(--borde);
+      border-radius: 7px;
+      padding: .45rem .75rem;
+      font-size: .83rem;
+      background: #fafbfc;
+      transition: border-color .2s;
+      color: var(--texto)
+    }
+
+    .fg input:focus,
+    .fg select:focus,
+    .fg textarea:focus {
+      outline: none;
+      border-color: var(--azul-cl);
+      background: var(--blanco)
+    }
+
+    /* ── PREVIEW ── */
+    #panel-preview {
+      background: #dde3ed;
+      overflow-y: auto;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem
+    }
+
+    #carta-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%
+    }
+
+    /* Estilos de la carta Acta (Clasica) */
+    .carta {
+      width: 21.59cm;
+      height: 27.94cm;
+      background: white url('fondo.png') no-repeat top center;
+      background-size: 100% auto;
+      box-shadow: var(--sombra);
+      border-radius: 3px;
+      font-family: 'Henderson Sans Basic', sans-serif;
+      font-size: 11pt;
+      line-height: 1.7;
+      overflow: hidden;
+      flex-shrink: 0
+    }
+
+    .carta-inner {
+      padding: 3.2cm 2.2cm 2cm 2.5cm;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .folio-line {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 7.5pt;
+      color: #555;
+      margin-bottom: .3cm
+    }
+
+    .folio-line b {
+      color: var(--azul)
+    }
+
+    .acta-titulo {
+      font-size: 10.5pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--azul);
+      line-height: 1.4;
+      letter-spacing: .02em;
+      text-align: center;
+      margin-bottom: 0.6cm;
+    }
+
+    /* Fuente de contenido (invisible, se usa para medir) */
+    #carta-source {
+      position: fixed;
+      left: -9999px;
+      top: 0;
+      width: 16.89cm;
+      font-family: 'Henderson Sans Basic', sans-serif;
+      font-size: 11pt;
+      line-height: 1.7;
+      color: #111;
+      visibility: hidden;
+      pointer-events: none;
+      z-index: -1
+    }
+
+    /* Print */
+    @media print {
+      @page {
+        size: letter;
+        margin: 0
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important
+      }
+
+      #topbar,
+      #case-nav,
+      #panel-editor,
+      .preview-label,
+      #carta-source,
+      #toast,
+      button {
+        display: none !important
+      }
+
+      #app {
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 100%
+      }
+
+      #panel-preview {
+        display: block !important;
+        padding: 0;
+        background: white !important;
+        width: 100%
+      }
+
+      .carta {
+        width: 21.59cm !important;
+        height: 27.94cm !important;
+        box-shadow: none !important;
+        page-break-after: always;
+        break-after: page;
+        border: none !important;
+        background-image: url('fondo.png') !important;
+        background-size: 100% auto !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important
+      }
+
+      .carta:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important
+      }
+
+      .carta-inner {
+        padding: 3.2cm 2.2cm 2cm 2.5cm
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header id="topbar">
+    <span class="brand">📋 Debido Proceso MEP</span>
+    <span class="case-info" id="case-info-label">—</span>
+    <button onclick="location.href='index.html'">← Expedientes</button>
+    <button class="btn-gold" onclick="window.print()" title="Imprimir este documento">🖨 Imprimir Documento</button>
+    <div id="deadline-timer"
+      style="margin-left: 1rem; border-left: 1px solid rgba(255,255,255,.2); padding-left: 1rem; display: flex; align-items: center; gap: .5rem; font-size: .8rem; color: white;">
+      <span style="opacity: .6;">⏳ Plazo Inv:</span>
+      <span id="dt-label" style="font-weight: 700; color: #fff;">Calculando...</span>
+      <span id="dt-status" style="width: 10px; height: 10px; border-radius: 50%;"></span>
+    </div>
+  </header>
+
+  <nav id="case-nav">
+    <span class="case-nav-title">Expediente</span>
+    <button class="page-btn" onclick="irIndice('portada')">1. Portada</button>
+    <button class="page-btn" onclick="irIndice('tdc')">2. Tabla Contenidos</button>
+    <button class="page-btn" onclick="irPaso1()">3. Com. Prof. Guía</button>
+    <button class="page-btn" onclick="irPaso2()">4. Notif. Testigos</button>
+    <button class="page-btn" onclick="irPaso3()">5–6. Actas/Declara.</button>
+    <button class="page-btn" onclick="irAnexos()">7. Anexos</button>
+    <button class="page-btn" onclick="irPaso4()">8. Resultado Inv.</button>
+    <button class="page-btn" onclick="irPaso5()">9. Notif. Apertura</button>
+    <button class="page-btn" onclick="irPaso6()">10. Boleta Apertura</button>
+    <button class="page-btn active" onclick="irPaso7()">11. Solicitud Copia</button>
+    <button class="page-btn" onclick="irPaso9()">12. Descargos y Pruebas</button>
+    <button class="page-btn" onclick="irPaso8()">13. Dec. Estudiante</button>
+  </nav>
+
+  <div id="app">
+    <aside id="panel-editor">
+      <div class="panel-body">
+
+        <div id="form-content">
+          <div class="sec">
+            <div class="sec-hdr">📅 Datos del Solicitante</div>
+            <div class="sec-body" style="display:flex; flex-direction:column; gap:1rem;">
+              <div class="fg">
+                <label>Fecha de la solicitud</label>
+                <input type="date" id="f-fecha" onchange="updateLive()" />
+              </div>
+              <div class="fg">
+                <label>Nombre del Solicitante</label>
+                <input type="text" id="f-solicitante" oninput="updateLive()" />
+              </div>
+              <div class="fg">
+                <label>Cédula del Solicitante</label>
+                <input type="text" id="f-cedula-sol" oninput="updateLive()" />
+              </div>
+              <div class="fg">
+                <label>Parentesco</label>
+                <select id="f-parentesco" onchange="updateLive()">
+                  <option value="Padre">Padre</option>
+                  <option value="Madre">Madre</option>
+                  <option value="Encargado(a) Legal">Encargado(a) Legal</option>
+                  <option value="Estudiante mayor de edad">Estudiante mayor de edad</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="sec">
+            <div class="sec-hdr">📋 Recepción de la Solicitud</div>
+            <div class="sec-body" style="display:flex; flex-direction:column; gap:1rem;">
+              <div class="fg">
+                <label>Funcionario que recibe</label>
+                <input type="text" id="f-func-recibe" oninput="updateLive()" />
+              </div>
+              <div style="display:flex; gap: 0.5rem;">
+                <div class="fg" style="flex:1;">
+                  <label>Fecha de Recibido</label>
+                  <input type="date" id="f-fecha-rec" onchange="updateLive()" />
+                </div>
+                <div class="fg" style="flex:1;">
+                  <label>Hora de Recibido</label>
+                  <input type="time" id="f-hora-rec" onchange="updateLive()" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sec">
+            <div class="sec-hdr">📄 Entrega de la Copia</div>
+            <div class="sec-body" style="display:flex; flex-direction:column; gap:1rem;">
+              <div class="fg">
+                <label>Total de folios del expediente</label>
+                <input type="number" id="f-folios" oninput="updateLive()" />
+              </div>
+              <div class="fg">
+                <label>Funcionario que entrega (Copia)</label>
+                <input type="text" id="f-func-entrega" oninput="updateLive()" />
+              </div>
+              <div class="fg">
+                <label>Fecha de entrega</label>
+                <input type="date" id="f-fecha-ent" onchange="updateLive()" />
+              </div>
+            </div>
+          </div>
+          <div class="sec">
+            <div class="sec-hdr">🤝 Retira copia del expediente</div>
+            <div class="sec-body" style="display:flex; flex-direction:column; gap:1rem;">
+              <div class="fg">
+                <label>Nombre de quien retira</label>
+                <input type="text" id="f-encargado-retira" oninput="updateLive()" />
+              </div>
+              <div class="fg">
+                <label>Cédula de quien retira</label>
+                <input type="text" id="f-cedula-ret" oninput="updateLive()" />
+              </div>
+              <div style="display:flex; gap: 0.5rem;">
+                <div class="fg" style="flex:1;">
+                  <label>Fecha de retiro</label>
+                  <input type="date" id="f-fecha-ret" onchange="updateLive()" />
+                </div>
+                <div class="fg" style="flex:1;">
+                  <label>Hora de retiro</label>
+                  <input type="time" id="f-hora-ret" onchange="updateLive()" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:.6rem;">
+            <button class="btn-gold" style="padding:.7rem; border-radius:8px; font-weight:700; cursor:pointer;"
+              onclick="guardar()">💾 Guardar Solicitud</button>
+            <button class="page-btn"
+              style="padding:.7rem; border-radius:8px; width:100%; background:var(--azul); color:white; border:none"
+              onclick="irPaso9()">➡️ Siguiente / Descargos</button>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <main id="panel-preview">
+      <div id="carta-display"></div>
+    </main>
+  </div>
+
+  <!-- FUENTE PARA PAGINACIÓN -->
+  <div id="carta-source">
+    <div id="sg-header">
+      <h2 class="acta-titulo">SOLICITUD DE COPIA DEL EXPEDIENTE<br/>ADMINISTRATIVO DISCIPLINARIO</h2>
+
+      <div style="margin-bottom: 0.3cm; line-height: 1.3;">
+        <p style="margin-bottom: 0.2cm;"><b>Fecha:</b> <span id="doc-fecha">______________</span></p>
+        <p><b>Señor(a)</b></p>
+        <p><b>Docente Guía:</b> <span id="doc-profe" style="display:inline-block; min-width:8cm; border-bottom:1px solid #111;">__________________________________</span> <b>Sección:</b> <span id="doc-seccion" style="display:inline-block; min-width:1.5cm; border-bottom:1px solid #111; text-align:center;">______</span></p>
+      </div>
+
+      <div style="margin-bottom:0.3cm;">Estimado señor(a):</div>
+      
+      <div style="text-align: justify; line-height: 1.4; margin-bottom: 0.4cm;">
+        Por este medio yo <b id="doc-solicitante">____________________________</b> cédula <b id="doc-cedula-sol">_____________</b>, en calidad de (<span id="doc-parentesco" style="font-style:italic">parentesco</span>) <b id="doc-parentesco-b">________________________</b>, acogiéndome al derecho que me concede el Reglamento de Evaluación de los Aprendizajes y la Conducta, en su Artículo 150 inciso d, solicito se me facilite una copia del expediente administrativo disciplinario de la persona estudiante: 
+        <br/>
+        <b id="doc-estudiante" style="display:inline-block; border-bottom:1px solid #111; min-width:12cm;">_______________________________________________________</b> <b>Sección:</b> <span id="doc-seccion2" style="display:inline-block; border-bottom:1px solid #111; min-width:1.5cm; text-align:center;">______</span>
+      </div>
+      
+      <div style="margin-bottom: 0.4cm; display:flex;">
+        <div style="width:2cm;">Firma: </div>
+        <div style="width:8cm; border-bottom:1px solid #111;"></div>
+      </div>
+    
+      <div style="font-weight:bold; margin-bottom:0.2cm; text-decoration:underline;">Recibido por:</div>
+      
+      <div style="margin-bottom:0.4cm;">
+        <b>Funcionario:</b> <span id="doc-func-recibe" style="display:inline-block; border-bottom:1px solid #111; min-width:6cm;">___________________________</span>
+        <b>Fecha:</b> <span id="doc-fecha-rec" style="display:inline-block; border-bottom:1px solid #111; min-width:3cm; text-align:center;">__________</span>
+        <b>Hora:</b> <span id="doc-hora-rec" style="display:inline-block; border-bottom:1px solid #111; min-width:2cm; text-align:center;">______</span>.
+      </div>
+
+      <div style="border-top:1px dashed #aaa; margin-bottom:0.4cm;"></div>
+
+      <div style="text-align: justify; line-height: 1.4; margin-bottom: 0.3cm;">
+        La copia del expediente administrativo disciplinario fue entregado al solicitante por parte del funcionario:
+        <br/>
+        <b id="doc-func-entrega" style="display:inline-block; border-bottom:1px solid #111; min-width:9cm;">___________________________________________</b> 
+        <b>Fecha:</b> <span id="doc-fecha-ent" style="display:inline-block; border-bottom:1px solid #111; min-width:3cm; text-align:center;">________________</span>
+      </div>
+      
+      <div style="margin-bottom:0.4cm;">
+        Y contiene un total de <b id="doc-folios" style="display:inline-block; border-bottom:1px solid #111; min-width:1cm; text-align:center;">_____</b> folios.
+      </div>
+
+      <div style="margin-bottom: 0.4cm; display:flex; align-items:flex-end;">
+        <div style="padding-right:0.2cm;">Firma del funcionario que entrega: </div>
+        <div style="width:7cm; border-bottom:1px solid #111;"></div>
+      </div>
+
+      <div style="font-weight:bold; margin-bottom:0.2cm; text-decoration:underline;">Recibido por:</div>
+
+      <div style="text-align: justify; line-height: 1.4; margin-bottom: 0.6cm;">
+        Nombre del encargado legal que retira la copia del expediente:
+        <br/>
+        <b id="doc-encargado-retira" style="display:inline-block; border-bottom:1px solid #111; min-width:8cm;">___________________________________________</b>
+        <b>Cédula:</b> <span id="doc-cedula-ret" style="display:inline-block; border-bottom:1px solid #111; min-width:2.5cm; text-align:center;">________________</span>
+        <br/>
+        <b>N° folios:</b> <span id="doc-folios2" style="display:inline-block; border-bottom:1px solid #111; min-width:1.5cm; text-align:center;">________</span>
+        <b>Fecha:</b> <span id="doc-fecha-ret" style="display:inline-block; border-bottom:1px solid #111; min-width:3cm; text-align:center;">________________</span>
+        <b>Hora:</b> <span id="doc-hora-ret" style="display:inline-block; border-bottom:1px solid #111; min-width:2cm; text-align:center;">__________________</span>
+      </div>
+    </div>
+
+    <div id="sg-cierre">
+      <div style="display: flex; flex-direction: column; width: 8.5cm; margin-bottom: 0.5cm;">
+        <div style="border-bottom: 1px solid #333; margin-bottom: 0.1cm;"></div>
+        <div style="font-size: 9.5pt; color: #111;">Firma de recibido de copia del expediente</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"
+    style="position:fixed; bottom:2rem; right:2rem; background:var(--azul); color:var(--oro); padding:.7rem 1.4rem; border-radius:8px; display:none; z-index:9999;">
+  </div>
+
+  <script>
+    /* ══ ESTADO ══ */
+    const LS_CASOS = 'mep_dp_casos_v2';
+    const LS_PASO1 = 'mep_dp_paso1_v1';
+    const LS_PASO2 = 'mep_dp_paso2_v1';
+    const LS_PASO3 = 'mep_dp_paso3_v1';
+    const LS_PASO4 = 'mep_dp_paso4_v1';
+    const LS_PASO5 = 'mep_dp_paso5_v1';
+    const LS_PASO6 = 'mep_dp_paso6_v1';
+    const LS_PASO7 = 'mep_dp_paso7_v1';
+    const LS_PASO8 = 'mep_dp_paso8_v1';
+    const LS_PASO9 = 'mep_dp_paso9_v1';
+    const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+    let caso = null;
+    let autoSaveTimeout;
+
+    /* ══ INIT ══ */
+    function init() {
+      const id = new URLSearchParams(location.search).get('id');
+      try {
+        const casos = JSON.parse(localStorage.getItem(LS_CASOS)) || [];
+        caso = id ? casos.find(c => c.id === id) : casos[0];
+      } catch { caso = null; }
+
+      if (caso) {
+        document.getElementById('case-info-label').textContent = `${caso.expediente || 'Sin N°'} — ${caso.estudiante || 'Estudiante'}`;
+      }
+
+      // Cargar datos propios del Paso 7
+      const savedP7 = JSON.parse(localStorage.getItem(LS_PASO7 + (caso ? '_' + caso.id : ''))) || {};
+
+      document.getElementById('f-fecha').value = savedP7.fecha || new Date().toISOString().split('T')[0];
+      document.getElementById('f-solicitante').value = savedP7.solicitante || caso?.encargado || '';
+      document.getElementById('f-cedula-sol').value = savedP7.cedulaSol || '';
+      if(savedP7.parentesco) document.getElementById('f-parentesco').value = savedP7.parentesco;
+      
+      document.getElementById('f-func-recibe').value = savedP7.funcRecibe || caso?.profe || '';
+      document.getElementById('f-fecha-rec').value = savedP7.fechaRec || '';
+      document.getElementById('f-hora-rec').value = savedP7.horaRec || '';
+
+      document.getElementById('f-func-entrega').value = savedP7.funcEntrega || caso?.profe || '';
+      document.getElementById('f-fecha-ent').value = savedP7.fechaEnt || '';
+      document.getElementById('f-folios').value = savedP7.folios || '';
+
+      document.getElementById('f-encargado-retira').value = savedP7.encargadoRet || caso?.encargado || '';
+      document.getElementById('f-cedula-ret').value = savedP7.cedulaRet || '';
+      document.getElementById('f-fecha-ret').value = savedP7.fechaRet || '';
+      document.getElementById('f-hora-ret').value = savedP7.horaRet || '';
+
+      updateLive();
+    }
+
+    function updateLive() {
+      const fFecha = document.getElementById('f-fecha').value;
+      const solicitante = document.getElementById('f-solicitante').value || '____________________________';
+      const cedulaSol = document.getElementById('f-cedula-sol').value || '_____________';
+      const parentesco = document.getElementById('f-parentesco').value;
+      
+      const funcRecibe = document.getElementById('f-func-recibe').value || '___________________________';
+      const fechaRec = document.getElementById('f-fecha-rec').value;
+      const horaRec = document.getElementById('f-hora-rec').value || '______';
+
+      const funcEntrega = document.getElementById('f-func-entrega').value || '___________________________________________';
+      const fechaEnt = document.getElementById('f-fecha-ent').value;
+      const folios = document.getElementById('f-folios').value || '_____';
+      
+      const encargadoRet = document.getElementById('f-encargado-retira').value || '___________________________________________';
+      const cedulaRet = document.getElementById('f-cedula-ret').value || '________________';
+      const fechaRet = document.getElementById('f-fecha-ret').value;
+      const horaRet = document.getElementById('f-hora-ret').value || '__________________';
+
+      const profe = caso?.profe || '__________________________________';
+      const estudiante = caso?.estudiante || '_______________________________________________________';
+      const seccion = caso?.nivel || '______';
+
+      // Mapping al documento
+      document.getElementById('doc-fecha').textContent = fFecha ? fmtFecha(fFecha) : '______________';
+      document.getElementById('doc-profe').textContent = profe;
+      document.getElementById('doc-seccion').textContent = seccion;
+      document.getElementById('doc-solicitante').textContent = solicitante;
+      document.getElementById('doc-cedula-sol').textContent = cedulaSol;
+      document.getElementById('doc-parentesco-b').textContent = parentesco;
+      document.getElementById('doc-estudiante').textContent = estudiante;
+      document.getElementById('doc-seccion2').textContent = seccion;
+
+      document.getElementById('doc-func-recibe').textContent = funcRecibe;
+      document.getElementById('doc-fecha-rec').textContent = fechaRec ? fmtFechaCorta(fechaRec) : '__________';
+      document.getElementById('doc-hora-rec').textContent = horaRec;
+
+      document.getElementById('doc-func-entrega').textContent = funcEntrega;
+      document.getElementById('doc-fecha-ent').textContent = fechaEnt ? fmtFecha(fechaEnt) : '________________';
+      document.getElementById('doc-folios').textContent = folios;
+      document.getElementById('doc-folios2').textContent = folios;
+
+      document.getElementById('doc-encargado-retira').textContent = encargadoRet;
+      document.getElementById('doc-cedula-ret').textContent = cedulaRet;
+      document.getElementById('doc-fecha-ret').textContent = fechaRet ? fmtFechaCorta(fechaRet) : '________________';
+      document.getElementById('doc-hora-ret').textContent = horaRet;
+
+      requestAnimationFrame(paginateActa);
+      autoSave();
+      updateDeadlineAlarm();
+    }
+
+    function paginateActa() {
+      const display = document.getElementById('carta-display');
+      display.innerHTML = '';
+
+      const srcHeader = document.getElementById('sg-header');
+      const srcFooter = document.getElementById('sg-cierre');
+
+      function stripIds(n) {
+        if (n.removeAttribute) n.removeAttribute('id');
+        if (n.querySelectorAll) n.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+        return n;
+      }
+
+      let inicioFolio = 1;
+      try {
+        const kid = caso?.id ? '_' + caso.id : '';
+        const d1 = JSON.parse(localStorage.getItem(LS_PASO1 + kid)) || {};
+        const d2 = JSON.parse(localStorage.getItem(LS_PASO2 + kid)) || {};
+        const d3 = JSON.parse(localStorage.getItem(LS_PASO3 + kid)) || {};
+        const d4 = JSON.parse(localStorage.getItem(LS_PASO4 + kid)) || {};
+        const d5 = JSON.parse(localStorage.getItem(LS_PASO5 + kid)) || {};
+        const d6 = JSON.parse(localStorage.getItem(LS_PASO6 + kid)) || {};
+        
+        inicioFolio = (d1.totalFoliosP1 || 1) + (d2.totalFoliosP2 || 0) + (d3.totalFoliosP3 || 0) + (d4.numPaginas || 0) + (d5.numPaginas || 0) + (d6.numPaginas || 0) + 1;
+      } catch (e) { }
+
+      const exp = escH(caso?.expediente || '—');
+      const anio = escH(caso?.anio || '2026');
+
+      const art = document.createElement('article');
+      art.className = 'carta';
+      const inner = document.createElement('div');
+      inner.className = 'carta-inner';
+
+      const foliSpan = document.createElement('div');
+      foliSpan.className = 'folio-line';
+      foliSpan.innerHTML = `<span>Exp. N.° <b>${exp}</b> · Año <b>${anio}</b> · Folio <b>${inicioFolio}</b></span>`;
+      inner.appendChild(foliSpan);
+
+      inner.appendChild(stripIds(srcHeader.cloneNode(true)));
+      inner.appendChild(stripIds(srcFooter.cloneNode(true)));
+
+      art.appendChild(inner);
+      display.appendChild(art);
+    }
+
+    function guardar(silent = false) {
+      const payload = {
+        fecha: document.getElementById('f-fecha').value,
+        solicitante: document.getElementById('f-solicitante').value,
+        cedulaSol: document.getElementById('f-cedula-sol').value,
+        parentesco: document.getElementById('f-parentesco').value,
+        
+        funcRecibe: document.getElementById('f-func-recibe').value,
+        fechaRec: document.getElementById('f-fecha-rec').value,
+        horaRec: document.getElementById('f-hora-rec').value,
+        
+        funcEntrega: document.getElementById('f-func-entrega').value,
+        fechaEnt: document.getElementById('f-fecha-ent').value,
+        folios: document.getElementById('f-folios').value,
+        
+        encargadoRet: document.getElementById('f-encargado-retira').value,
+        cedulaRet: document.getElementById('f-cedula-ret').value,
+        fechaRet: document.getElementById('f-fecha-ret').value,
+        horaRet: document.getElementById('f-hora-ret').value,
+        numPaginas: document.querySelectorAll('#carta-display .carta').length
+      };
+
+      localStorage.setItem(LS_PASO7 + (caso ? '_' + caso.id : ''), JSON.stringify(payload));
+      if (!silent) toast('✔ Solicitud de copia guardada');
+    }
+
+    /* ══ UTILS ══ */
+    function fmtFecha(v) {
+      if (!v) return '______________';
+      const d = new Date(v + 'T12:00:00');
+      return `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+    }
+    function fmtFechaCorta(v) {
+      if (!v) return '__________';
+      const d = new Date(v + 'T12:00:00');
+      return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+    }
+    
+function trySave() {
+  if (typeof guardar === 'function') {
+    try { guardar(true); } catch(e){}
+  } else if (typeof guardarDatos === 'function') {
+    try { guardarDatos(true); } catch(e){}
+  }
+}
+function irIndice(pag) { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './index.html?id=' + (id||'') + '&page=' + (pag||'portada'); }
+function irPaso1() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso1.html' + (id ? '?id='+id : ''); }
+function irPaso2() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso2.html' + (id ? '?id='+id : ''); }
+function irPaso3() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso3.html' + (id ? '?id='+id : ''); }
+function irPaso4() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso4.html' + (id ? '?id='+id : ''); }
+function irPaso5() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso5.html' + (id ? '?id='+id : ''); }
+function irPaso6() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso6.html' + (id ? '?id='+id : ''); }
+function irPaso7() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso7.html' + (id ? '?id='+id : ''); }
+function irPaso8() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso8.html' + (id ? '?id='+id : ''); }
+function irPaso9() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso9.html' + (id ? '?id='+id : ''); }
+function irAnexos() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './anexos.html' + (id ? '?id='+id : ''); }
+
+    function toast(m) {
+      const t = document.getElementById('toast');
+      t.textContent = m; t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3000);
+    }
+    function escH(s) { if (!s) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    function autoSave() {
+      clearTimeout(autoSaveTimeout);
+      autoSaveTimeout = setTimeout(() => { guardar(true); }, 1000);
+    }
+
+    function updateDeadlineAlarm() {
+      const lbl = document.getElementById('dt-label');
+      const dot = document.getElementById('dt-status');
+      if (!caso || !caso.fechaApertura) {
+        lbl.textContent = 'Sin fecha apertura';
+        dot.style.background = '#aaa';
+        return;
+      }
+      const fApertura = new Date(caso.fechaApertura + 'T12:00:00');
+      const hoy = new Date();
+      const limite = calcularHabiles(fApertura, 15);
+      const diffTiempo = limite - hoy;
+      const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
+
+      if (diffDias < 0) {
+        lbl.textContent = `Vencido (${Math.abs(diffDias)}d)`;
+        dot.style.background = '#C8102E';
+      } else if (diffDias <= 2) {
+        lbl.textContent = `¡Faltan ${diffDias}d!`;
+        dot.style.background = '#E0A800';
+      } else {
+        lbl.textContent = `${diffDias} días restantes`;
+        dot.style.background = '#166534';
+      }
+    }
+
+    function calcularHabiles(fecha, dias) {
+      let f = new Date(fecha.getTime());
+      let count = 0;
+      while (count < dias) {
+        f.setDate(f.getDate() + 1);
+        const d = f.getDay();
+        if (d !== 0 && d !== 6) count++;
+      }
+      return f;
+    }
+
+    // Inicializar la aplicación
+    init();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Paso 4 – ACTA DE RESULTADO DE LA INVESTIGACIÓN</title>
+  <style>
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic Light.ttf') format('truetype');
+      font-weight: 300
+    }
+
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic SemiBd.ttf') format('truetype');
+      font-weight: 600
+    }
+
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic Bold.ttf') format('truetype');
+      font-weight: 700
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --azul: #1c2847;
+      --azul-cl: #273966;
+      --rojo: #C8102E;
+      --oro: #C9A86A;
+      --gris: #f0f4f9;
+      --borde: #cbd5e0;
+      --texto: #0f1a2e;
+      --blanco: #fff;
+      --sombra: 0 4px 24px rgba(28, 40, 71, .13);
+    }
+
+    body, input, select, textarea, button {
+      font-family: 'Henderson Sans Basic', sans-serif;
+    }
+    body {
+      background: var(--gris);
+      color: var(--texto);
+      min-height: 100vh
+    }
+
+    /* ── TOPBAR ── */
+    #topbar {
+      background: var(--azul);
+      color: var(--blanco);
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: 0 1.5rem;
+      height: 54px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .35)
+    }
+
+    #topbar .brand {
+      font-size: .9rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      color: var(--oro);
+      margin-right: auto
+    }
+
+    #topbar .case-info {
+      font-size: .78rem;
+      opacity: .75;
+      max-width: 340px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    #topbar button {
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .25);
+      color: var(--blanco);
+      padding: .3rem .9rem;
+      border-radius: 6px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+      font-family: 'Henderson Sans Basic', sans-serif
+    }
+
+    #topbar button:hover {
+      background: rgba(255, 255, 255, .25)
+    }
+
+    .btn-gold {
+      background: var(--oro) !important;
+      color: var(--azul) !important;
+      border-color: var(--oro) !important
+    }
+
+    .btn-gold:hover {
+      background: #e0a800 !important
+    }
+
+    /* ── CASE NAV ── */
+    #case-nav {
+      background: #1a3a6b;
+      color: var(--blanco);
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .5rem 1.5rem;
+      flex-wrap: wrap;
+      border-bottom: 2px solid var(--azul)
+    }
+
+    .case-nav-title {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--oro);
+      white-space: nowrap;
+      margin-right: .5rem
+    }
+
+    .page-btn {
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .18);
+      color: rgba(255, 255, 255, .85);
+      padding: .28rem .7rem;
+      border-radius: 5px;
+      font-size: .72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+      font-family: 'Henderson Sans Basic', sans-serif
+    }
+
+    .page-btn:hover {
+      background: rgba(255, 255, 255, .2)
+    }
+
+    .page-btn.active {
+      background: var(--oro);
+      color: var(--azul);
+      border-color: var(--oro)
+    }
+
+    .page-btn.locked {
+      opacity: .4;
+      cursor: not-allowed
+    }
+
+    /* ── LAYOUT ── */
+    #app {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 0;
+      min-height: calc(100vh - 100px)
+    }
+
+    /* ── PANEL EDITOR ── */
+    #panel-editor {
+      background: var(--blanco);
+      border-right: 2px solid var(--borde);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column
+    }
+
+    .panel-body {
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem
+    }
+
+    .sec {
+      border: 1.5px solid var(--borde);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    .sec-hdr {
+      background: var(--gris);
+      padding: .55rem .9rem;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--azul);
+      display: flex;
+      align-items: center;
+      gap: .4rem
+    }
+
+    .sec-body {
+      padding: .85rem .9rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem
+    }
+
+    .fg label {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #555
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      border: 1.5px solid var(--borde);
+      border-radius: 7px;
+      padding: .45rem .75rem;
+      font-size: .83rem;
+      font-family: 'Henderson Sans Basic', sans-serif;
+      background: #fafbfc;
+      transition: border-color .2s;
+      color: var(--texto)
+    }
+
+    .fg input:focus,
+    .fg select:focus,
+    .fg textarea:focus {
+      outline: none;
+      border-color: var(--azul-cl);
+      background: var(--blanco)
+    }
+
+    .row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .65rem
+    }
+
+    /* Micrófono */
+    .relato-box {
+      position: relative
+    }
+
+    .mic-status {
+      position: absolute;
+      top: -2rem;
+      right: 0;
+      font-size: .65rem;
+      font-weight: 700;
+      color: var(--azul);
+      background: #fff;
+      padding: .2rem .5rem;
+      border-radius: 4px;
+      border: 1px solid var(--borde);
+      opacity: 0;
+      transition: opacity .3s;
+      display: flex;
+      align-items: center;
+      gap: .3rem
+    }
+
+    .mic-status.active {
+      opacity: 1
+    }
+
+    .mic-btn-main {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--azul);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      box-shadow: 0 4px 15px rgba(28, 40, 71, .3);
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1rem;
+      z-index: 10
+    }
+
+    .mic-btn-main:hover {
+      transform: scale(1.1);
+      background: var(--azul-cl)
+    }
+
+    .mic-btn-main.listening {
+      background: var(--rojo);
+      animation: pulse 1.5s infinite
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(200, 16, 46, .5)
+      }
+
+      70% {
+        box-shadow: 0 0 0 15px rgba(200, 16, 46, 0)
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(200, 16, 46, 0)
+      }
+    }
+
+    /* Selector de testigos */
+    .witness-selector {
+      background: #f0f6ff;
+      padding: .75rem;
+      border-radius: 8px;
+      border: 1px solid var(--azul-cl);
+      margin-bottom: .5rem
+    }
+
+    .witness-nav {
+      display: flex;
+      gap: .5rem;
+      margin-top: .4rem
+    }
+
+    .witness-nav button {
+      flex: 1;
+      padding: .35rem;
+      font-size: .7rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--blanco);
+      border: 1px solid var(--azul);
+      color: var(--azul);
+      border-radius: 4px
+    }
+
+    .witness-nav button:hover {
+      background: var(--gris)
+    }
+
+    /* ── PREVIEW ── */
+    #panel-preview {
+      background: #dde3ed;
+      overflow-y: auto;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem
+    }
+
+    #carta-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%
+    }
+
+    /* Estilos de la carta Acta (Clasica) */
+    .carta {
+      width: 21.59cm;
+      height: 27.94cm;
+      background: white url('fondo.png') no-repeat top center;
+      background-size: 100% auto;
+      box-shadow: var(--sombra);
+      border-radius: 3px;
+      font-family: 'Henderson Sans Basic', sans-serif;
+      font-size: 11pt;
+      line-height: 1.7;
+      overflow: hidden;
+      flex-shrink: 0
+    }
+
+    .carta-inner {
+      padding: 3.2cm 2.2cm 2cm 2.5cm;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .folio-line {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 7.5pt;
+      color: #555;
+      margin-bottom: .3cm
+    }
+
+    .folio-line b {
+      color: var(--azul)
+    }
+
+    .acta-header {
+      margin-bottom: .5cm;
+      display: flex;
+      flex-direction: column;
+      gap: .1cm
+    }
+
+    .acta-pagi {
+      font-weight: 700;
+      font-size: 8.5pt;
+      color: #333;
+      text-transform: uppercase;
+      text-align: right;
+      margin-bottom: .2rem;
+      letter-spacing: .05em
+    }
+
+    .acta-titulo {
+      font-size: 10.5pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--azul);
+      line-height: 1.4;
+      letter-spacing: .02em;
+      text-align: center;
+      margin-bottom: 0.6cm;
+    }
+
+    .acta-art {
+      font-size: 8.5pt;
+      color: var(--rojo);
+      font-style: italic;
+      margin-top: .15cm
+    }
+
+    .acta-intro {
+      text-align: justify;
+      font-size: 10.5pt;
+      margin-bottom: .4cm;
+      line-height: 1.65
+    }
+
+    .acta-intro b {
+      color: var(--azul)
+    }
+
+    .acta-norma {
+      background: #f8fafc;
+      border-left: 4px solid var(--azul);
+      padding: .4cm;
+      font-size: 9.5pt;
+      line-height: 1.5;
+      text-align: justify;
+      margin-bottom: .5cm;
+      color: #444;
+      border-radius: 0 6px 6px 0
+    }
+
+    .acta-relato-title {
+      font-weight: 800;
+      font-size: 10.5pt;
+      text-decoration: none;
+      margin-bottom: .3cm;
+      text-transform: uppercase;
+      color: var(--azul);
+      border-bottom: 1.5px solid var(--azul);
+      display: inline-block
+    }
+
+    .acta-relato-box {
+      background: #f9fafc;
+      border-left: 4px solid var(--borde);
+      padding: .35cm .45cm;
+      margin: 0;
+      font-size: 10pt;
+      line-height: 1.7;
+      text-align: justify;
+      border-radius: 0 6px 6px 0;
+      white-space: pre-wrap;
+      color: #222
+    }
+
+    .acta-relato-box p {
+      margin-bottom: .15cm
+    }
+
+    .acta-cierre {
+      font-size: 9pt;
+      margin-top: .1cm;
+      margin-bottom: .2cm;
+      text-align: justify;
+      border-top: 1px solid #eee;
+      padding-top: .15cm;
+      line-height: 1.3
+    }
+
+    .acta-firmas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5cm;
+      margin-top: 1.2cm
+    }
+
+    .firma-bloque {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .1cm
+    }
+
+    .firma-linea {
+      width: 100%;
+      border-bottom: 1.5px solid #444;
+      margin-bottom: .1cm
+    }
+
+    .firma-nombre {
+      font-size: 9pt;
+      font-weight: 700;
+      color: var(--azul);
+      text-align: center
+    }
+
+    .firma-label {
+      font-size: 8pt;
+      color: #666;
+      text-align: center;
+      font-style: italic
+    }
+
+    /* Fuente de contenido (invisible, se usa para medir) */
+    #carta-source {
+      position: fixed;
+      left: -9999px;
+      top: 0;
+      width: 16.89cm;
+      font-family: 'Henderson Sans Basic', sans-serif;
+      font-size: 11pt;
+      line-height: 1.7;
+      color: #111;
+      visibility: hidden;
+      pointer-events: none;
+      z-index: -1
+    }
+
+    /* Print */
+    @media print {
+      @page {
+        size: letter;
+        margin: 0
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important
+      }
+
+      #topbar,
+      #case-nav,
+      #panel-editor,
+      .preview-label,
+      #carta-source,
+      #toast,
+      button,
+      .mic-status {
+        display: none !important
+      }
+
+      #app {
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 100%
+      }
+
+      #panel-preview {
+        display: block !important;
+        padding: 0;
+        background: white !important;
+        width: 100%
+      }
+
+      .carta {
+        width: 21.59cm !important;
+        height: 27.94cm !important;
+        box-shadow: none !important;
+        page-break-after: always;
+        break-after: page;
+        border: none !important;
+        background-image: url('fondo.png') !important;
+        background-size: 100% auto !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important
+      }
+
+      .carta:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important
+      }
+
+      .carta-inner {
+        padding: 3.2cm 2.2cm 2cm 2.5cm
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header id="topbar">
+    <span class="brand">📋 Debido Proceso MEP</span>
+    <span class="case-info" id="case-info-label">—</span>
+    <button onclick="location.href='index.html'">← Expedientes</button>
+    <button class="btn-gold" onclick="window.print()" title="Imprimir este documento">🖨 Imprimir Documento</button>
+    <div id="deadline-timer"
+      style="margin-left: 1rem; border-left: 1px solid rgba(255,255,255,.2); padding-left: 1rem; display: flex; align-items: center; gap: .5rem; font-size: .8rem; color: white;">
+      <span style="opacity: .6;">⏳ Plazo Inv:</span>
+      <span id="dt-label" style="font-weight: 700; color: #fff;">Calculando...</span>
+      <span id="dt-status" style="width: 10px; height: 10px; border-radius: 50%; background: #999;"></span>
+    </div>
+  </header>
+
+  <nav id="case-nav">
+    <span class="case-nav-title">Expediente</span>
+    <button class="page-btn" onclick="irIndice('portada')">1. Portada</button>
+    <button class="page-btn" onclick="irIndice('tdc')">2. Tabla Contenidos</button>
+    <button class="page-btn" onclick="irPaso1()">3. Com. Prof. Guía</button>
+    <button class="page-btn" onclick="irPaso2()">4. Notif. Testigos</button>
+    <button class="page-btn" onclick="irPaso3()">5–6. Actas/Declara.</button>
+    <button class="page-btn" onclick="irAnexos()">7. Anexos</button>
+    <button class="page-btn active" onclick="irPaso4()">8. Resultado Inv.</button>
+    <button class="page-btn" onclick="irPaso5()">9. Notif. Apertura</button>
+    <button class="page-btn" onclick="irPaso6()">10. Boleta Apertura</button>
+    <button class="page-btn" onclick="irPaso7()">11. Solicitud Copia</button>
+    <button class="page-btn" onclick="irPaso9()">12. Descargos y Pruebas</button>
+    <button class="page-btn" onclick="irPaso8()">13. Dec. Estudiante</button>
+  </nav>
+
+  <div id="app">
+    <aside id="panel-editor">
+      <div class="panel-body">
+    <!-- DATOS DE LA RESOLUCIÓN -->
+    <div class="sec">
+      <div class="sec-hdr">📅 Fecha de Análisis</div>
+      <div class="sec-body" style="display:flex; gap:1rem; flex-wrap:wrap;">
+        <div class="fg" style="flex:1; min-width:140px;">
+          <label>Fecha de realizada el acta</label>
+          <input type="date" id="f-fecha-acta" onchange="updateLive()" />
+        </div>
+      </div>
+    </div>
+
+    <div class="sec relato-box">
+      <div class="sec-hdr">🎙 Análisis probatorio</div>
+          <div class="sec-body" style="gap:0.5rem">
+            <button type="button" id="mic-btn" onclick="toggleMic()" style="padding:.5rem; border-radius:6px; border:1px solid var(--borde); background:#eef2f6; color:var(--azul); font-weight:bold; cursor:pointer; margin-bottom:.5rem; display:inline-flex; align-items:center; gap:.4rem; align-self:flex-start">🎤 Iniciar Dictado</button>
+            <div class="fg">
+              <textarea id="f-relato" rows="12" placeholder="Presione el micrófono para transcribir la declaración..."
+                oninput="updateLive()"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:.6rem;">
+          <button class="btn-gold" style="padding:.7rem; border-radius:8px; font-weight:700; cursor:pointer;"
+            onclick="guardar()">💾 Guardar Acta Actual</button>
+        </div>
+        <div class="sec">
+          <div class="sec-hdr">🏁 Resolución Final</div>
+          <div class="sec-body">
+            <div class="fg">
+              <label style="display:flex; gap:.6rem; cursor:pointer; font-size:.82rem; text-transform:none">
+                <input type="radio" name="res-choice" value="archivo" checked onchange="toggleForm(); updateLive()">
+                <span>No se logró establecer infracción (Archivo)</span>
+              </label>
+              <label
+                style="display:flex; gap:.6rem; cursor:pointer; font-size:.82rem; text-transform:none; margin-top:.4rem">
+                <input type="radio" name="res-choice" value="apertura" onchange="toggleForm(); updateLive()">
+                <span>Se evidencia falta atribuida (Apertura)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div id="form-apertura" style="display:none" class="sec">
+          <div class="sec-hdr" style="color:var(--oro)">📚 Fundamentación Normativa</div>
+          <div class="sec-body">
+            <div class="fg">
+              <label>Tipo de Falta (Decreto 45499)</label>
+              <select id="f-reac-tipo" onchange="cambioTipo()">
+                <option value="Grave">Falta Grave (Art. 155)</option>
+                <option value="Muy Grave">Falta Muy Grave (Art. 156)</option>
+                <option value="Gravísima">Falta Gravísima (Art. 157)</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Inciso (Hechos)</label>
+              <select id="f-reac-inciso" onchange="cambioInciso()"></select>
+            </div>
+            <div id="wrap-acc-manual" class="fg" style="display:none">
+              <label>Acción Correctiva (Elección Docente para a,b,c,d,e,f,k,l)</label>
+              <select id="f-reac-acc-manual" onchange="updateLive()">
+                <option value="Traslado de la persona estudiante a otra sección.">1. Traslado a otra sección</option>
+                <option value="Reparación de la ofensa verbal o moral mediante retractación pública y disculpas.">2. Reparación de ofensa (Retractación)</option>
+                <option value="Reparación o reposición del material o equipo dañado.">3. Reparación/Reposición de material</option>
+                <option value="Inasistencia al centro educativo por un período de quince días naturales.">4. Inasistencia 15 días (Criterio K o L)</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Puntos de rebajo</label>
+              <input type="text" id="f-reac-pts" style="background:#f0f4f9; color:var(--rojo); font-weight:700" oninput="updateLive()">
+            </div>
+          </div>
+        </div>
+        <div id="btn-next-wrap" style="display:none; margin-top:0.6rem;">
+          <button class="page-btn" style="padding:.9rem; border-radius:10px; font-weight:700; width:100%; background:var(--azul); color:white; border:none" onclick="irPaso5()">➡️ Siguiente: Notificación de Apertura</button>
+        </div>
+      </div>
+    </aside>
+
+    <main id="panel-preview">
+      <div id="carta-display"></div>
+    </main>
+  </div>
+
+  <!-- FUENTE PARA PAGINACIÓN -->
+  <div id="carta-source">
+    <div id="sg-header">
+      <div class="acta-header">
+        <h2 class="acta-titulo">ACTA DE RESULTADO DE LA INVESTIGACIÓN</h2>
+        <div class="acta-art">Artículo 155 REAC MEP 2026</div>
+      </div>
+      <div class="acta-intro" id="doc-intro"></div>
+
+      <div class="acta-relato-title" style="border:none; margin-bottom:0; margin-top:0.2cm; text-transform:none;">Considerando que:</div>
+
+      <div class="acta-norma" style="background:transparent; border:none; padding:0; color:#222; margin-bottom:0.2cm;">
+        <div style="font-weight:700;">
+          1. Con base en los documentos probatorios: 
+        </div>
+        <div id="doc-probatorios-desc" style="font-weight:400; font-size: 9.5pt; padding-left: 0.5cm; margin-top: 0.15cm; line-height: 1.5;">
+          _______________________________________________________________________
+        </div>
+      </div>
+
+      <div class="acta-relato-title">Se concluye que:</div>
+    </div>
+    <!-- El relato se insertará dinámicamente -->
+    <div id="sg-relato" class="acta-relato-box"></div>
+
+    <div id="sg-resolucion"></div>
+
+    <div id="sg-cierre" style="margin-top: 1.5cm; display: flex; flex-direction: column; align-items: center;">
+      <div style="border-bottom: 1.5px solid #333; width: 7.5cm; margin-bottom: 0.15cm;"></div>
+      <div style="font-weight: bold; color: var(--azul); font-size: 9.5pt; margin-bottom: 0.05cm;" id="doc-f-profe"></div>
+      <div style="font-style: italic; font-size: 8.5pt; color: #555;">Docente guía / a cargo</div>
+    </div>
+  </div>
+
+  <div id="toast"
+    style="position:fixed; bottom:2rem; right:2rem; background:var(--azul); color:var(--oro); padding:.7rem 1.4rem; border-radius:8px; display:none; z-index:9999;">
+  </div>
+
+  <script>
+    /* ══ ESTADO ══ */
+    const LS_CASOS = 'mep_dp_casos_v2';
+    const LS_PASO1 = 'mep_dp_paso1_v1';
+    const LS_PASO2 = 'mep_dp_paso2_v1';
+    const LS_PASO3 = 'mep_dp_paso3_v1';
+    const LS_PASO4 = 'mep_dp_paso4_v1';
+    const LS_PASO5 = 'mep_dp_paso5_v1';
+    const LS_PASO6 = 'mep_dp_paso6_v1';
+    const LS_PASO7 = 'mep_dp_paso7_v1';
+    const LS_PASO8 = 'mep_dp_paso8_v1';
+    const LS_PASO9 = 'mep_dp_paso9_v1';
+    const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+    let caso = null;
+    let testigos = [];
+    let actasData = {}; // keyed by witness uid
+    let currentWitnessUid = '';
+    let recognition = null;
+    let isListening = false;
+
+    /* ══ INIT ══ */
+    function init() {
+      const id = new URLSearchParams(location.search).get('id');
+      try {
+        const casos = JSON.parse(localStorage.getItem(LS_CASOS)) || [];
+        caso = id ? casos.find(c => c.id === id) : casos[0];
+      } catch { caso = null; }
+
+      if (caso) {
+        document.getElementById('case-info-label').textContent = `${caso.expediente || 'Sin N°'} — ${caso.estudiante || 'Estudiante'}`;
+      }
+
+      // Cargar testigos desde paso1 y paso2
+      const d1 = JSON.parse(localStorage.getItem(LS_PASO1 + (caso ? '_' + caso.id : ''))) || {};
+      const d2 = JSON.parse(localStorage.getItem(LS_PASO2 + (caso ? '_' + caso.id : ''))) || {};
+
+      if (d1.testigos) {
+        testigos = d1.testigos.filter(t => t.tipo === 'estudiante').map((t, idx) => ({
+          uid: 't_' + idx,
+          nombre: t.nombre,
+          seccion: t.seccion,
+          encargado: t.encargado,
+          // Metadata de asistencia de paso 2
+          infoP2: d2.infoTestigos ? d2.infoTestigos['t_' + idx] : null
+        }));
+      }
+
+      // En Paso 4 cargamos los datos guardados de esta propia resolución
+      const savedP4 = JSON.parse(localStorage.getItem('mep_dp_paso4_v1_' + (caso ? caso.id : ''))) || {};
+      
+      document.getElementById('f-fecha-acta').value = savedP4.fechaActa || new Date().toISOString().split('T')[0];
+      document.getElementById('f-relato').value = savedP4.relato || '';
+      
+      if (savedP4.resChoice) {
+         const rb = document.querySelector(`input[name="res-choice"][value="${savedP4.resChoice}"]`);
+         if (rb) rb.checked = true;
+      }
+      toggleForm();
+
+      if (savedP4.tipoFalta) {
+         const slType = document.getElementById('f-reac-tipo');
+         if (slType) slType.value = savedP4.tipoFalta;
+      }
+      cambioTipo();
+
+      if (savedP4.inciso) {
+         const slInc = document.getElementById('f-reac-inciso');
+         if (slInc) slInc.value = savedP4.inciso;
+         cambioInciso();
+      }
+
+      if (savedP4.accManual) {
+         const slAcc = document.getElementById('f-reac-acc-manual');
+         if (slAcc) slAcc.value = savedP4.accManual;
+      }
+      
+      if (savedP4.ptsManual) {
+         const slPts = document.getElementById('f-reac-pts');
+         if (slPts) slPts.value = savedP4.ptsManual;
+      }
+
+      updateLive();
+    }
+
+    function updateLive() {
+
+      const fActa = document.getElementById('f-fecha-acta') ? document.getElementById('f-fecha-acta').value : '';
+      const relato = document.getElementById('f-relato') ? document.getElementById('f-relato').value : '';
+
+      const profe = caso?.profe || '______________________________';
+
+      const intro = `En concordancia con el Reglamento de Evaluación de los Aprendizajes y la Conducta en su artículo 150 inciso b, la persona docente guía/docente a cargo <b>${profe}</b> el día <b>${fmtFecha(fActa)}</b> y una vez analizada la información relativa al caso consignado en el expediente nº <b>${caso?.expediente || '___'}</b>, en seguimiento a una supuesta falta cometida por la persona estudiante <b>${caso?.estudiante || '___'}</b>, cédula: <b>${caso?.cedula || '___'}</b>, de la sección <b>${caso?.nivel || '___'}</b>.`;
+
+      document.getElementById('doc-intro').innerHTML = intro;
+
+      // Generar texto para Documentos Probatorios
+      let docsHtml = '';
+      try {
+        const d1 = JSON.parse(localStorage.getItem('mep_dp_paso1_v1' + (caso ? '_' + caso.id : ''))) || {};
+        const anx = d1.anexos || [];
+        
+        let testNombres = testigos.map(t => t.nombre);
+        
+        if (testNombres.length > 0) {
+          docsHtml += `<div style="margin-bottom:0.1cm">• Entrevistas realizadas a las personas estudiantes:</div>`;
+          testNombres.forEach(n => {
+             docsHtml += `<div style="padding-left:0.5cm; margin-bottom:0.1cm;">- <b>${n}</b></div>`;
+          });
+        }
+        if (anx.length > 0) {
+          docsHtml += `<div style="margin-bottom:0.1cm; margin-top:0.2cm;">• Documentos aportados en la comunicación inicial:</div>`;
+          anx.forEach((a, i) => {
+             const desc = a.descripcion ? a.descripcion : a.nombre;
+             docsHtml += `<div style="padding-left:0.5cm; margin-bottom:0.1cm;">- <b>Anexo ${i + 1}:</b> ${desc}</div>`;
+          });
+        }
+        
+        if (!docsHtml) {
+          docsHtml = "_______________________________________________________________________";
+        }
+      } catch (e) {
+        docsHtml = "_______________________________________________________________________";
+      }
+      
+      const elProb = document.getElementById('doc-probatorios-desc');
+      if (elProb) elProb.innerHTML = docsHtml;
+
+      // Relato
+      const relCont = document.getElementById('sg-relato');
+      relCont.innerHTML = relato ? relato.split('\n').map(p => `<p style="margin-bottom:.4cm">${p}</p>`).join('') : '<p style="color:#aaa; font-style:italic">Narración pendiente...</p>';
+
+      const selRes = document.querySelector('input[name="res-choice"]:checked');
+      const resChoice = selRes ? selRes.value : 'archivo';
+      const isApertura = resChoice === 'apertura';
+
+      let resHtml = `
+        <div style="font-weight: 800; font-size: 10.5pt; color: var(--azul); margin-bottom:.3cm; margin-top:0.4cm;">Por lo anterior:</div>
+        <div style="margin-bottom:0.4cm; font-size: 10.5pt; color: #222;">
+      `;
+
+      if (!isApertura) {
+        resHtml += `
+          <div>No se logró establecer que la persona estudiante infringiera el Reglamento de Evaluación de los Aprendizajes y la Conducta y la Normativa Interna de la institución.<br>
+          <b>Por tanto, no se realiza la apertura del debido proceso.</b></div>
+        `;
+      } else {
+        const tipoFaltaSel = document.getElementById('f-reac-tipo');
+        const tipoFalta = tipoFaltaSel ? tipoFaltaSel.options[tipoFaltaSel.selectedIndex].text : '________';
+        const tipoFaltaRaw = tipoFaltaSel ? tipoFaltaSel.value : '';
+        const art = tipoFaltaRaw === 'Grave' ? '155' : (tipoFaltaRaw === 'Muy Grave' ? '156' : '157');
+        
+        let incisoSel = document.getElementById('f-reac-inciso');
+        let incisoLetra = incisoSel ? incisoSel.value : '___';
+        let txtInciso = REAC_DATA[tipoFaltaRaw]?.incisos[incisoLetra] || '________________';
+        
+        let pts = document.getElementById('f-reac-pts')?.value || '_____';
+        let accion = '____________________________________________________________________';
+        
+        if (tipoFaltaRaw === 'Grave' && ['a','b','c','d','e','f','k','l'].includes(incisoLetra)) {
+          const accSel = document.getElementById('f-reac-acc-manual');
+          if (accSel) accion = accSel.value;
+        } else if (tipoFaltaRaw === 'Grave' && ['g','h','i','j'].includes(incisoLetra)) {
+          accion = 'Inasistencia al centro educativo por un período de quince días naturales, a partir de la firmeza del acto.';
+        } else if (tipoFaltaRaw === 'Muy Grave') {
+          accion = 'Inasistencia al centro educativo por un período de veinte días naturales, a partir de la firmeza del acto.';
+        } else if (tipoFaltaRaw === 'Gravísima') {
+          accion = 'Inasistencia al centro educativo por un período de treinta días naturales, a partir de la firmeza del acto.';
+        }
+
+        let art143Inciso = '___';
+        if (tipoFaltaRaw === 'Grave') art143Inciso = 'c';
+        else if (tipoFaltaRaw === 'Muy Grave') art143Inciso = 'd';
+        else if (tipoFaltaRaw === 'Gravísima') art143Inciso = 'e';
+
+        resHtml += `
+          <div>Si existe evidencia que podría asociarse con la comisión de la falta atribuida a la persona estudiante.</div>
+          <div style="margin-top:0.4cm; font-size: 9.5pt; color: #222;">
+            <div style="font-weight:700; margin-bottom:0.2cm;">Con base en:</div>
+            <div style="margin-bottom:0.15cm; padding-left:0.5cm; text-indent:-0.5cm; text-align:justify;">
+              1. El Reglamento de Evaluación de los Aprendizajes y la Conducta, en el <b>artículo ${art}</b> <b>Inciso ${incisoLetra})</b> “${txtInciso}” Se tipifica la falta como <b>${tipoFalta}</b>.
+            </div>
+            <div style="margin-bottom:0.15cm; padding-left:0.5cm; text-indent:-0.5cm; text-align:justify;">
+              2. El <b>artículo 143</b>, <b>inciso ${art143Inciso})</b> del Reglamento de Evaluación de los Aprendizajes y la Conducta “Cada <b>falta ${tipoFaltaRaw.toLowerCase()}</b> implicará un rebajo de <b>${pts} puntos</b> del total de la nota de conducta”.
+            </div>
+            <div style="margin-bottom:0.3cm; padding-left:0.5cm; text-indent:-0.5cm; text-align:justify;">
+              3. El <b>Artículo 147</b> respecto a la naturaleza y fines de las <b>acciones correctivas</b>: “…Para la aplicación del presente reglamento, en todos los ciclos, niveles, ofertas y modalidades del sistema educativo las acciones correctivas serán de carácter obligatorio y formativo. Para tales efectos se entenderá como acciones correctivas toda actividad socioeducativa, cuyo fin sea fomentar las habilidades o conocimientos en la persona estudiante para procurar un cambio positivo en su comportamiento social y prevenir la realización de conductas contrarias a la norma.”
+            </div>
+            <div style="margin-bottom:0.2cm; text-align:justify;">
+              Por tanto, de confirmarse dicha responsabilidad conforme a los procedimientos establecidos, correspondería la aplicación de la siguiente acción correctiva:
+            </div>
+            <div style="border-bottom:1px solid #333; padding-bottom:0.1cm; margin-bottom:0.3cm; color:var(--azul); font-weight:bold;">
+              ${accion}
+            </div>
+          </div>
+        `;
+      }
+      resHtml += '</div>';
+
+      document.getElementById('sg-resolucion').innerHTML = resHtml;
+
+      // Cierre Date formatter
+      const cieDate = fActa ? new Date(fActa + 'T12:00:00') : new Date();
+      const stFecha = fActa ? `${cieDate.getDate()} de ${MESES[cieDate.getMonth()]} de ${cieDate.getFullYear()}` : '__________________';
+
+      // Firmas
+      document.getElementById('doc-f-profe').textContent = profe;
+
+
+      // Repaginar
+      requestAnimationFrame(paginateActa);
+      autoSave();
+      updateDeadlineAlarm();
+    }
+
+    function paginateActa() {
+      const CM = 37.8; // px x cm aprox
+      // Reducido a 19.5cm para dar amplio confort al margen inferior de las firmas
+      const CONTENT_PX = Math.floor(19.5 * CM);
+      const display = document.getElementById('carta-display');
+      display.innerHTML = '';
+
+      const srcHeader = document.getElementById('sg-header');
+      const srcRelato = document.getElementById('sg-relato');
+      const srcResolucion = document.getElementById('sg-resolucion');
+      const srcFooter = document.getElementById('sg-cierre');
+
+      function stripIds(n) {
+        if(n.removeAttribute) n.removeAttribute('id');
+        if(n.querySelectorAll) n.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+        return n;
+      }
+
+      // Clonamos relato para no destruir el original
+      const paragraphs = Array.from(srcRelato.querySelectorAll('p'));
+
+      const headerH = srcHeader.getBoundingClientRect().height;
+      const footerH = srcFooter.getBoundingClientRect().height + (2.0 * CM); // Margen generoso para firmas
+
+      const pages = [];
+      let curH = 0;
+
+      const commitPage = () => {
+        pages.push({ headerNodes: [], relatoNodes: [], resolucionNodes: [] });
+        curH = 1.5 * CM;
+      };
+
+      // Iniciar primera pagina
+      commitPage();
+      pages[0].headerNodes.push(stripIds(srcHeader.cloneNode(true)));
+      curH += headerH;
+
+      paragraphs.forEach((p, idx) => {
+        const h = p.getBoundingClientRect().height;
+        if (curH + h + footerH > CONTENT_PX) {
+          commitPage();
+        }
+        pages[pages.length - 1].relatoNodes.push(stripIds(p.cloneNode(true)));
+        curH += h;
+      });
+
+      if (srcResolucion && srcResolucion.innerHTML.trim() !== '') {
+        const resH = srcResolucion.getBoundingClientRect().height;
+        if (curH + resH + footerH > CONTENT_PX) {
+          commitPage();
+        }
+        pages[pages.length - 1].resolucionNodes.push(stripIds(srcResolucion.cloneNode(true)));
+        curH += resH;
+      }
+
+      // El footer se maneja en el loop de dibujado
+
+      // Renderizar folios secuenciales
+      let inicioFolio = 1;
+      try {
+        const kid = caso?.id ? '_' + caso.id : '';
+        const d1 = JSON.parse(localStorage.getItem(LS_PASO1 + kid)) || {};
+        const d2 = JSON.parse(localStorage.getItem(LS_PASO2 + kid)) || {};
+        const d3 = JSON.parse(localStorage.getItem(LS_PASO3 + kid)) || {};
+        
+        inicioFolio = (d1.totalFoliosP1 || 1) + (d2.totalFoliosP2 || 0) + (d3.totalFoliosP3 || 0) + 1;
+      } catch (e) { }
+
+      const exp = escH(caso?.expediente || '—');
+      const anio = escH(caso?.anio || '2026');
+
+      // Renderizar hojas físicas
+      const totalActasPages = pages.length;
+      pages.forEach((pNodes, pi) => {
+        const art = document.createElement('article');
+        art.className = 'carta';
+        const inner = document.createElement('div');
+        inner.className = 'carta-inner';
+
+        // Folio Line institucional
+        const foliSpan = document.createElement('div');
+        foliSpan.className = 'folio-line';
+        foliSpan.innerHTML = `<span>Exp. N.° <b>${exp}</b> · Año <b>${anio}</b> · Folio <b>${inicioFolio + pi}</b></span>`;
+        inner.appendChild(foliSpan);
+
+        // Acta X de Y (Título de cabecera alineado a la derecha)
+        if (pi === 0) {
+          // El primer nodo es el sg-header clonado, modificamos su Acta X de Y
+          const pagiLabel = pNodes.headerNodes[0]?.querySelector?.('.acta-pagi');
+          if (pagiLabel) {
+            pagiLabel.textContent = `Acta 1 de ${totalActasPages}`;
+            pagiLabel.style.textAlign = 'right';
+          }
+        } else {
+          const pagContLabel = document.createElement('div');
+          pagContLabel.className = 'acta-pagi';
+          pagContLabel.style.textAlign = 'right';
+          pagContLabel.textContent = `Acta ${pi + 1} de ${totalActasPages} (Continuación)`;
+          inner.appendChild(pagContLabel);
+        }
+
+        pNodes.headerNodes.forEach(n => inner.appendChild(n));
+
+        if(pNodes.relatoNodes.length > 0) {
+          const w = stripIds(srcRelato.cloneNode(false));
+          pNodes.relatoNodes.forEach(p => w.appendChild(p));
+          inner.appendChild(w);
+        }
+
+        pNodes.resolucionNodes.forEach(n => inner.appendChild(n));
+
+        // REQUISITO: Firmas en TODAS las páginas
+        const isLast = (pi === pages.length - 1);
+        const fClone = stripIds(srcFooter.cloneNode(true));
+        if (!isLast) {
+          const actaCie = fClone.querySelector('.acta-cierre');
+          if (actaCie) {
+            actaCie.textContent = '— Pasa al folio siguiente —';
+          } else {
+            const msg = document.createElement('div');
+            msg.className = 'acta-cierre';
+            msg.style.textAlign = 'center';
+            msg.style.fontSize = '8.5pt';
+            msg.style.marginTop = '0.3cm';
+            msg.textContent = '— Pasa al folio siguiente —';
+            fClone.appendChild(msg);
+          }
+        }
+        // No forzamos margen aquí, lo maneja el CSS con acta-firmas margin-top
+        inner.appendChild(fClone);
+
+        art.appendChild(inner);
+        display.appendChild(art);
+
+        // Etiqueta separadora entre páginas (solo en pantalla)
+        if (pi < pages.length - 1) {
+          const lbl = document.createElement('div');
+          lbl.className = 'preview-label';
+          lbl.style.cssText = 'margin-top:.4rem;color:#aab;font-size:.68rem;letter-spacing:.06em';
+          lbl.textContent = `— Página ${pi + 2} —`;
+          display.appendChild(lbl);
+        }
+      });
+    }
+
+    function guardar(silent = false) {
+      const selRes = document.querySelector('input[name="res-choice"]:checked');
+      const payload = {
+        fechaActa: document.getElementById('f-fecha-acta').value,
+        relato: document.getElementById('f-relato').value,
+        resChoice: selRes ? selRes.value : 'archivo',
+        tipoFalta: document.getElementById('f-reac-tipo')?.value || '',
+        inciso: document.getElementById('f-reac-inciso')?.value || '',
+        accManual: document.getElementById('f-reac-acc-manual')?.value || '',
+        ptsManual: document.getElementById('f-reac-pts')?.value || '',
+        numPaginas: document.querySelectorAll('#carta-display .carta').length
+      };
+      
+      localStorage.setItem('mep_dp_paso4_v1_' + (caso ? caso.id : ''), JSON.stringify(payload));
+      if (!silent) toast('✔ Resolución guardada (' + (payload.numPaginas) + ' pág.)');
+    }
+    /* ══ MICRÓFONO ══ */
+    function toggleMic() {
+      if (!recognition) initRec();
+      const btn = document.getElementById('mic-btn');
+      if (isListening) {
+        recognition.stop();
+        btn.innerHTML = '🎤 Iniciar Dictado';
+        btn.style.background = '#eef2f6';
+        btn.style.color = 'var(--azul)';
+      } else {
+        recognition.start();
+        btn.innerHTML = '🛑 Detener Grabación';
+        btn.style.background = 'var(--rojo)';
+        btn.style.color = 'white';
+      }
+    }
+    function initRec() {
+      const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Speech) return alert("Microfono no soportado en este navegador.");
+      recognition = new Speech();
+      recognition.lang = 'es-CR';
+      recognition.continuous = true;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        isListening = true;
+      };
+      recognition.onend = () => {
+        isListening = false;
+        const btn = document.getElementById('mic-btn');
+        btn.innerHTML = '🎤 Iniciar Dictado';
+        btn.style.background = '#eef2f6';
+        btn.style.color = 'var(--azul)';
+      };
+      recognition.onresult = (e) => {
+        const raw = e.results[e.results.length - 1][0].transcript;
+        if (raw.trim()) {
+          const box = document.getElementById('f-relato');
+          let processed = procesarPuntuacion(raw);
+
+          // Capitalizar si es el inicio absoluto o tras un punto
+          const curVal = box.value.trim();
+          const lastChar = curVal.slice(-1);
+          const exigeMayus = !curVal || /[.!?\n]/.test(lastChar);
+
+          if (exigeMayus) {
+            processed = processed.charAt(0).toUpperCase() + processed.slice(1);
+          }
+
+          // Espacio previo si no empieza con signo y no hay ya un espacio o nueva línea
+          if (box.value && !/^[.,!?;:]/.test(processed) && !/[\s\n]$/.test(box.value)) {
+            box.value += ' ';
+          }
+          box.value += processed;
+          updateLive();
+        }
+      };
+    }
+
+    function procesarPuntuacion(raw) {
+      let t = raw.trim();
+      if (!t) return '';
+
+      // REGLA: Si el editor está vacío (primera palabra de la declaración), capitalizar
+      const box = document.getElementById('f-relato');
+      if (!box.value) t = t.charAt(0).toUpperCase() + t.slice(1);
+
+      const reglas = [
+        [/\s*\bpunto y aparte\b/gi, '.\n\n'],
+        [/\s*\bpunto y seguido\b/gi, '. '],
+        [/\s*\bpunto y coma\b/gi, '; '],
+        [/\s*\bdos puntos\b/gi, ': '],
+        [/\s*\bpuntos suspensivos\b/gi, '... '],
+        [/\s*\bsigno de interrogación\b/gi, '? '],
+        [/\s*\bsigno de exclamación\b/gi, '! '],
+        [/\s*\bcoma\b/gi, ', '],
+        [/\s*\bpunto\b/gi, '. '],
+      ];
+
+      for (const [re, rep] of reglas) t = t.replace(re, rep);
+      t = t.replace(/\s+([.,!?;:])/g, '$1');
+
+      // Capitalizar después de punto, signo o nueva línea
+      t = t.replace(/([.!?\n]\s*)([a-záéíóúüñ])/g, (m, p1, p2) => p1 + p2.toUpperCase());
+
+      return t;
+    }
+
+    /* ══ DATOS DEL REAC ══ */
+    const REAC_DATA = {
+      'Grave': {
+        puntos: '20',
+        incisos: {
+          'a': 'Daño contra los bienes del centro educativo relacionados con el ornato, equipo tecnológico, herramientas, mobiliario infraestructura o cualquier otro activo...',
+          'b': 'Sustracción de bienes del centro educativo o bienes personales de los miembros de la comunidad educativa.',
+          'c': 'Uso sin consentimiento de las pertenencias de personas integrantes de la comunidad educativa.',
+          'd': 'Uso del lenguaje vulgar o soez, así como el trato o los hechos irrespetuosos dichos o cometidos en contra del director o la directora, personal docente...',
+          'e': 'Colocar letreros, dibujos o gráficos no autorizados en la infraestructura, mobiliario u otros bienes del centro educativo.',
+          'f': 'Alterar, falsificar o plagiar pruebas o cualquier otro tipo de trabajo académico con el que se deba cumplir...',
+          'g': 'Sustraer, reproducir, distribuir o divulgar las pruebas antes de su aplicación.',
+          'h': 'Portar, consumir, fumar o vapear cigarrillos, sistemas electrónicos de administración de nicotina (SEAN)...',
+          'i': 'Portar o ingerir bebidas con contenido alcohólico.',
+          'j': 'Ingresar al centro educativo en estado de ebriedad o bajo signos de ingesta de bebidas alcohólicas u otras sustancias psicoactivas.',
+          'k': 'Uso de dispositivos móviles u otros medios tecnológicos que interfieran en el proceso de aprendizaje...',
+          'l': 'Otras faltas que se consideren como graves según la normativa interna...'
+        }
+      },
+      'Muy Grave': {
+        puntos: '35',
+        incisos: {
+          'a': 'Incentivar o participar en la escenificación pública de conductas que atenten contra la dignidad, seguridad, integridad de cualquier persona.',
+          'b': 'Impedir que otros miembros de la comunidad educativa participen en el normal desarrollo de las actividades regulares...',
+          'c': 'Incitación a los compañeros a que participen en acciones que perjudiquen la salud, seguridad individual o colectiva.',
+          'd': 'Portar armas, explosivos, objetos o sustancias peligrosas que pongan en peligro la integridad...',
+          'e': 'Cualquier tipo de acción discriminatoria asociadas a género, edad, raza u origen étnico o nacional, condición socioeconómica...',
+          'f': 'Realizar, grabar, distribuir o ser cómplice en actos de violencia en todas sus manifestaciones incluido: el bullying o acoso...',
+          'g': 'Sustracción, alteración o falsificación de documentos oficiales.',
+          'h': 'Otras faltas que se consideren como muy graves según la normativa interna...'
+        }
+      },
+      'Gravísima': {
+        puntos: '50',
+        incisos: {
+          'a': 'Agresión física contra cualquier miembro de la comunidad educativa...',
+          'b': 'Tenencia, difusión, distribución o comercio de imágenes o videos con contenidos de índole sexual, acoso, violencias en línea...',
+          'c': 'Ingestión reiterada de bebidas alcohólicas.',
+          'd': 'Consumir o portar sustancias psicoactivas dentro del centro educativo...',
+          'e': 'Distribuir, inducir o facilitar el uso de cualquier tipo de sustancias psicoactivas dentro del centro educativo...',
+          'f': 'Infringir daño en cualquiera de las diferentes manifestaciones de violencia incluido el bullying, acoso...',
+          'g': 'Otras faltas que se consideren como gravísimas según la normativa interna...'
+        }
+      }
+    };
+
+    /* ══ UTILS ══ */
+    function toggleForm() {
+      const sel = document.querySelector('input[name="res-choice"]:checked');
+      const isApertura = sel && sel.value === 'apertura';
+      document.getElementById('form-apertura').style.display = isApertura ? 'block' : 'none';
+      if(document.getElementById('btn-next-wrap')) document.getElementById('btn-next-wrap').style.display = isApertura ? 'block' : 'none';
+      if (typeof updateLive === 'function') updateLive();
+    }
+
+    function cambioTipo() {
+      const tipo = document.getElementById('f-reac-tipo').value;
+      const pts = document.getElementById('f-reac-pts');
+      const inc = document.getElementById('f-reac-inciso');
+      
+      inc.innerHTML = '';
+      if(REAC_DATA[tipo]) {
+        pts.value = REAC_DATA[tipo].puntos;
+        for(let letra in REAC_DATA[tipo].incisos) {
+          let desc = REAC_DATA[tipo].incisos[letra];
+          let maxLen = 60;
+          let shortDesc = desc.length > maxLen ? desc.substring(0, maxLen) + '...' : desc;
+          inc.innerHTML += `<option value="${letra}">Inciso ${letra}) - ${shortDesc}</option>`;
+        }
+      }
+      cambioInciso();
+    }
+
+    function cambioInciso() {
+       const tipo = document.getElementById('f-reac-tipo').value;
+       const letnciso = document.getElementById('f-reac-inciso').value;
+       const wrapManual = document.getElementById('wrap-acc-manual');
+       
+       if (tipo === 'Grave' && ['a','b','c','d','e','f','k','l'].includes(letnciso)) {
+         wrapManual.style.display = 'flex';
+       } else {
+         wrapManual.style.display = 'none';
+       }
+       
+       if (typeof updateLive === 'function') updateLive();
+    }
+
+    function fmtFecha(v) {
+      if (!v) return '________________';
+      const d = new Date(v + 'T12:00:00');
+      return `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+    }
+function trySave() {
+  if (typeof guardar === 'function') {
+    try { guardar(true); } catch(e){}
+  } else if (typeof guardarDatos === 'function') {
+    try { guardarDatos(true); } catch(e){}
+  }
+}
+function irIndice(pag) { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './index.html?id=' + (id||'') + '&page=' + (pag||'portada'); }
+function irPaso1() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso1.html' + (id ? '?id='+id : ''); }
+function irPaso2() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso2.html' + (id ? '?id='+id : ''); }
+function irPaso3() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso3.html' + (id ? '?id='+id : ''); }
+function irPaso4() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso4.html' + (id ? '?id='+id : ''); }
+function irPaso5() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso5.html' + (id ? '?id='+id : ''); }
+function irPaso6() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso6.html' + (id ? '?id='+id : ''); }
+function irPaso7() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso7.html' + (id ? '?id='+id : ''); }
+function irPaso8() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso8.html' + (id ? '?id='+id : ''); }
+function irPaso9() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso9.html' + (id ? '?id='+id : ''); }
+function irPaso10() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso10.html' + (id ? '?id='+id : ''); }
+function irPaso11() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso11.html' + (id ? '?id='+id : ''); }
+function irPaso12() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso12.html' + (id ? '?id='+id : ''); }
+function irPaso13() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso13.html' + (id ? '?id='+id : ''); }
+function irAnexos() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './anexos.html' + (id ? '?id='+id : ''); }
+    function toast(m) {
+      const t = document.getElementById('toast');
+      t.textContent = m; t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3000);
+    }
+    function escH(s) { if (!s) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    /* ══════════════════════════════════════
+       AUTO-GUARDADO Y ALARMAS
+     ══════════════════════════════════════ */
+    let autoSaveTimeout;
+    function autoSave() {
+      clearTimeout(autoSaveTimeout);
+      autoSaveTimeout = setTimeout(() => { guardar(true); }, 1000);
+    }
+
+    function updateDeadlineAlarm() {
+      const lbl = document.getElementById('dt-label');
+      const dot = document.getElementById('dt-status');
+      if (!caso || !caso.fechaApertura) {
+        lbl.textContent = 'Sin fecha apertura';
+        dot.style.background = '#aaa';
+        return;
+      }
+      const fApertura = new Date(caso.fechaApertura + 'T12:00:00');
+      const hoy = new Date();
+      const limite = calcularHabiles(fApertura, 15);
+      const diffTiempo = limite - hoy;
+      const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
+
+      if (diffDias < 0) {
+        lbl.textContent = `Vencido (${Math.abs(diffDias)}d)`;
+        dot.style.background = '#C8102E';
+      } else if (diffDias <= 2) {
+        lbl.textContent = `¡Faltan ${diffDias}d!`;
+        dot.style.background = '#E0A800';
+      } else {
+        lbl.textContent = `${diffDias} días restantes`;
+        dot.style.background = '#166534';
+      }
+    }
+
+    function calcularHabiles(fecha, dias) {
+      let f = new Date(fecha.getTime());
+      let count = 0;
+      while (count < dias) {
+        f.setDate(f.getDate() + 1);
+        const d = f.getDay();
+        if (d !== 0 && d !== 6) count++;
+      }
+      return f;
+    }
+
+    // Inicializar la aplicación
+    init();
+  </script>
+</body>
+
+</html>

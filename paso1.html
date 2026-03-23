@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Paso 1 – Comunicación Inicial | Debido Proceso MEP</title>
+<style>
+@font-face{font-family:'Henderson Sans Basic';src:url('Logo/Henderson Sans Basic Light.ttf') format('truetype');font-weight:300}
+@font-face{font-family:'Henderson Sans Basic';src:url('Logo/Henderson Sans Basic SemiBd.ttf') format('truetype');font-weight:600}
+@font-face{font-family:'Henderson Sans Basic';src:url('Logo/Henderson Sans Basic Bold.ttf') format('truetype');font-weight:700}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --azul:#1c2847;--azul-cl:#273966;--rojo:#C8102E;--oro:#C9A86A;
+  --gris:#f0f4f9;--borde:#cbd5e0;--texto:#0f1a2e;--blanco:#fff;
+  --sombra:0 4px 24px rgba(28,40,71,.13);
+}
+body, input, select, textarea, button {font-family:'Henderson Sans Basic',sans-serif;}
+body{background:var(--gris);color:var(--texto);min-height:100vh}
+
+/* ── TOPBAR ── */
+#topbar{background:var(--azul);color:var(--blanco);display:flex;align-items:center;
+  gap:.75rem;padding:0 1.5rem;height:54px;position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 12px rgba(0,0,0,.35)}
+#topbar .brand{font-size:.9rem;font-weight:800;letter-spacing:.05em;color:var(--oro);margin-right:auto}
+#topbar .case-info{font-size:.78rem;opacity:.75;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#topbar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);
+  color:var(--blanco);padding:.3rem .9rem;border-radius:6px;font-size:.78rem;
+  font-weight:600;cursor:pointer;transition:background .2s;font-family:'Henderson Sans Basic',sans-serif}
+#topbar button:hover{background:rgba(255,255,255,.25)}
+.btn-gold{background:var(--oro)!important;color:var(--azul)!important;border-color:var(--oro)!important}
+.btn-gold:hover{background:#e0a800!important}
+
+/* ── LAYOUT ── */
+#app{display:grid;grid-template-columns:390px 1fr;gap:0;min-height:calc(100vh - 54px)}
+
+/* ── PANEL IZQUIERDO ── */
+#panel-form{background:var(--blanco);border-right:2px solid var(--borde);
+  overflow-y:auto;display:flex;flex-direction:column}
+.panel-head{background:linear-gradient(135deg,var(--azul),var(--azul-cl));
+  color:var(--blanco);padding:1.1rem 1.3rem}
+.panel-head h2{font-size:.95rem;font-weight:800;letter-spacing:.03em}
+.panel-head p{font-size:.72rem;opacity:.75;margin-top:.2rem}
+.panel-body{padding:1.1rem;display:flex;flex-direction:column;gap:1rem;flex:1}
+
+/* ── SECCIONES (siempre abiertas, sin toggle) ── */
+.sec{border:1.5px solid var(--borde);border-radius:10px;overflow:hidden}
+.sec-hdr{background:var(--gris);padding:.55rem .9rem;font-size:.72rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--azul);
+  display:flex;align-items:center;gap:.4rem}
+.sec-hdr .ico{font-size:.9rem}
+.sec-body{padding:.85rem .9rem;display:flex;flex-direction:column;gap:.75rem}
+
+/* ── FORM ELEMENTS ── */
+.fg{display:flex;flex-direction:column;gap:.3rem}
+.fg label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#555}
+.fg input,.fg select,.fg textarea{border:1.5px solid var(--borde);border-radius:7px;
+  padding:.45rem .75rem;font-size:.83rem;font-family:'Henderson Sans Basic',sans-serif;
+  background:#fafbfc;transition:border-color .2s;color:var(--texto)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--azul-cl);background:var(--blanco)}
+.fg textarea{resize:vertical;min-height:100px;line-height:1.55}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+
+/* ── DICTADO ── */
+.dictado-wrap{position:relative}
+.dictado-wrap textarea{padding-right:3.5rem}
+.mic-btn{position:absolute;top:.35rem;right:.4rem;background:rgba(200,16,46,.08);
+  border:2px solid rgba(200,16,46,.25);border-radius:8px;
+  font-size:1.7rem;cursor:pointer;padding:.25rem .3rem;transition:all .25s;line-height:1;
+  width:2.6rem;height:2.6rem;display:flex;align-items:center;justify-content:center}
+.mic-btn:hover{background:rgba(200,16,46,.18);border-color:var(--rojo)}
+.mic-btn.listening{animation:pulse 1s infinite;background:var(--rojo);border-color:var(--rojo)}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.mic-status{font-size:.68rem;color:#888;font-style:italic;margin-top:.25rem;min-height:1rem;
+  display:flex;align-items:center;gap:.3rem}
+.mic-status.active{color:var(--rojo);font-weight:700}
+
+/* ── TESTIGOS ── */
+.testigo-item{background:#f8faff;border:1.5px solid #dde6fa;border-radius:8px;
+  padding:.65rem .75rem;display:flex;flex-direction:column;gap:.5rem;position:relative}
+.testigo-item .remove-btn{position:absolute;top:.4rem;right:.4rem;background:none;
+  border:none;font-size:.85rem;cursor:pointer;color:#aaa;transition:color .2s}
+.testigo-item .remove-btn:hover{color:var(--rojo)}
+.tipo-tabs{display:flex;gap:.4rem;flex-wrap:wrap}
+.tipo-tab{border:1.5px solid var(--borde);border-radius:20px;padding:.22rem .7rem;
+  font-size:.68rem;font-weight:700;cursor:pointer;background:var(--blanco);
+  color:#777;transition:all .2s;font-family:'Henderson Sans Basic',sans-serif}
+.tipo-tab.active{background:var(--azul);color:var(--blanco);border-color:var(--azul)}
+.sub-fields{display:flex;flex-direction:column;gap:.45rem}
+.add-btn{background:var(--blanco);border:1.5px dashed var(--azul-cl);border-radius:7px;
+  padding:.42rem;font-size:.75rem;font-weight:700;color:var(--azul-cl);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:.35rem;
+  transition:all .2s;font-family:'Henderson Sans Basic',sans-serif;width:100%}
+.add-btn:hover{background:#eef4ff;border-style:solid}
+
+/* ── ANEXOS ── */
+.anexo-item{background:#f8faff;border:1.5px solid #dde6fa;border-radius:8px;
+  padding:.65rem .75rem;display:flex;flex-direction:column;gap:.4rem;position:relative;
+  margin-bottom:.5rem}
+.anexo-item .remove-btn{position:absolute;top:.4rem;right:.4rem;background:none;
+  border:none;font-size:.85rem;cursor:pointer;color:#aaa;transition:color .2s}
+.anexo-item .remove-btn:hover{color:var(--rojo)}
+.file-pill{display:inline-flex;align-items:center;gap:.3rem;background:#eff6ff;
+  border:1px solid #bfdbfe;border-radius:20px;padding:.15rem .6rem;font-size:.68rem;
+  color:#1e40af;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.upload-zone{border:2px dashed var(--borde);border-radius:8px;padding:.9rem;
+  text-align:center;font-size:.75rem;color:#999;cursor:pointer;
+  transition:all .2s;position:relative}
+.upload-zone:hover{border-color:var(--azul-cl);color:var(--azul-cl);background:#f0f6ff}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+
+/* ── BOTONES ACCIÓN ── */
+.action-bar{padding:1rem 1.1rem;border-top:1px solid #e8ecf2;display:flex;gap:.6rem;flex-wrap:wrap}
+.btn-primary{background:var(--azul);color:var(--blanco);border:none;border-radius:8px;
+  padding:.55rem 1.1rem;font-size:.8rem;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;gap:.35rem;transition:background .2s;
+  font-family:'Henderson Sans Basic',sans-serif}
+.btn-primary:hover{background:var(--azul-cl)}
+.btn-secondary{background:var(--blanco);border:1.5px solid var(--borde);border-radius:8px;
+  padding:.5rem 1rem;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--texto);
+  transition:all .2s;font-family:'Henderson Sans Basic',sans-serif}
+.btn-secondary:hover{border-color:var(--azul-cl);color:var(--azul-cl)}
+.btn-danger{background:var(--rojo);color:var(--blanco);border:none;border-radius:8px;
+  padding:.55rem 1rem;font-size:.8rem;font-weight:700;cursor:pointer;
+  font-family:'Henderson Sans Basic',sans-serif;transition:background .2s}
+.btn-danger:hover{background:#a00d23}
+/* ── CASE NAV (Step Bar) ── */
+#case-nav{background:#1a3a6b;color:var(--blanco);display:flex;align-items:center;
+  gap:.35rem;padding:.5rem 1.5rem;flex-wrap:wrap;border-bottom:2px solid var(--azul)}
+.case-nav-title{font-size:.75rem;font-weight:700;color:var(--oro);white-space:nowrap;margin-right:.5rem}
+.page-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  color:rgba(255,255,255,.85);padding:.28rem .7rem;border-radius:5px;font-size:.72rem;
+  font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Henderson Sans Basic',sans-serif}
+.page-btn:hover{background:rgba(255,255,255,.2)}
+.page-btn.active{background:var(--oro);color:var(--azul);border-color:var(--oro)}
+.page-btn.locked{opacity:.4;cursor:not-allowed}
+.page-btn-print{background:var(--rojo);border-color:var(--rojo);margin-left:auto;color:white}
+.page-btn-print:hover{background:#a00d23}
+
+/* ── PANEL DERECHO (PREVIEW) ── */
+#panel-preview{background:#dde3ed;overflow-y:auto;padding:2rem;
+  display:flex;flex-direction:column;align-items:center;gap:1.5rem}
+.preview-label{font-size:.72rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.07em;color:#8898aa;align-self:flex-start}
+
+/* ── CARTA (Letter 21.59cm × 27.94cm) ── */
+.carta{width:21.59cm;height:27.94cm;background:var(--blanco) url('fondo.png') no-repeat top center;
+  background-size:100% auto;box-shadow:var(--sombra);
+  border-radius:3px;font-family:'Henderson Sans Basic',sans-serif;
+  font-size:11.5pt;line-height:1.7;color:#111;overflow:hidden;flex-shrink:0}
+/* El fondo.png ocupa ~2.2cm en la parte superior de la hoja */
+.carta-inner{padding:3.2cm 2.2cm 2cm 2.5cm;height:100%;
+  display:flex;flex-direction:column;overflow:hidden}
+/* Fuente de contenido (invisible, off-canvas, se usa para medir) */
+#carta-source{position:fixed;left:-9999px;top:0;width:16.89cm;
+  font-family:'Henderson Sans Basic',sans-serif;font-size:11.5pt;
+  line-height:1.7;color:#111;visibility:hidden;pointer-events:none;z-index:-1}
+
+/* (inst-head ya no se usa; el fondo.png incluye el encabezado institucional) */
+.inst-meta{font-size:7.5pt;color:#555;text-align:right}
+.inst-meta b{color:var(--azul)}
+
+.folio-line {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 7.5pt;
+  color: #555;
+  margin-bottom: .3cm;
+}
+.folio-line b {
+  color: var(--azul);
+}
+
+/* ── CONTENIDO DEL DOC ── */
+.doc-titulo{font-size:10.5pt;font-weight:800;color:var(--azul);text-transform:uppercase;
+  letter-spacing:.02em;text-align:center;margin-bottom:0.6cm;line-height:1.4}
+.doc-art{font-size:8pt;color:#666;font-style:italic;text-align:center;margin-bottom:.4cm}
+.doc-legal{font-size:9.5pt;line-height:1.65;text-align:justify;margin-bottom:.4cm;
+  border-left:3px solid var(--azul);padding-left:.4cm;color:#333}
+.doc-quien{font-size:10pt;margin:.25cm 0 .1cm}
+.doc-quien b{color:var(--azul)}
+.doc-fecha-recepcion{font-size:10pt;margin-bottom:.25cm}
+.doc-fecha-recepcion b{color:var(--azul)}
+.doc-relato-titulo{font-size:10pt;font-weight:800;color:var(--azul);
+  text-transform:uppercase;letter-spacing:.04em;margin:.3cm 0 .15cm;
+  border-top:1px solid #e0e4ea;padding-top:.3cm}
+.doc-relato-fecha{font-size:10pt;margin-bottom:.2cm}
+.doc-relato-fecha b{color:var(--azul)}
+.doc-intro{font-size:10pt;line-height:1.65;margin:.2cm 0}
+.doc-intro b{color:var(--azul)}
+.doc-relato{background:#f9fafc;border-left:4px solid var(--borde);
+  padding:.35cm .45cm;margin:.25cm 0;font-size:10pt;line-height:1.7;
+  text-align:justify;border-radius:0 6px 6px 0}
+.doc-relato p{margin-bottom:.25cm}
+.doc-relato p:last-child{margin-bottom:0}
+.doc-sep{border:none;border-top:1px solid #e0e4ea;margin:.4cm 0}
+.doc-sec-title{font-size:9.5pt;font-weight:800;color:var(--azul);
+  text-transform:uppercase;letter-spacing:.04em;margin-bottom:.2cm}
+.doc-testigo-item{font-size:10pt;margin-bottom:.15cm;padding-left:.3cm}
+.doc-testigo-item::before{content:"• ";color:var(--azul);font-weight:700}
+.doc-anexo-item{font-size:9.5pt;margin-bottom:.15cm;padding-left:.3cm}
+.doc-anexo-item::before{content:"• ";color:var(--azul);font-weight:700}
+.doc-placeholder{color:#bbb;font-style:italic;font-size:9.5pt}
+
+/* ── FIRMAS EN DOC ── */
+/* margin-top: espacio suficiente para que quien firma pueda escribir encima de la línea */
+.doc-firmas{margin-top:1.5cm;display:grid;grid-template-columns:1fr 1fr;gap:1.4cm}
+.firma-bloque{display:flex;flex-direction:column;align-items:center;gap:.15cm}
+.firma-linea-firma{width:100%;border-bottom:1.5px solid #444;margin-bottom:.1cm}
+.firma-nombre{font-size:9pt;font-weight:700;color:var(--azul);text-align:center}
+.firma-cargo{font-size:8pt;color:#666;text-align:center;font-style:italic}
+
+/* ── PORTADA ANEXOS ── */
+.carta-anexo-portada .carta-inner{align-items:center;justify-content:center;text-align:center;gap:.7cm}
+.anexo-portada-titulo{font-size:20pt;font-weight:800;color:var(--azul);text-transform:uppercase;letter-spacing:.04em}
+.anexo-portada-sub{font-size:11pt;color:var(--rojo);font-weight:600}
+
+/* ── PRINT ── */
+@media print{
+  @page{size:letter;margin:0}
+  html,body{margin:0;padding:0;background:white!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  #topbar,#panel-form,#case-nav,#carta-source,.preview-label,#toast,button,.mic-status{display:none!important}
+  #app{display:block;margin:0;padding:0;width:100%}
+  #panel-preview{display:block!important;padding:0;background:white!important;width:100%}
+  .carta{width:21.59cm!important;height:27.94cm!important;box-shadow:none!important;
+    page-break-after:always;break-after:page;border:none!important;
+    background-image:url('fondo.png')!important;background-size:100% auto!important;
+    -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .carta:last-child{page-break-after:auto!important;break-after:auto!important}
+  .carta-inner{padding:3.2cm 2.2cm 2.8cm 2.5cm}
+  #carta-display,#anexos-pages{display:block!important}
+}
+@media screen and (max-width:1100px){
+  #app{grid-template-columns:1fr}
+  #panel-form{max-height:50vh}
+  .carta{width:95vw;height:auto;min-height:27.94cm}
+  .carta-inner{padding:1.2rem 1rem}
+}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:2rem;right:2rem;background:var(--azul);color:var(--oro);
+  padding:.7rem 1.4rem;border-radius:8px;font-size:.83rem;font-weight:700;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);z-index:9999;opacity:0;
+  transition:opacity .3s;pointer-events:none;font-family:'Henderson Sans Basic',sans-serif}
+</style>
+</head>
+<body>
+
+<header id="topbar">
+  <span class="brand">📋 Debido Proceso MEP</span>
+  <span class="case-info" id="case-info-label">—</span>
+  <button onclick="location.href='index.html'">← Expedientes</button>
+  <button class="btn-gold" onclick="window.print()" title="Imprimir este documento">🖨 Imprimir documento</button>
+  <div id="deadline-timer" style="margin-left: 1rem; border-left: 1px solid rgba(255,255,255,.2); padding-left: 1rem; display: flex; align-items: center; gap: .5rem; font-size: .8rem;">
+    <span style="opacity: .6;">⏳ Plazo (Art. 150a):</span>
+    <span id="dt-label" style="font-weight: 700; color: #fff;">Calculando...</span>
+    <span id="dt-status" style="width: 10px; height: 10px; border-radius: 50%; background: #999;"></span>
+  </div>
+</header>
+
+<nav id="case-nav">
+  <span class="case-nav-title">Expediente</span>
+  <button class="page-btn" onclick="irIndice('portada')">1. Portada</button>
+  <button class="page-btn" onclick="irIndice('tdc')">2. Tabla Contenidos</button>
+  <button class="page-btn active" onclick="irPaso1()">3. Com. Prof. Guía</button>
+  <button class="page-btn" onclick="irPaso2()">4. Notif. Testigos</button>
+  <button class="page-btn" onclick="irPaso3()">5–6. Actas/Declara.</button>
+  <button class="page-btn" onclick="irAnexos()">7. Anexos</button>
+  <button class="page-btn" onclick="irPaso4()">8. Resultado Inv.</button>
+  <button class="page-btn" onclick="irPaso5()">9. Notif. Apertura</button>
+    <button class="page-btn" onclick="irPaso6()">10. Boleta Apertura</button>
+    <button class="page-btn" onclick="irPaso7()">11. Solicitud Copia</button>
+    <button class="page-btn" onclick="irPaso9()">12. Descargos y Pruebas</button>
+    <button class="page-btn" onclick="irPaso8()">13. Dec. Estudiante</button>
+  </nav>
+
+<div id="app">
+
+<!-- ════ PANEL FORMULARIO ════ -->
+<aside id="panel-form">
+  <div class="panel-head">
+    <h2>📄 Paso 1 — Comunicación Inicial</h2>
+    <p>Art. 150 inc. a) — REAC MEP 2026</p>
+  </div>
+  <div class="panel-body">
+
+    <!-- SECCIÓN 1: QUIEN INFORMA -->
+    <div class="sec">
+      <div class="sec-hdr"><span class="ico">👤</span> Quien informa</div>
+      <div class="sec-body">
+        <div class="fg">
+          <label>Tipo de persona que informa (Art. 150 inc. a)</label>
+          <select id="f-tipo-informante" onchange="actualizarPreview()">
+            <option value="">— Seleccione —</option>
+            <option value="Persona funcionaria docente">Persona funcionaria docente</option>
+            <option value="Técnico-docente">Técnico-docente</option>
+            <option value="Administrativo-docente">Administrativo-docente</option>
+            <option value="Persona administrativa">Persona administrativa</option>
+            <option value="Integrante de la directiva de sección">Integrante de la directiva de sección</option>
+            <option value="Otra persona">Otra persona</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Nombre completo de quien informa</label>
+          <input type="text" id="f-nombre-informante" placeholder="Apellidos, Nombre" oninput="actualizarPreview()"/>
+        </div>
+        <div class="fg">
+          <label>Fecha en que se recibe la comunicación</label>
+          <input type="date" id="f-fecha-recepcion" onchange="actualizarPreview()"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2: RELATO -->
+    <div class="sec">
+      <div class="sec-hdr"><span class="ico">📝</span> Relato de la situación</div>
+      <div class="sec-body">
+        <div class="row2">
+          <div class="fg">
+            <label>Fecha del relato</label>
+            <input type="date" id="f-fecha-relato" onchange="actualizarPreview()"/>
+          </div>
+          <div class="fg">
+            <label>Hora del relato</label>
+            <input type="time" id="f-hora-relato" onchange="actualizarPreview()"/>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Descripción de la supuesta falta</label>
+          <button type="button" id="mic-btn" onclick="toggleMic()" style="padding:.5rem; border-radius:6px; border:1px solid var(--borde); background:#eef2f6; color:var(--azul); font-weight:bold; cursor:pointer; margin-bottom:.5rem; display:inline-flex; align-items:center; gap:.4rem; align-self:flex-start">🎤 Iniciar Dictado</button>
+          <textarea id="f-relato" oninput="actualizarPreview()" rows="8" placeholder="Escriba aquí o use el micrófono para dictar..."></textarea>
+        </div>
+        <div style="font-size:.66rem;color:#999;line-height:1.55;background:#fafbfc;border-radius:6px;padding:.45rem .6rem;border:1px solid #eee">
+          💡 <b>Dictado:</b> diga <b>"punto"</b> → . &nbsp; <b>"coma"</b> → , &nbsp;
+          <b>"punto y aparte"</b> → párrafo nuevo &nbsp; <b>"dos puntos"</b> → :
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3: TESTIGOS -->
+    <div class="sec">
+      <div class="sec-hdr"><span class="ico">👥</span> Testigos</div>
+      <div class="sec-body">
+        <div id="lista-testigos"></div>
+        <button class="add-btn" onclick="agregarTestigo()">＋ Agregar testigo</button>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 4: ANEXOS -->
+    <div class="sec">
+      <div class="sec-hdr"><span class="ico">📎</span> Documentos anexados</div>
+      <div class="sec-body">
+        <div id="lista-anexos"></div>
+        <div class="upload-zone">
+          <input type="file" id="file-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.xls" multiple onchange="subirArchivos(event)"/>
+          📎 Haga clic o arrastre archivos aquí<br>
+          <span style="font-size:.65rem;color:#bbb">PDF, Word, imágenes, Excel</span>
+        </div>
+        <div style="margin-top:.4rem; text-align:right">
+           <a href="anexos.html" style="font-size:.72rem; color:var(--azul); font-weight:700; text-decoration:none">📎 Ir al gestor avanzado de anexos →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTONES DE ACCIÓN -->
+    <div class="action-bar" style="padding:.75rem 0 0;border-top:none">
+      <button class="btn-primary" onclick="guardarDatos()">💾 Guardar</button>
+      <button class="btn-secondary" onclick="irPaso2()">➡️ Siguiente Paso</button>
+      <button class="btn-secondary" onclick="actualizarPreview()">🔄 Actualizar vista</button>
+      <button class="btn-danger" onclick="limpiarFormulario()">🗑 Limpiar</button>
+    </div>
+
+  </div><!-- /panel-body -->
+
+</aside>
+
+<!-- ════ PANEL PREVIEW ════ -->
+<main id="panel-preview">
+  <div class="preview-label">Vista previa — Tamaño carta</div>
+
+  <!-- ── FUENTE INVISIBLE (IDs aquí, JS los lee y los pagina) ── -->
+  <div id="carta-source">
+    <!-- Grupo A: encabezado fijo primer pág -->
+    <div class="sg" id="sg-header">
+      <!-- El encabezado institucional viene en fondo.png -->
+      <h1 class="doc-titulo">COMUNICACIÓN DE LA SUPUESTA FALTA<br>AL PROFESOR(A) GUÍA</h1>
+      <div class="doc-art">Artículo 150, inciso a) — Reglamento de Evaluación de los Aprendizajes y la Conducta, MEP 2026</div>
+      <div class="doc-legal">
+        Una persona funcionaria docente, técnico-docente, administrativo-docente, administrativo o integrante de la directiva de sección, informará verbalmente o por escrito, en el plazo de cinco días hábiles una vez conocida la situación, a la persona docente guía o al docente a cargo la posible falta cometida por la persona estudiante. (Artículo 150, inciso a del Reglamento de Evaluación de los Aprendizajes y la Conducta).
+      </div>
+      <p class="doc-quien"><b>Quien informa:</b> <span id="doc-quien">—</span></p>
+      <p class="doc-fecha-recepcion"><b>Fecha en que se recibe la comunicación:</b> <span id="doc-fecha-recepcion">—</span></p>
+    </div>
+    <!-- Grupo B: relato -->
+    <div class="sg" id="sg-relato">
+      <div class="doc-relato-titulo">Relato de la situacion</div>
+      <p class="doc-relato-fecha"><b>Fecha:</b> <span id="doc-fecha-relato">—</span> &nbsp; <b>Hora:</b> <span id="doc-hora-relato">—</span></p>
+      <p class="doc-intro">
+        El día <b id="doc-dia">__</b> del mes de <b id="doc-mes">__________</b> del <b id="doc-anio2">____</b>,
+        al ser las <b id="doc-hora">__:__</b> horas, la persona estudiante
+        <b id="doc-estudiante">______________________</b> de la sección <b id="doc-seccion">____</b>,
+        incurrió en una supuesta falta que se detalla seguidamente:
+      </p>
+      <div class="doc-relato" id="doc-relato-preview">
+        <p class="doc-placeholder">El relato de la situación aparecerá aquí...</p>
+      </div>
+    </div>
+    <!-- Grupo C: testigos -->
+    <div class="sg" id="sg-testigos">
+      <hr class="doc-sep"/>
+      <div class="doc-sec-title">Testigos</div>
+      <div id="doc-testigos-preview">
+        <p class="doc-placeholder">Sin testigos registrados.</p>
+      </div>
+    </div>
+    <!-- Grupo D: anexos -->
+    <div class="sg" id="sg-anexos">
+      <hr class="doc-sep"/>
+      <div class="doc-sec-title">Documentos anexados</div>
+      <div id="doc-anexos-preview">
+        <p class="doc-placeholder">Sin documentos anexados.</p>
+      </div>
+    </div>
+    <!-- Grupo E: firmas -->
+    <div class="sg" id="sg-firmas">
+      <div class="doc-firmas">
+        <div class="firma-bloque">
+          <div class="firma-linea-firma"></div>
+          <div class="firma-nombre" id="doc-firma-notifica-nombre">______________________________</div>
+          <div class="firma-cargo" id="doc-firma-notifica-cargo">Persona que informa</div>
+        </div>
+        <div class="firma-bloque">
+          <div class="firma-linea-firma"></div>
+          <div class="firma-nombre" id="doc-firma-profe-nombre">______________________________</div>
+          <div class="firma-cargo">Profesor(a) guía que recibe</div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /carta-source -->
+
+  <!-- ── VISTA PAGINADA (generada por JS) ── -->
+  <div id="carta-display" style="display:flex;flex-direction:column;align-items:center;gap:1.5rem"></div>
+
+  <!-- Páginas de anexos -->
+  <div id="anexos-pages"></div>
+
+</main>
+</div><!-- /app -->
+
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════
+   CONSTANTES Y ESTADO
+══════════════════════════════════════ */
+const LS_KEY_CASOS = 'mep_dp_casos_v2';
+const LS_KEY_PASO1 = 'mep_dp_paso1_v1';
+let casoActual = null;
+let testigos = [];
+let anexos = [];
+let recognition = null;
+let isListening = false;
+const firmasNode = document.getElementById('sg-firmas');
+
+const MESES = ['enero','febrero','marzo','abril','mayo','junio',
+  'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const NIVELES = ['7.° A','7.° B','7.° C','8.° A','8.° B','8.° C',
+  '9.° A','9.° B','9.° C','10.° A','10.° B','11.° A','11.° B',
+  'Preescolar','1.°','2.°','3.°','4.°','5.°','6.°'];
+const TIPOS_FUNC = ['Docente','Técnico-docente','Administrativo','Administrativo-docente',
+  'Director(a)','Orientador(a)','Psicólogo(a)','Otro funcionario','Persona externa'];
+
+/* ══════════════════════════════════════
+   CARGA DEL CASO
+══════════════════════════════════════ */
+function cargarCaso(){
+  const id = new URLSearchParams(location.search).get('id');
+  try{
+    const casos = JSON.parse(localStorage.getItem(LS_KEY_CASOS)) || [];
+    casoActual = id ? casos.find(c=>c.id===id) : casos[0];
+  }catch{ casoActual = null; }
+
+  if(casoActual){
+    document.getElementById('case-info-label').textContent =
+      `${casoActual.expediente||'Sin N°'} — ${casoActual.estudiante||'Estudiante'}`;
+    setText('doc-colegio',   casoActual.colegio    || 'Centro Educativo');
+    setText('doc-circuito',  casoActual.circuito   || 'Circuito — Dirección Regional');
+    setText('doc-expediente',casoActual.expediente || '—');
+    setText('doc-anio',      casoActual.anio       || '2026');
+    setText('doc-anio2',     casoActual.anio       || '____');
+    setText('doc-estudiante',casoActual.estudiante || '______________________');
+    setText('doc-seccion',   casoActual.nivel      || '____');
+    // Firmas automáticas
+    setText('doc-firma-profe-nombre', casoActual.profe || '______________________________');
+  }
+}
+
+function setText(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function escH(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+/* ══════════════════════════════════════
+   GUARDAR / CARGAR / LIMPIAR
+══════════════════════════════════════ */
+function guardarDatos(silent = false){
+  // Recalcular conteo leyendo el DOM de vista previa (actualizado por paginateDoc)
+  const nDocs = document.querySelectorAll('#carta-display .carta').length;
+  const totalFoliosP1 = nDocs || 1; // Mínimo 1 folio
+
+  const data = {
+    casoId:           casoActual?.id,
+    tipoInformante:   v('f-tipo-informante'),
+    nombreInformante: v('f-nombre-informante'),
+    fechaRecepcion:   v('f-fecha-recepcion'),
+    fechaRelato:      v('f-fecha-relato'),
+    horaRelato:       v('f-hora-relato'),
+    relato:           v('f-relato'),
+    testigos,
+    anexos: anexos.map(a=>({nombre:a.nombre,descripcion:a.descripcion,tipo:a.tipo})),
+    totalFoliosP1
+  };
+  localStorage.setItem(LS_KEY_PASO1+(casoActual?.id?'_'+casoActual.id:''), JSON.stringify(data));
+  if(!silent) toast('✔ Paso 1 guardado (Folios 1-' + totalFoliosP1 + ')');
+}
+
+function trySave() {
+  if (typeof guardar === 'function') {
+    try { guardar(true); } catch(e){}
+  } else if (typeof guardarDatos === 'function') {
+    try { guardarDatos(true); } catch(e){}
+  }
+}
+function irIndice(pag) { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = 'index.html?id=' + (id||'') + '&page=' + (pag||'portada'); }
+function irPaso1() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = 'paso1.html' + (id ? '?id='+id : ''); }
+function irPaso2() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = 'paso2.html' + (id ? '?id='+id : ''); }
+function irPaso3() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = 'paso3.html' + (id ? '?id='+id : ''); }
+function irPaso4() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = 'paso4.html' + (id ? '?id='+id : ''); }
+function irPaso5() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = 'paso5.html' + (id ? '?id='+id : ''); }
+function irPaso6() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = 'paso6.html' + (id ? '?id='+id : ''); }
+function irPaso7() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = 'paso7.html' + (id ? '?id='+id : ''); }
+function irPaso8() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = 'paso8.html' + (id ? '?id='+id : ''); }
+function irPaso9() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = 'paso9.html' + (id ? '?id='+id : ''); }
+function irAnexos() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = 'anexos.html' + (id ? '?id='+id : ''); }
+
+function cargarDatosPaso1(){
+  const key = LS_KEY_PASO1+(casoActual?.id?'_'+casoActual.id:'');
+  try{
+    const d = JSON.parse(localStorage.getItem(key));
+    if(!d) return;
+    setVal('f-tipo-informante',   d.tipoInformante||'');
+    setVal('f-nombre-informante', d.nombreInformante||'');
+    setVal('f-fecha-recepcion',   d.fechaRecepcion||'');
+    setVal('f-fecha-relato',      d.fechaRelato||'');
+    setVal('f-hora-relato',       d.horaRelato||'');
+    setVal('f-relato',            d.relato||'');
+    testigos = d.testigos||[];
+    
+    // Sincronizar anexos con la nueva clave global si existe
+    const keyAnexos = 'mep_dp_anexos_v1' + (casoActual?.id ? '_'+casoActual.id : '');
+    const dAnexos = JSON.parse(localStorage.getItem(keyAnexos));
+    if(dAnexos && dAnexos.length){
+      anexos = dAnexos.map(a=>({...a,fileObj:null,url:''}));
+    } else {
+      anexos = (d.anexos||[]).map(a=>({...a,fileObj:null,url:''}));
+    }
+
+    renderTestigos(); renderAnexos(); actualizarPreview();
+  }catch{}
+}
+
+function limpiarFormulario(){
+  if(!confirm('¿Limpiar todos los datos del formulario?')) return;
+  ['f-tipo-informante','f-nombre-informante','f-fecha-recepcion',
+   'f-fecha-relato','f-hora-relato','f-relato'].forEach(id=>setVal(id,''));
+  testigos=[]; anexos=[];
+  renderTestigos(); renderAnexos(); actualizarPreview();
+}
+
+function v(id){const e=document.getElementById(id);return e?e.value:'';}
+function setVal(id,val){const e=document.getElementById(id);if(e)e.value=val;}
+
+/* ══════════════════════════════════════
+   DICTADO POR VOZ
+══════════════════════════════════════ */
+function initRecognition(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ toast('⚠ Tu navegador no soporta reconocimiento de voz'); return false; }
+  recognition = new SR();
+  recognition.lang = 'es-CR';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    let finalTranscript = '';
+
+    for (let i = e.resultIndex; i < e.results.length; ++i) {
+      if (e.results[i].isFinal) finalTranscript += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+
+    if (finalTranscript) {
+      const box = document.getElementById('f-relato');
+      let processed = procesarPuntuacion(finalTranscript);
+      
+      const curVal = box.value.trim();
+      const lastChar = curVal.slice(-1);
+      const exigeMayus = !curVal || /[.!?\n]/.test(lastChar);
+      
+      if(exigeMayus) processed = processed.charAt(0).toUpperCase() + processed.slice(1);
+
+      if(box.value && !/^[.,!?;:]/.test(processed) && !/[\s\n]$/.test(box.value)) box.value += ' ';
+      box.value += processed;
+      actualizarPreview();
+    }
+  };
+
+  recognition.onerror = (e) => {
+    isListening = false;
+    const btn = document.getElementById('mic-btn');
+    btn.innerHTML = '🎤 Iniciar Dictado';
+    btn.style.background = '#eef2f6';
+    btn.style.color = 'var(--azul)';
+    toast('Error en micrófono: ' + e.error);
+  };
+
+  recognition.onend = () => { if(isListening) recognition.start(); };
+  return true;
+}
+
+function procesarPuntuacion(raw){
+  let t = raw.trim();
+  if(!t) return '';
+
+  const reglas = [
+    [/\s*\bpunto y aparte\b/gi,        '.\n\n'],
+    [/\s*\bpunto y seguido\b/gi,       '. '],
+    [/\s*\bpunto y coma\b/gi,          '; '],
+    [/\s*\bdos puntos\b/gi,            ': '],
+    [/\s*\bpuntos suspensivos\b/gi,    '... '],
+    [/\s*\bsigno de interrogación\b/gi,'? '],
+    [/\s*\bsigno de exclamación\b/gi,  '! '],
+    [/\s*\bcoma\b/gi,                  ', '],
+    [/\s*\bpunto\b/gi,                 '. '],
+  ];
+
+  for(const [re, rep] of reglas) t = t.replace(re, rep);
+  
+  // ELIMINAR ESPACIO ANTES DE PUNTUACIÓN
+  t = t.replace(/\s+([.,!?;:])/g, '$1');
+
+  // Solo capitalizar DESPUÉS de signo de puntuación dentro del fragmento
+  t = t.replace(/([.!?\n]\s*)([a-záéíóúüñ])/g, (m,p1,p2) => p1+p2.toUpperCase());
+
+  return t;
+}
+
+function toggleMic(){
+  if(!recognition && !initRecognition()) return;
+  const btn = document.getElementById('mic-btn');
+  if(isListening){
+    recognition.stop();
+    isListening = false;
+    btn.innerHTML = '🎤 Iniciar Dictado';
+    btn.style.background = '#eef2f6';
+    btn.style.color = 'var(--azul)';
+  } else {
+    recognition.start();
+    isListening = true;
+    btn.innerHTML = '🛑 Detener Grabación';
+    btn.style.background = 'var(--rojo)';
+    btn.style.color = 'white';
+    toast('🎙 Dictado activado. Diga "punto y aparte" para nuevo párrafo.');
+  }
+}
+
+/* ══════════════════════════════════════
+   AUTO-GUARDADO (Debounce)
+ ══════════════════════════════════════ */
+let autoSaveTimeout;
+function autoSave(){
+  clearTimeout(autoSaveTimeout);
+  autoSaveTimeout = setTimeout(() => {
+    guardarDatos(true); // true = silencioso (sin toast)
+  }, 1000);
+}
+
+// Sobrescribir v() o añadir hook a los inputs
+// Para ser menos intrusivo, lo llamaremos en actualizarPreview que ya se dispara en oninput
+
+/* ══════════════════════════════════════
+   TESTIGOS
+══════════════════════════════════════ */
+function agregarTestigo(){
+  testigos.push({tipo:'estudiante',nombre:'',seccion:'',encargado:'',cedulaEncargado:'',tipoFunc:''});
+  renderTestigos();
+}
+
+function renderTestigos(){
+  const c = document.getElementById('lista-testigos');
+  if(!testigos.length){
+    c.innerHTML = '<p style="font-size:.73rem;color:#aaa;text-align:center;padding:.4rem">Sin testigos agregados</p>';
+    actualizarPreviewTestigos(); return;
+  }
+  const inStyle = 'border:1.5px solid var(--borde);border-radius:6px;padding:.38rem .6rem;font-size:.79rem;font-family:\'Henderson Sans Basic\',sans-serif;width:100%';
+  c.innerHTML = testigos.map((t,i) => `
+    <div class="testigo-item">
+      <button class="remove-btn" onclick="eliminarTestigo(${i})">✕</button>
+      <div class="tipo-tabs">
+        <button class="tipo-tab ${t.tipo==='estudiante'?'active':''}" onclick="setTipoTestigo(${i},'estudiante')">Estudiante</button>
+        <button class="tipo-tab ${t.tipo==='funcionario'?'active':''}" onclick="setTipoTestigo(${i},'funcionario')">Funcionario</button>
+        <button class="tipo-tab ${t.tipo==='otro'?'active':''}" onclick="setTipoTestigo(${i},'otro')">Otro</button>
+      </div>
+      <div class="sub-fields">
+        <input type="text" value="${escH(t.nombre)}" placeholder="Nombre completo del testigo"
+          style="${inStyle}" oninput="testigos[${i}].nombre=this.value;actualizarPreviewTestigos()"/>
+        ${t.tipo==='estudiante' ? `
+          <input type="text" value="${escH(t.seccion)}" placeholder="Sección (ej. 7-A, 8-B...)"
+            style="${inStyle}" oninput="testigos[${i}].seccion=this.value;actualizarPreviewTestigos()"/>
+          <input type="text" value="${escH(t.encargado)}" placeholder="Nombre del encargado legal"
+            style="${inStyle}" oninput="testigos[${i}].encargado=this.value;actualizarPreviewTestigos()"/>
+          <input type="text" value="${escH(t.cedulaEncargado||'')}" placeholder="Cédula del encargado legal"
+            style="${inStyle}" oninput="testigos[${i}].cedulaEncargado=this.value;actualizarPreviewTestigos()"/>
+        ` : `
+          <select onchange="testigos[${i}].tipoFunc=this.value;actualizarPreviewTestigos()" style="${inStyle}">
+            <option value="">Tipo de persona...</option>
+            ${TIPOS_FUNC.map(f=>`<option value="${f}" ${t.tipoFunc===f?'selected':''}>${f}</option>`).join('')}
+          </select>
+        `}
+      </div>
+    </div>`).join('');
+  actualizarPreviewTestigos();
+}
+
+function setTipoTestigo(i,tipo){
+  testigos[i]={...testigos[i],tipo,seccion:'',encargado:'',cedulaEncargado:'',tipoFunc:''};
+  renderTestigos();
+}
+function eliminarTestigo(i){ testigos.splice(i,1); renderTestigos(); }
+
+/* ══════════════════════════════════════
+   ANEXOS
+══════════════════════════════════════ */
+function subirArchivos(e){
+  Array.from(e.target.files).forEach(f=>{
+    anexos.push({nombre:f.name,descripcion:'',tipo:f.type,fileObj:f,url:URL.createObjectURL(f)});
+  });
+  e.target.value=''; renderAnexos(); actualizarPreview();
+}
+
+function renderAnexos(){
+  const c = document.getElementById('lista-anexos');
+  if(!anexos.length){
+    c.innerHTML='<p style="font-size:.73rem;color:#aaa;text-align:center;padding:.4rem">Sin documentos agregados</p>';
+    actualizarPreviewAnexos(); return;
+  }
+  const inStyle='border:1.5px solid var(--borde);border-radius:6px;padding:.38rem .6rem;font-size:.79rem;font-family:\'Henderson Sans Basic\',sans-serif;width:100%;margin-top:.3rem';
+  c.innerHTML = anexos.map((a,i)=>`
+    <div class="anexo-item">
+      <button class="remove-btn" onclick="eliminarAnexo(${i})">✕</button>
+      <div class="file-pill">📄 ${escH(a.nombre)}</div>
+      <input type="text" value="${escH(a.descripcion)}" placeholder="Descripción del documento..."
+        style="${inStyle}" oninput="anexos[${i}].descripcion=this.value;actualizarPreviewAnexos()"/>
+    </div>`).join('');
+  actualizarPreviewAnexos();
+}
+
+function eliminarAnexo(i){ anexos.splice(i,1); renderAnexos(); actualizarPreview(); }
+
+/* ══════════════════════════════════════
+   ACTUALIZAR PREVIEW
+══════════════════════════════════════ */
+function fmtFecha(val){
+  if(!val) return '—';
+  const d = new Date(val+'T12:00:00');
+  return `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+}
+function fmtFechaCorta(val){
+  if(!val) return '—';
+  const d = new Date(val+'T12:00:00');
+  return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+}
+
+function actualizarPreview(){
+  const tipo     = v('f-tipo-informante');
+  const nombre   = v('f-nombre-informante').trim();
+  const fechaRec = v('f-fecha-recepcion');
+  const fechaRel = v('f-fecha-relato');
+  const horaRel  = v('f-hora-relato');
+  const relato   = v('f-relato').trim();
+
+  // Quien informa
+  let quien = tipo && nombre ? `${tipo} — ${nombre}` : (tipo || nombre || '—');
+  setText('doc-quien', quien);
+
+  // Fecha de recepción
+  setText('doc-fecha-recepcion', fmtFecha(fechaRec));
+
+  // Fecha y hora del relato (en la sección de relato)
+  setText('doc-fecha-relato', fmtFechaCorta(fechaRel));
+  setText('doc-hora-relato',  horaRel || '—');
+
+  // Párrafo intro (usa fecha y hora del relato para el intro narrativo)
+  if(fechaRel){
+    const d = new Date(fechaRel+'T12:00:00');
+    setText('doc-dia',  d.getDate());
+    setText('doc-mes',  MESES[d.getMonth()]);
+    setText('doc-anio2',d.getFullYear());
+  } else {
+    setText('doc-dia','__'); setText('doc-mes','__________'); setText('doc-anio2','____');
+  }
+  setText('doc-hora', horaRel || '__:__');
+
+  // Relato
+  const relBox = document.getElementById('doc-relato-preview');
+  if(relato){
+    const parrafos = relato.split(/\n\n+/).filter(p=>p.trim());
+    relBox.innerHTML = parrafos.length
+      ? parrafos.map(p=>`<p>${escH(p.trim())}</p>`).join('')
+      : `<p>${escH(relato)}</p>`;
+  } else {
+    relBox.innerHTML='<p class="doc-placeholder">El relato de la situación aparecerá aquí...</p>';
+  }
+
+  // Firma notifica (auto del informante)
+  setText('doc-firma-notifica-nombre', nombre || '______________________________');
+  const tipoCorto = tipo.replace('Persona funcionaria ','').replace('Integrante de la directiva de sección','Directiva de sección') || 'Persona que informa';
+  setText('doc-firma-notifica-cargo', tipoCorto);
+
+  // Firma profe guía (auto del caso)
+  setText('doc-firma-profe-nombre', casoActual?.profe || '______________________________');
+
+  actualizarPreviewTestigos();
+  actualizarPreviewAnexos();
+  // Repaginar tras aplicar los cambios al DOM
+  requestAnimationFrame(paginateDoc);
+  autoSave();
+  updateDeadlineAlarm();
+}
+
+function actualizarPreviewTestigos(){
+  const c = document.getElementById('doc-testigos-preview');
+  if(!testigos.length){
+    c.innerHTML='<p class="doc-placeholder">Sin testigos registrados.</p>'; return;
+  }
+  c.innerHTML = testigos.map(t => {
+    let html = `<div class="doc-testigo-item"><b>${escH(t.nombre||'(sin nombre)')}</b>`;
+    if(t.tipo==='estudiante'){
+      if(t.seccion) html += ` (Sección: ${escH(t.seccion)})`;
+      if(t.encargado) html += ` — <em>Encargado legal: ${escH(t.encargado)}</em>`;
+    } else if(t.tipoFunc){
+      html += ` — ${escH(t.tipoFunc)}`;
+    }
+    return html + '</div>';
+  }).join('');
+  requestAnimationFrame(paginateDoc);
+}
+
+function actualizarPreviewAnexos(){
+  const cMain    = document.getElementById('doc-anexos-preview');
+  const cPaginas = document.getElementById('anexos-pages');
+
+  if(!anexos.length){
+    cMain.innerHTML='<p class="doc-placeholder">Sin documentos anexados.</p>';
+    cPaginas.innerHTML='';
+    requestAnimationFrame(paginateDoc);
+    return;
+  }
+
+  cMain.innerHTML = anexos.map((a,i)=>
+    `<div class="doc-anexo-item"><b>Anexo ${i+1}:</b> ${escH(a.descripcion||a.nombre)}</div>`
+  ).join('');
+
+  const base = {
+    exp:  escH(casoActual?.expediente||'—'),
+    anio: escH(casoActual?.anio||'2026')
+  };
+
+  const buildFolioLineAnexo = () => `<div style="display:flex;justify-content:flex-end;font-size:7.5pt;color:#555;margin-bottom:.3cm">
+    <span>Exp. N.°&nbsp;<b style="color:var(--azul)">${base.exp}</b>&nbsp;·&nbsp;Año&nbsp;<b style="color:var(--azul)">${base.anio}</b>&nbsp;·&nbsp;<span></span></span>
+  </div>`;
+
+  // Portada de anexos
+  let html = `
+    <div class="preview-label" style="margin-top:1rem">Portada de Anexos (Sin folear)</div>
+    <article class="carta carta-anexo-portada">
+      <div class="carta-inner">
+        ${buildFolioLineAnexo()}
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.7cm">
+          <div class="anexo-portada-titulo">Anexos</div>
+          <div class="anexo-portada-sub">Documentos adjuntos al Expediente de Debido Proceso</div>
+          <hr style="border:none;border-top:3px solid var(--azul);width:10cm;margin:.4cm 0"/>
+          <div style="text-align:left;width:100%;max-width:13cm">
+            ${anexos.map((a,i)=>`
+              <div style="font-size:10.5pt;margin-bottom:.22cm;padding-left:.5cm;border-left:3px solid var(--oro)">
+                <b style="color:var(--azul)">Anexo ${i+1}:</b> ${escH(a.descripcion||a.nombre)}
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </article>`;
+
+  // Cada anexo en página propia
+  anexos.forEach((a,i)=>{
+    html += `
+      <div class="preview-label" style="margin-top:1rem">Anexo ${i+1} (Sin folear)</div>
+      <article class="carta">
+        <div class="carta-inner">
+          ${buildFolioLineAnexo()}
+          <h2 style="font-size:12pt;font-weight:800;color:var(--azul);text-align:center;margin-bottom:.4cm;text-transform:uppercase">
+            Anexo ${i+1}
+          </h2>
+          <div style="background:#f0f6ff;border:2px solid var(--azul);border-radius:8px;padding:.5cm .9cm;margin-bottom:.4cm">
+            <div style="font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--azul);margin-bottom:.15cm">Descripción:</div>
+            <div style="font-size:10.5pt">${escH(a.descripcion||'(Sin descripción)')}</div>
+          </div>
+          <div style="background:#fafbfc;border:1.5px dashed #bbb;border-radius:8px;padding:.5cm .9cm;text-align:center;color:#999;font-size:9.5pt">
+            📄 Archivo: <b style="color:var(--azul)">${escH(a.nombre)}</b><br>
+            <span style="font-size:8pt">(Adjuntar físicamente el documento original)</span>
+          </div>
+          ${a.url && a.tipo.startsWith('image/') ? `<img src="${a.url}" style="max-width:100%;border:1px solid #ddd;border-radius:4px;margin-top:.4cm" alt="Anexo"/>` : ''}
+        </div>
+      </article>`;
+  });
+
+  cPaginas.innerHTML = html;
+  // NO llamamos a paginateDoc aquí para evitar bucles infinitos
+}
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.opacity='1';
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.style.opacity='0',2800);
+}
+
+/* ══════════════════════════════════════
+   PAGINADOR DE PANTALLA
+══════════════════════════════════════ */
+function getCmPx(){
+  const d=document.createElement('div');
+  d.style.cssText='position:fixed;left:-9999px;width:1cm;height:1cm';
+  document.body.appendChild(d);
+  const v=d.offsetWidth; d.remove(); return v;
+}
+
+function buildInstHead(folio){
+  const exp = escH(casoActual?.expediente||'—');
+  const anio= escH(casoActual?.anio||'2026');
+  return `<div style="display:flex;justify-content:flex-end;font-size:7.5pt;color:#555;margin-bottom:.3cm">
+    <span>Exp. N.°&nbsp;<b style="color:var(--azul)">${exp}</b>&nbsp;·&nbsp;Año&nbsp;<b style="color:var(--azul)">${anio}</b>&nbsp;·&nbsp;${folio}</span>
+  </div>`;
+}
+
+function paginateDoc(){
+  const CM = getCmPx();
+  // Se reduce drásticamente el alto útil para garantizar márgenes inferiores
+  const CONTENT_PX  = Math.floor(19 * CM); 
+  const CONT_HEAD_PX = Math.ceil(0.8 * CM);
+
+  const display = document.getElementById('carta-display');
+  display.innerHTML = '';
+
+  const firmasN = document.getElementById('sg-firmas');
+  // Se agregan 2.5cm adicionales para compensar el margen superior re-colapsado de .doc-firmas
+  const firmasH = firmasN.getBoundingClientRect().height + Math.ceil(2.5 * CM);
+
+  const pages = [[]];
+  let pageUsed = 0;
+  let availPg1  = CONTENT_PX - firmasH;
+  let availCont = CONTENT_PX - CONT_HEAD_PX - firmasH;
+
+  const getAvail = () => pages.length === 1 ? availPg1 : availCont;
+  
+  const commitPage = () => {
+    pages.push([]);
+    pageUsed = CONT_HEAD_PX;
+  };
+
+  const addBlock = (node, height) => {
+    if(pageUsed + height > getAvail()) {
+      commitPage();
+    }
+    pages[pages.length - 1].push(node);
+    pageUsed += height;
+  };
+
+  // 1. Header
+  const header = document.getElementById('sg-header');
+  addBlock(header.cloneNode(true), header.getBoundingClientRect().height);
+
+  // 2. Relato (separado inteligentemente)
+  const relatoBase = document.getElementById('sg-relato');
+  const relatoPreview = document.getElementById('doc-relato-preview');
+  const parrafos = Array.from(relatoPreview.children);
+
+  let currentRelatoWrap = null;
+  let currentRelatoInner = null;
+
+  const startNewRelatoPart = (addTitles) => {
+    currentRelatoWrap = relatoBase.cloneNode(false); // <div class="doc-relato">
+    if(addTitles) {
+      Array.from(relatoBase.children).forEach(c => {
+        if(c.id !== 'doc-relato-preview') currentRelatoWrap.appendChild(c.cloneNode(true));
+      });
+    }
+    currentRelatoInner = document.createElement('div');
+    currentRelatoInner.className = relatoPreview.className;
+    currentRelatoInner.style.cssText = relatoPreview.style.cssText;
+    currentRelatoWrap.appendChild(currentRelatoInner);
+  };
+
+  startNewRelatoPart(true);
+
+  // Agregamos el titulo/intro inicial, medimos
+  let pendingRelatoH = 0;
+  Array.from(currentRelatoWrap.children).forEach(c => {
+    if(c !== currentRelatoInner) pendingRelatoH += c.getBoundingClientRect().height + 5;
+  });
+
+  parrafos.forEach((p, idx) => {
+    const pH = p.getBoundingClientRect().height + 10;
+    if(pageUsed + pendingRelatoH + pH > getAvail()) {
+      // No cabe, hacer push de lo que llevamos, SI hay algo
+      if(currentRelatoInner.children.length > 0) {
+        addBlock(currentRelatoWrap, pendingRelatoH);
+      }
+      commitPage();
+      startNewRelatoPart(false);
+      pendingRelatoH = 0; // en continuación no hay titulo
+    }
+    currentRelatoInner.appendChild(p.cloneNode(true));
+    pendingRelatoH += pH;
+  });
+  
+  if(currentRelatoInner.children.length > 0) {
+    addBlock(currentRelatoWrap, pendingRelatoH);
+  }
+
+  // 3. Testigos
+  const testigos = document.getElementById('sg-testigos');
+  addBlock(testigos.cloneNode(true), testigos.getBoundingClientRect().height);
+
+  // 4. Anexos
+  const anexos = document.getElementById('sg-anexos');
+  addBlock(anexos.cloneNode(true), anexos.getBoundingClientRect().height);
+
+  pages.forEach((page, pi) => {
+    const article = document.createElement('article');
+    article.className = 'carta';
+    const inner = document.createElement('div');
+    inner.className = 'carta-inner';
+
+    const exp = escH(casoActual?.expediente || '—');
+    const anio = escH(casoActual?.anio || '2026');
+    const folio = pi + 1;
+    const foliSpan = document.createElement('div');
+    foliSpan.className = 'folio-line';
+    foliSpan.innerHTML = `Exp. N.° <b>${exp}</b> · Año <b>${anio}</b> · Folio <b>${folio}</b>`;
+    inner.appendChild(foliSpan);
+
+    page.forEach(g => inner.appendChild(g));
+
+    // Agregar firmas al final del folio
+    const fNode = firmasN.cloneNode(true);
+    fNode.style.marginTop = '0.6cm';
+    inner.appendChild(fNode);
+
+    article.appendChild(inner);
+    display.appendChild(article);
+
+    if(pi < pages.length - 1){
+      const lbl = document.createElement('div');
+      lbl.className = 'preview-label';
+      lbl.style.cssText = 'margin-top:.5rem;color:#aab;font-size:.68rem;letter-spacing:.06em';
+      lbl.textContent = `— Página ${pi + 2} —`;
+      display.appendChild(lbl);
+    }
+  });
+
+  // Salvar los folios para el paso 2
+  try {
+     const data = JSON.parse(localStorage.getItem(LS_KEY_PASO1+(casoActual?.id?'_'+casoActual.id:''))) || {};
+     data.totalFoliosP1 = pages.length;
+     localStorage.setItem(LS_KEY_PASO1+(casoActual?.id?'_'+casoActual.id:''), JSON.stringify(data));
+  } catch(e){}
+}
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+cargarCaso();
+cargarDatosPaso1();
+actualizarPreview();
+
+/* ══════════════════════════════════════
+   LÓGICA DE ALARMA DE TIEMPOS
+ ══════════════════════════════════════ */
+function updateDeadlineAlarm() {
+  const lbl = document.getElementById('dt-label');
+  const dot = document.getElementById('dt-status');
+  if(!casoActual || !casoActual.fechaApertura) {
+    lbl.textContent = 'Sin fecha apertura';
+    dot.style.background = '#aaa';
+    return;
+  }
+
+  const fApertura = new Date(casoActual.fechaApertura + 'T12:00:00');
+  const hoy = new Date(); // En entorno real usaría new Date(), pero aquí usaremos la del sistema si se pide precisión
+  
+  // Plazo Paso 1: 5 días hábiles a partir de fecha apertura
+  const limite = calcularHabiles(fApertura, 5);
+  const diffTiempo = limite - hoy;
+  const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
+
+  if (diffDias < 0) {
+    lbl.textContent = `Plazo vencido (${Math.abs(diffDias)}d)`;
+    dot.style.background = '#C8102E'; // Rojo MEP
+  } else if (diffDias <= 1) {
+    lbl.textContent = `¡Vence mañana!`;
+    dot.style.background = '#E0A800'; // Oro MEP
+  } else {
+    lbl.textContent = `${diffDias} días restantes`;
+    dot.style.background = '#166534'; // Verde
+  }
+}
+
+function calcularHabiles(fecha, dias) {
+  let f = new Date(fecha.getTime());
+  let count = 0;
+  while (count < dias) {
+    f.setDate(f.getDate() + 1);
+    const d = f.getDay();
+    if (d !== 0 && d !== 6) count++; // Sábado y Domingo no cuentan
+  }
+  return f;
+}
+
+function irIndice(pag){ guardarDatos(true); location.href = './index.html?id=' + (casoActual?.id||'') + '&page=' + (pag||'portada'); }
+function irPaso2(){ guardarDatos(true); location.href = './paso2.html?id=' + (casoActual?.id||''); }
+function irPaso3(){ guardarDatos(true); location.href = './paso3.html?id=' + (casoActual?.id||''); }
+function irPaso4(){ guardarDatos(true); location.href = './paso4.html?id=' + (casoActual?.id||''); }
+function irPaso5(){ guardarDatos(true); location.href = './paso5.html?id=' + (casoActual?.id||''); }
+function irPaso6(){ guardarDatos(true); location.href = './paso6.html?id=' + (casoActual?.id||''); }
+function irPaso7(){ guardarDatos(true); location.href = './paso7.html?id=' + (casoActual?.id||''); }
+function irPaso8(){ guardarDatos(true); location.href = './paso8.html?id=' + (casoActual?.id||''); }
+function irAnexos(){ guardarDatos(true); location.href = './anexos.html?id=' + (casoActual?.id||''); }
+</script>
+</body>
+</html>

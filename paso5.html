@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Paso 5 – Notificación al Padre de Familia | Debido Proceso MEP</title>
+  <style>
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic Light.ttf') format('truetype');
+      font-weight: 300
+    }
+
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic SemiBd.ttf') format('truetype');
+      font-weight: 600
+    }
+
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic Bold.ttf') format('truetype');
+      font-weight: 700
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --azul: #1c2847;
+      --azul-cl: #273966;
+      --rojo: #C8102E;
+      --oro: #C9A86A;
+      --gris: #f0f4f9;
+      --borde: #cbd5e0;
+      --texto: #0f1a2e;
+      --blanco: #fff;
+      --sombra: 0 4px 24px rgba(28, 40, 71, .13);
+    }
+
+    body,
+    input,
+    select,
+    textarea,
+    button {
+      font-family: 'Henderson Sans Basic', sans-serif;
+    }
+
+    body {
+      background: var(--gris);
+      color: var(--texto);
+      min-height: 100vh
+    }
+
+    /* ── TOPBAR ── */
+    #topbar {
+      background: var(--azul);
+      color: var(--blanco);
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: 0 1.5rem;
+      height: 54px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .35)
+    }
+
+    #topbar .brand {
+      font-size: .9rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      color: var(--oro);
+      margin-right: auto
+    }
+
+    #topbar .case-info {
+      font-size: .78rem;
+      opacity: .75;
+      max-width: 340px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    #topbar button {
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .25);
+      color: var(--blanco);
+      padding: .3rem .9rem;
+      border-radius: 6px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    #topbar button:hover {
+      background: rgba(255, 255, 255, .25)
+    }
+
+    .btn-gold {
+      background: var(--oro) !important;
+      color: var(--azul) !important;
+      border-color: var(--oro) !important
+    }
+
+    .btn-gold:hover {
+      background: #e0a800 !important
+    }
+
+    /* ── CASE NAV ── */
+    #case-nav {
+      background: #1a3a6b;
+      color: var(--blanco);
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .5rem 1.5rem;
+      flex-wrap: wrap;
+      border-bottom: 2px solid var(--azul)
+    }
+
+    .case-nav-title {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--oro);
+      white-space: nowrap;
+      margin-right: .5rem
+    }
+
+    .page-btn {
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .18);
+      color: rgba(255, 255, 255, .85);
+      padding: .28rem .7rem;
+      border-radius: 5px;
+      font-size: .72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+
+    .page-btn:hover {
+      background: rgba(255, 255, 255, .2)
+    }
+
+    .page-btn.active {
+      background: var(--oro);
+      color: var(--azul);
+      border-color: var(--oro)
+    }
+
+    /* ── LAYOUT ── */
+    #app {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 0;
+      min-height: calc(100vh - 100px)
+    }
+
+    /* ── PANEL EDITOR ── */
+    #panel-editor {
+      background: var(--blanco);
+      border-right: 2px solid var(--borde);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column
+    }
+
+    .panel-body {
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem
+    }
+
+    .sec {
+      border: 1.5px solid var(--borde);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    .sec-hdr {
+      background: var(--gris);
+      padding: .55rem .9rem;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--azul);
+      display: flex;
+      align-items: center;
+      gap: .4rem
+    }
+
+    .sec-body {
+      padding: .85rem .9rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem
+    }
+
+    .fg label {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #555
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      border: 1.5px solid var(--borde);
+      border-radius: 7px;
+      padding: .45rem .75rem;
+      font-size: .83rem;
+      background: #fafbfc;
+      transition: border-color .2s;
+      color: var(--texto)
+    }
+
+    .fg input:focus,
+    .fg select:focus,
+    .fg textarea:focus {
+      outline: none;
+      border-color: var(--azul-cl);
+      background: var(--blanco)
+    }
+
+    /* ── PREVIEW ── */
+    #panel-preview {
+      background: #dde3ed;
+      overflow-y: auto;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem
+    }
+
+    #carta-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%
+    }
+
+    /* Estilos de la carta Acta (Clasica) */
+    .carta {
+      width: 21.59cm;
+      height: 27.94cm;
+      background: white url('fondo.png') no-repeat top center;
+      background-size: 100% auto;
+      box-shadow: var(--sombra);
+      border-radius: 3px;
+      font-family: 'Henderson Sans Basic', sans-serif;
+      font-size: 11pt;
+      line-height: 1.7;
+      overflow: hidden;
+      flex-shrink: 0
+    }
+
+    .carta-inner {
+      padding: 3.2cm 2.2cm 2cm 2.5cm;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .folio-line {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 7.5pt;
+      color: #555;
+      margin-bottom: .3cm
+    }
+
+    .folio-line b {
+      color: var(--azul)
+    }
+
+    .acta-titulo {
+      font-size: 10.5pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--azul);
+      line-height: 1.4;
+      letter-spacing: .02em;
+      text-align: center;
+      margin-bottom: 0.6cm;
+    }
+
+    /* Fuente de contenido (invisible, se usa para medir) */
+    #carta-source {
+      position: fixed;
+      left: -9999px;
+      top: 0;
+      width: 16.89cm;
+      font-family: 'Henderson Sans Basic', sans-serif;
+      font-size: 11pt;
+      line-height: 1.7;
+      color: #111;
+      visibility: hidden;
+      pointer-events: none;
+      z-index: -1
+    }
+
+    /* Print */
+    @media print {
+      @page {
+        size: letter;
+        margin: 0
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important
+      }
+
+      #topbar,
+      #case-nav,
+      #panel-editor,
+      .preview-label,
+      #carta-source,
+      #toast,
+      button {
+        display: none !important
+      }
+
+      #app {
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 100%
+      }
+
+      #panel-preview {
+        display: block !important;
+        padding: 0;
+        background: white !important;
+        width: 100%
+      }
+
+      .carta {
+        width: 21.59cm !important;
+        height: 27.94cm !important;
+        box-shadow: none !important;
+        page-break-after: always;
+        break-after: page;
+        border: none !important;
+        background-image: url('fondo.png') !important;
+        background-size: 100% auto !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important
+      }
+
+      .carta:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important
+      }
+
+      .carta-inner {
+        padding: 3.2cm 2.2cm 2cm 2.5cm
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header id="topbar">
+    <span class="brand">📋 Debido Proceso MEP</span>
+    <span class="case-info" id="case-info-label">—</span>
+    <button onclick="location.href='index.html'">← Expedientes</button>
+    <button class="btn-gold" onclick="window.print()" title="Imprimir este documento">🖨 Imprimir Documento</button>
+    <div id="deadline-timer"
+      style="margin-left: 1rem; border-left: 1px solid rgba(255,255,255,.2); padding-left: 1rem; display: flex; align-items: center; gap: .5rem; font-size: .8rem; color: white;">
+      <span style="opacity: .6;">⏳ Plazo Inv:</span>
+      <span id="dt-label" style="font-weight: 700; color: #fff;">Calculando...</span>
+      <span id="dt-status" style="width: 10px; height: 10px; border-radius: 50%; background: #999;"></span>
+    </div>
+  </header>
+
+  <nav id="case-nav">
+    <span class="case-nav-title">Expediente</span>
+    <button class="page-btn" onclick="irIndice('portada')">1. Portada</button>
+    <button class="page-btn" onclick="irIndice('tdc')">2. Tabla Contenidos</button>
+    <button class="page-btn" onclick="irPaso1()">3. Com. Prof. Guía</button>
+    <button class="page-btn" onclick="irPaso2()">4. Notif. Testigos</button>
+    <button class="page-btn" onclick="irPaso3()">5–6. Actas/Declara.</button>
+    <button class="page-btn" onclick="irAnexos()">7. Anexos</button>
+    <button class="page-btn" onclick="irPaso4()">8. Resultado Inv.</button>
+    <button class="page-btn active" onclick="irPaso5()">9. Notif. Apertura</button>
+    <button class="page-btn" onclick="irPaso6()">10. Boleta Apertura</button>
+    <button class="page-btn" onclick="irPaso7()">11. Solicitud Copia</button>
+    <button class="page-btn" onclick="irPaso9()">12. Descargos y Pruebas</button>
+    <button class="page-btn" onclick="irPaso8()">13. Dec. Estudiante</button>
+  </nav>
+
+  <div id="app">
+    <aside id="panel-editor">
+      <div class="panel-body">
+
+        <div id="msg-archivo" style="display:none; text-align:center; padding: 2rem 1rem;">
+          <h3 style="color:var(--rojo); margin-bottom: 1rem;">¡Atención!</h3>
+          <p style="font-size:0.9rem; line-height: 1.5; color:#444;">El paso anterior fue declarado como
+            <b>"Archivo"</b> (No se logró establecer infracción).<br><br>Por lo tanto, <b>no se debe generar</b> esta
+            notificación al hogar, ya que el proceso de investigación ha concluido.
+          </p>
+          <button class="btn-gold" style="margin-top:1.5rem; padding: 0.6rem 1rem; border-radius: 6px; font-weight:700"
+            onclick="irPaso4()">⬅ Volver a Resultado Inv.</button>
+        </div>
+
+        <div id="form-content">
+          <div class="sec">
+            <div class="sec-hdr">📅 Datos de la Citación</div>
+            <div class="sec-body" style="display:flex; flex-direction:column; gap:1rem;">
+              <div class="fg">
+                <label>Fecha del documento</label>
+                <input type="date" id="f-fecha-notif" onchange="updateLive()" />
+              </div>
+              <div class="fg">
+                <label>Día de la citación (fecha)</label>
+                <input type="date" id="f-fecha-cita" onchange="updateLive()" />
+              </div>
+              <div class="fg">
+                <label>Hora de la citación</label>
+                <input type="time" id="f-hora-cita" onchange="updateLive()" />
+              </div>
+              <div class="fg">
+                <label>Lugar</label>
+                <input type="text" id="f-lugar-cita" placeholder="Ej. Dirección, Oficina del Docente..."
+                  oninput="updateLive()" />
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:.6rem;">
+            <button class="btn-gold" style="padding:.7rem; border-radius:8px; font-weight:700; cursor:pointer;"
+              onclick="guardar()">💾 Guardar Notificación</button>
+            <button class="page-btn"
+              style="padding:.7rem; border-radius:8px; width:100%; background:var(--azul); color:white; border:none"
+              onclick="irPaso6()">➡️ Siguiente Paso</button>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <main id="panel-preview">
+      <div id="carta-display"></div>
+    </main>
+  </div>
+
+  <!-- FUENTE PARA PAGINACIÓN -->
+  <div id="carta-source">
+    <div id="sg-header">
+      <h2 class="acta-titulo">NOTIFICACIÓN AL PADRE DE FAMILIA O ENCARGADO LEGAL</h2>
+
+      <div style="margin-bottom: 0.8cm; line-height: 1.5;">
+        <p style="margin-bottom: 0.3cm;"><b>Fecha:</b> <span id="doc-fecha-notif">_____________</span></p>
+        <p style="margin-bottom: 0.2cm;"><b>Señor (a):</b> <span id="doc-padre">___________________________</span></p>
+        <p style="margin-bottom: 0.3cm;">Padre/madre, o encargado legal</p>
+        <p style="margin-bottom: 0.2cm;"><b>Estudiante:</b> <span id="doc-estudiante">___________________________</span>
+        </p>
+        <p style="margin-bottom: 0.2cm;"><b>Sección:</b> <span id="doc-seccion">________</span></p>
+      </div>
+
+      <div style="text-align: justify; line-height: 1.65; margin-bottom: 0.6cm;">
+        Por este medio se le solicita presentarse el día <b id="doc-dia-cita">_______</b> del mes de <b
+          id="doc-mes-cita">________</b> del año en curso a las <b id="doc-hora-cita">________</b> en <b
+          id="doc-lugar-cita">___________________</b> para ser atendido por el docente guía <b
+          id="doc-profe">__________________________</b>, con el fin de informarle acerca de la apertura del debido
+        proceso por la supuesta comisión de una falta por parte de la persona estudiante <b
+          id="doc-estudiante2">___________________________</b>, de la sección <b id="doc-seccion2">________</b>.
+      </div>
+
+      <div
+        style="text-align: justify; font-size: 10pt; background: #f8fafc; padding: 0.3cm; border-left: 3px solid var(--azul); margin-bottom: 0.8cm;">
+        <b>Nota:</b> En caso de no poder presentarse en fecha y hora, favor indicarlo para coordinar una nueva cita.
+      </div>
+
+      <div style="margin-bottom: 1.5cm;">Sin otro particular, se despide</div>
+    </div>
+
+    <div id="sg-cierre">
+      <!-- Firmas -->
+      <div style="display: flex; flex-direction: column; width: 6.5cm; margin-bottom: 1.5cm;">
+        <div style="border-bottom: 1.5px solid #333; margin-bottom: 0.1cm;"></div>
+        <div style="font-weight: bold; color: var(--azul); font-size: 9.5pt; text-align: center;" id="doc-f-profe">
+          __________________________</div>
+        <div style="font-size: 8.5pt; color: #555; text-align: center;">Prof. Guía</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5cm; margin-top: 0.5cm; width: 12cm;">
+        <div style="display: flex; flex-direction: column; align-items: center;">
+          <div style="border-bottom: 1.5px solid #333; margin-bottom: 0.1cm; width: 100%;"></div>
+          <div style="font-size: 8.5pt; color: #555;">Firma de recibido</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
+          <div style="border-bottom: 1.5px solid #333; margin-bottom: 0.1cm; width: 100%;"></div>
+          <div style="font-size: 8.5pt; color: #555;">Fecha</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"
+    style="position:fixed; bottom:2rem; right:2rem; background:var(--azul); color:var(--oro); padding:.7rem 1.4rem; border-radius:8px; display:none; z-index:9999;">
+  </div>
+
+  <script>
+    /* ══ ESTADO ══ */
+    const LS_CASOS = 'mep_dp_casos_v2';
+    const LS_PASO1 = 'mep_dp_paso1_v1';
+    const LS_PASO2 = 'mep_dp_paso2_v1';
+    const LS_PASO3 = 'mep_dp_paso3_v1';
+    const LS_PASO4 = 'mep_dp_paso4_v1';
+    const LS_PASO5 = 'mep_dp_paso5_v1';
+    const LS_PASO6 = 'mep_dp_paso6_v1';
+    const LS_PASO7 = 'mep_dp_paso7_v1';
+    const LS_PASO8 = 'mep_dp_paso8_v1';
+    const LS_PASO9 = 'mep_dp_paso9_v1';
+    const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+    let caso = null;
+    let autoSaveTimeout;
+
+    /* ══ INIT ══ */
+    function init() {
+      const id = new URLSearchParams(location.search).get('id');
+      try {
+        const casos = JSON.parse(localStorage.getItem(LS_CASOS)) || [];
+        caso = id ? casos.find(c => c.id === id) : casos[0];
+      } catch { caso = null; }
+
+      if (caso) {
+        document.getElementById('case-info-label').textContent = `${caso.expediente || 'Sin N°'} — ${caso.estudiante || 'Estudiante'}`;
+      }
+
+      // Validar si es archivo o apertura
+      const savedP4 = JSON.parse(localStorage.getItem(LS_PASO4 + (caso ? '_' + caso.id : ''))) || {};
+      const resChoice = savedP4.resChoice || 'archivo';
+
+      if (resChoice === 'archivo') {
+        // Ocultar formulario de notificacion
+        document.getElementById('form-content').style.display = 'none';
+        document.getElementById('msg-archivo').style.display = 'block';
+        document.getElementById('panel-preview').style.display = 'none';
+        return;
+      }
+
+      // Cargar datos propios del Paso 5
+      const savedP5 = JSON.parse(localStorage.getItem(LS_PASO5 + (caso ? '_' + caso.id : ''))) || {};
+
+      document.getElementById('f-fecha-notif').value = savedP5.fechaNotif || new Date().toISOString().split('T')[0];
+      document.getElementById('f-fecha-cita').value = savedP5.fechaCita || '';
+      document.getElementById('f-hora-cita').value = savedP5.horaCita || '';
+      document.getElementById('f-lugar-cita').value = savedP5.lugarCita || '';
+
+      updateLive();
+    }
+
+    function updateLive() {
+      const fNotif = document.getElementById('f-fecha-notif').value;
+      const fCita = document.getElementById('f-fecha-cita').value;
+      const hCita = document.getElementById('f-hora-cita').value;
+      const lugarCita = document.getElementById('f-lugar-cita').value;
+
+      const profe = caso?.profe || '__________________________';
+      const estudiante = caso?.estudiante || '___________________________';
+      const seccion = caso?.nivel || '________';
+      const encargado = caso?.encargado || '___________________________';
+
+      // Formatear fechas
+      document.getElementById('doc-fecha-notif').textContent = fNotif ? fmtFecha(fNotif) : '_____________';
+      document.getElementById('doc-padre').textContent = encargado;
+      document.getElementById('doc-estudiante').textContent = estudiante;
+      document.getElementById('doc-seccion').textContent = seccion;
+      document.getElementById('doc-estudiante2').textContent = estudiante;
+      document.getElementById('doc-seccion2').textContent = seccion;
+      document.getElementById('doc-profe').textContent = profe;
+      document.getElementById('doc-f-profe').textContent = profe;
+
+      if (fCita) {
+        const dC = new Date(fCita + 'T12:00:00');
+        document.getElementById('doc-dia-cita').textContent = dC.getDate();
+        document.getElementById('doc-mes-cita').textContent = MESES[dC.getMonth()];
+      } else {
+        document.getElementById('doc-dia-cita').textContent = '_______';
+        document.getElementById('doc-mes-cita').textContent = '________';
+      }
+
+      document.getElementById('doc-hora-cita').textContent = hCita || '________';
+      document.getElementById('doc-lugar-cita').textContent = lugarCita || '___________________';
+
+      requestAnimationFrame(paginateActa);
+      autoSave();
+      updateDeadlineAlarm();
+    }
+
+    function paginateActa() {
+      const display = document.getElementById('carta-display');
+      display.innerHTML = '';
+
+      const srcHeader = document.getElementById('sg-header');
+      const srcFooter = document.getElementById('sg-cierre');
+
+      function stripIds(n) {
+        if (n.removeAttribute) n.removeAttribute('id');
+        if (n.querySelectorAll) n.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+        return n;
+      }
+
+      const art = document.createElement('article');
+      art.className = 'carta';
+      const inner = document.createElement('div');
+      inner.className = 'carta-inner';
+
+      // Folio base desde paso 4 + anexos previos (simulado)
+      let inicioFolio = 1;
+      try {
+        const kid = caso?.id ? '_' + caso.id : '';
+        const d1 = JSON.parse(localStorage.getItem(LS_PASO1 + kid)) || {};
+        const d2 = JSON.parse(localStorage.getItem(LS_PASO2 + kid)) || {};
+        const d3 = JSON.parse(localStorage.getItem(LS_PASO3 + kid)) || {};
+        const d4 = JSON.parse(localStorage.getItem(LS_PASO4 + kid)) || {};
+        
+        inicioFolio = (d1.totalFoliosP1 || 1) + (d2.totalFoliosP2 || 0) + (d3.totalFoliosP3 || 0) + (d4.numPaginas || 0) + 1;
+      } catch (e) { }
+
+      const exp = escH(caso?.expediente || '—');
+      const anio = escH(caso?.anio || '2026');
+
+      const foliSpan = document.createElement('div');
+      foliSpan.className = 'folio-line';
+      foliSpan.innerHTML = `<span>Exp. N.° <b>${exp}</b> · Año <b>${anio}</b> · Folio <b>${inicioFolio}</b></span>`;
+      inner.appendChild(foliSpan);
+
+      inner.appendChild(stripIds(srcHeader.cloneNode(true)));
+      inner.appendChild(stripIds(srcFooter.cloneNode(true)));
+
+      art.appendChild(inner);
+      display.appendChild(art);
+    }
+
+    function guardar(silent = false) {
+      const payload = {
+        fechaNotif: document.getElementById('f-fecha-notif').value,
+        fechaCita: document.getElementById('f-fecha-cita').value,
+        horaCita: document.getElementById('f-hora-cita').value,
+        lugarCita: document.getElementById('f-lugar-cita').value,
+        numPaginas: document.querySelectorAll('#carta-display .carta').length
+      };
+
+      localStorage.setItem(LS_PASO5 + (caso ? '_' + caso.id : ''), JSON.stringify(payload));
+      if (!silent) toast('✔ Notificación guardada');
+    }
+
+    /* ══ UTILS ══ */
+    function fmtFecha(v) {
+      if (!v) return '_____________';
+      const d = new Date(v + 'T12:00:00');
+      return `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+    }
+    function trySave() {
+      if (typeof guardar === 'function') {
+        try { guardar(true); } catch(e){}
+      }
+    }
+    function irIndice(pag) { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './index.html?id=' + (id||'') + '&page=' + (pag||'portada'); }
+    function irPaso1() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso1.html' + (id ? '?id='+id : ''); }
+    function irPaso2() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso2.html' + (id ? '?id='+id : ''); }
+    function irPaso3() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso3.html' + (id ? '?id='+id : ''); }
+    function irPaso4() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso4.html' + (id ? '?id='+id : ''); }
+    function irPaso5() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso5.html' + (id ? '?id='+id : ''); }
+    function irPaso6() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso6.html' + (id ? '?id='+id : ''); }
+    function irPaso7() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso7.html' + (id ? '?id='+id : ''); }
+    function irPaso8() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso8.html' + (id ? '?id='+id : ''); }
+    function irPaso9() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso9.html' + (id ? '?id='+id : ''); }
+    function irAnexos() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './anexos.html' + (id ? '?id='+id : ''); }
+    function toast(m) {
+      const t = document.getElementById('toast');
+      t.textContent = m; t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3000);
+    }
+    function escH(s) { if (!s) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    function autoSave() {
+      clearTimeout(autoSaveTimeout);
+      autoSaveTimeout = setTimeout(() => { guardar(true); }, 1000);
+    }
+
+    function updateDeadlineAlarm() {
+      const lbl = document.getElementById('dt-label');
+      const dot = document.getElementById('dt-status');
+      if (!caso || !caso.fechaApertura) {
+        lbl.textContent = 'Sin fecha apertura';
+        dot.style.background = '#aaa';
+        return;
+      }
+      const fApertura = new Date(caso.fechaApertura + 'T12:00:00');
+      const hoy = new Date();
+      const limite = calcularHabiles(fApertura, 15);
+      const diffTiempo = limite - hoy;
+      const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
+
+      if (diffDias < 0) {
+        lbl.textContent = `Vencido (${Math.abs(diffDias)}d)`;
+        dot.style.background = '#C8102E';
+      } else if (diffDias <= 2) {
+        lbl.textContent = `¡Faltan ${diffDias}d!`;
+        dot.style.background = '#E0A800';
+      } else {
+        lbl.textContent = `${diffDias} días restantes`;
+        dot.style.background = '#166534';
+      }
+    }
+
+    function calcularHabiles(fecha, dias) {
+      let f = new Date(fecha.getTime());
+      let count = 0;
+      while (count < dias) {
+        f.setDate(f.getDate() + 1);
+        const d = f.getDay();
+        if (d !== 0 && d !== 6) count++;
+      }
+      return f;
+    }
+
+    // Inicializar la aplicación
+    init();
+  </script>
+</body>
+
+</html>

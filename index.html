@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Gestor de Debido Proceso – MEP</title>
+<style>
+@font-face {
+  font-family: 'Henderson Sans Basic';
+  src: url('Logo/Henderson Sans Basic Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Henderson Sans Basic';
+  src: url('Logo/Henderson Sans Basic SemiBd.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Henderson Sans Basic';
+  src: url('Logo/Henderson Sans Basic Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --azul:#1c2847;--azul-cl:#273966;--rojo:#C8102E;--oro:#C9A86A;
+  --gris:#f0f4f9;--borde:#cbd5e0;--texto:#0f1a2e;--blanco:#fff;
+  --sombra:0 4px 24px rgba(28,40,71,.13);
+}
+body, input, select, textarea, button {font-family:'Henderson Sans Basic',sans-serif;}
+body{background:var(--gris);color:var(--texto);min-height:100vh}
+
+/* ── TOPBAR ── */
+#topbar{background:var(--azul);color:var(--blanco);display:flex;align-items:center;
+  gap:.75rem;padding:0 1.5rem;height:54px;position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 12px rgba(0,0,0,.35)}
+#topbar .brand{font-size:.9rem;font-weight:800;letter-spacing:.05em;color:var(--oro);margin-right:auto}
+#topbar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);
+  color:var(--blanco);padding:.3rem .9rem;border-radius:6px;font-size:.78rem;
+  font-weight:600;cursor:pointer;transition:background .2s}
+#topbar button:hover{background:rgba(255,255,255,.25)}
+#topbar .btn-gold{background:var(--oro);color:var(--azul);border-color:var(--oro)}
+#topbar .btn-gold:hover{background:#e0a800}
+
+/* ── VIEWS ── */
+.view{display:none}.view.active{display:block}
+
+/* ══════════════════════════════════
+   DASHBOARD
+══════════════════════════════════ */
+#dashboard{padding:2rem}
+.dash-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.dash-header h1{font-size:1.4rem;font-weight:800;color:var(--azul)}
+.dash-header p{font-size:.85rem;color:#666;margin-top:.15rem}
+.dash-search{flex:1;min-width:200px;max-width:340px;
+  border:1.5px solid var(--borde);border-radius:8px;padding:.5rem 1rem;
+  font-size:.85rem;font-family:'Henderson Sans Basic',sans-serif;background:var(--blanco)}
+.dash-search:focus{outline:none;border-color:var(--azul-cl)}
+
+.btn-new{background:var(--azul);color:var(--blanco);border:none;border-radius:8px;
+  padding:.55rem 1.3rem;font-size:.85rem;font-weight:700;cursor:pointer;font-family:'Henderson Sans Basic',sans-serif;
+  display:flex;align-items:center;gap:.4rem;transition:background .2s;white-space:nowrap}
+.btn-new:hover{background:var(--azul-cl)}
+
+/* Stats bar */
+.stats-bar{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.stat-card{background:var(--blanco);border-radius:10px;padding:.8rem 1.2rem;
+  flex:1;min-width:120px;box-shadow:var(--sombra);border-left:4px solid var(--azul)}
+.stat-card .num{font-size:1.6rem;font-weight:800;color:var(--azul);line-height:1}
+.stat-card .lbl{font-size:.72rem;color:#777;text-transform:uppercase;letter-spacing:.04em;margin-top:.2rem}
+
+/* Cases grid */
+#cases-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem}
+.case-card{background:var(--blanco);border-radius:12px;box-shadow:var(--sombra);
+  border:1.5px solid var(--borde);overflow:hidden;transition:transform .2s,box-shadow .2s;
+  display:flex;flex-direction:column}
+.case-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(28,40,71,.18)}
+.case-card-top{background:linear-gradient(135deg,var(--azul),var(--azul-cl));
+  padding:1rem 1.2rem;color:var(--blanco)}
+.case-card-top .exp-num{font-size:.72rem;font-weight:700;opacity:.75;text-transform:uppercase;letter-spacing:.06em}
+.case-card-top .exp-name{font-size:1.05rem;font-weight:700;margin:.2rem 0;line-height:1.2}
+.case-card-top .exp-nivel{font-size:.78rem;opacity:.8}
+.case-card-body{padding:1rem 1.2rem;flex:1;display:flex;flex-direction:column;gap:.5rem}
+.case-meta{display:flex;justify-content:space-between;font-size:.78rem;color:#555}
+.case-meta span b{color:var(--azul)}
+.badge{display:inline-block;padding:.12rem .6rem;border-radius:20px;font-size:.7rem;font-weight:700;letter-spacing:.03em}
+.badge-abierto{background:#dcfce7;color:#166534}
+.badge-investigacion{background:#fef9c3;color:#854d0e}
+.badge-archivado{background:#f3f4f6;color:#6b7280}
+.badge-resuelto{background:#dbeafe;color:#1e40af}
+.case-actions{display:flex;gap:.5rem;padding:.75rem 1.2rem;border-top:1px solid #e8ecf2;background:#fafbfc}
+.case-actions button{flex:1;padding:.4rem;border-radius:6px;font-size:.75rem;font-weight:600;
+  cursor:pointer;border:1.5px solid var(--borde);background:var(--blanco);color:var(--texto);transition:all .2s}
+.case-actions .btn-open{background:var(--azul);color:var(--blanco);border-color:var(--azul)}
+.case-actions .btn-open:hover{background:var(--azul-cl)}
+.case-actions button:hover{border-color:var(--azul-cl);color:var(--azul-cl)}
+.case-actions .btn-del:hover{border-color:var(--rojo);color:var(--rojo)}
+
+.empty-state{text-align:center;padding:4rem 2rem;color:#aaa}
+.empty-state .icon{font-size:3rem;margin-bottom:1rem}
+.empty-state p{font-size:.9rem}
+
+/* ══════════════════════════════════
+   MODAL NUEVO EXPEDIENTE
+══════════════════════════════════ */
+#modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;
+  display:none;align-items:center;justify-content:center;padding:1rem}
+#modal-overlay.open{display:flex}
+#modal{background:var(--blanco);border-radius:14px;width:100%;max-width:680px;
+  max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-head{background:var(--azul);color:var(--blanco);padding:1.2rem 1.5rem;
+  display:flex;justify-content:space-between;align-items:center;border-radius:14px 14px 0 0}
+.modal-head h2{font-size:1rem;font-weight:700}
+.modal-close{background:none;border:none;color:var(--blanco);font-size:1.4rem;
+  cursor:pointer;line-height:1;opacity:.7;transition:opacity .2s}
+.modal-close:hover{opacity:1}
+.modal-body{padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.modal-body .full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:.3rem}
+.form-group label{font-size:.72rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.05em;color:#555}
+.form-group input,.form-group select{border:1.5px solid var(--borde);border-radius:7px;
+  padding:.5rem .8rem;font-size:.85rem;font-family:'Henderson Sans Basic',sans-serif;
+  background:#fafbfc;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--azul-cl);background:var(--blanco)}
+.modal-foot{padding:1rem 1.5rem;border-top:1px solid #e8ecf2;display:flex;gap:.75rem;justify-content:flex-end}
+.btn-cancel{background:none;border:1.5px solid var(--borde);border-radius:8px;
+  padding:.5rem 1.2rem;font-size:.85rem;font-weight:600;cursor:pointer;color:#555;font-family:'Henderson Sans Basic',sans-serif}
+.btn-save{background:var(--azul);color:var(--blanco);border:none;border-radius:8px;
+  padding:.5rem 1.4rem;font-size:.85rem;font-weight:700;cursor:pointer;transition:background .2s;font-family:'Henderson Sans Basic',sans-serif}
+.btn-save:hover{background:var(--azul-cl)}
+
+/* ══════════════════════════════════
+   CASO INDIVIDUAL (páginas del expediente)
+══════════════════════════════════ */
+#case-view{display:none}
+#case-view.active{display:flex;flex-direction:column}
+
+/* Sub-navbar del caso */
+#case-nav{background:#1a3a6b;color:var(--blanco);display:flex;align-items:center;
+  gap:.35rem;padding:.5rem 1.5rem;flex-wrap:wrap;border-bottom:2px solid var(--azul)}
+.case-nav-title{font-size:.75rem;font-weight:700;color:var(--oro);white-space:nowrap;margin-right:.5rem}
+.page-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  color:rgba(255,255,255,.85);padding:.28rem .7rem;border-radius:5px;font-size:.72rem;
+  font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.page-btn:hover{background:rgba(255,255,255,.2)}
+.page-btn.active{background:var(--oro);color:var(--azul);border-color:var(--oro)}
+.page-btn.locked{opacity:.4;cursor:not-allowed}
+.page-btn-print{background:var(--rojo);border-color:var(--rojo);margin-left:auto}
+.page-btn-print:hover{background:#a00d23}
+
+/* ──────────────────────────────────
+   HOJA LETTER (Antes A4)
+────────────────────────────────── */
+#pages-area{padding:1.5rem;display:flex;flex-direction:column;align-items:center;gap:2rem;background:#dde3ed}
+.a4{width:21.59cm;height:27.94cm;background:var(--blanco) url('fondo.png') no-repeat top center;
+  background-size:100% auto;box-shadow:var(--sombra);
+  border-radius:3px;font-family:'Henderson Sans Basic',sans-serif;
+  font-size:13pt;line-height:1.75;color:#111;display:none;position:relative;overflow:hidden}
+.a4.show{display:block}
+.a4-inner{padding:3.2cm 2.2cm 2cm 2.5cm;height:100%;display:flex;flex-direction:column;overflow:hidden}
+.folio-tag{position:absolute;top:.9cm;right:1.1cm;font-size:8.5pt;
+  color:#999;font-family:'Henderson Sans Basic',sans-serif;letter-spacing:.03em}
+.screen-actions{display:flex;gap:.5rem;justify-content:flex-end;padding:.5rem 1rem .4rem;
+  border-top:1px solid #e8ecf2}
+.screen-actions button{background:var(--blanco);border:1.5px solid var(--borde);
+  border-radius:6px;padding:.28rem .85rem;font-size:.73rem;font-weight:600;
+  cursor:pointer;color:var(--texto);transition:all .2s;font-family:'Henderson Sans Basic',sans-serif}
+.screen-actions button:hover{border-color:var(--azul-cl);color:var(--azul-cl);background:#eef4ff}
+
+/* ── ENCABEZADO INSTITUCIONAL ── */
+.inst-head{display:flex;align-items:center;gap:1rem;border-bottom:3px solid var(--azul);
+  padding-bottom:.6cm;margin-bottom:.8cm}
+.inst-logo{width:2.8cm;text-align:center}
+.inst-info{flex:1;text-align:center;font-family:'Henderson Sans Basic',sans-serif}
+.inst-info .pais{font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--azul)}
+.inst-info .colegio{font-size:12pt;font-weight:700;color:var(--azul);line-height:1.2;margin:.1rem 0}
+.inst-info .circuito{font-size:8pt;color:#666}
+.inst-meta{font-size:8pt;font-family:'Henderson Sans Basic',sans-serif;color:#777;text-align:right;min-width:3cm}
+.inst-meta b{color:var(--azul)}
+
+/* ── PORTADA ── */
+.portada-inner{display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;min-height:25cm}
+.portada-svg{margin:.4cm 0 .2cm}
+.portada-mep{font-family:'Henderson Sans Basic',sans-serif;font-size:9pt;color:var(--azul);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.portada-hr{border:none;border-top:4px double var(--azul);width:12cm;margin:.4cm auto}
+.portada-hr-rojo{border:none;border-top:2px solid var(--rojo);width:8cm;margin:.35cm auto}
+.portada-titulo{font-family:'Henderson Sans Basic',sans-serif;font-size:22pt;font-weight:800;color:var(--azul);text-transform:uppercase;letter-spacing:.04em;line-height:1.1;margin:.2cm 0}
+.portada-sub{font-family:'Henderson Sans Basic',sans-serif;font-size:11pt;font-weight:600;color:var(--rojo);letter-spacing:.04em;text-transform:uppercase}
+.portada-ref{font-style:italic;font-size:10.5pt;color:#555;max-width:10cm;margin:.3cm auto}
+.datos-box{border:2px solid var(--azul);border-radius:8px;padding:.6cm 1.1cm;margin:.4cm 0;text-align:left;width:100%;max-width:12cm}
+.datos-box h3{font-family:'Henderson Sans Basic',sans-serif;font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--azul);border-bottom:1px solid #e0e4ea;padding-bottom:.2rem;margin-bottom:.4rem}
+.dato{display:flex;gap:.4rem;margin-bottom:.25rem;font-size:10pt;align-items:baseline}
+.dato .etq{font-weight:700;font-family:'Henderson Sans Basic',sans-serif;font-size:9pt;color:var(--azul);min-width:5.5cm}
+.dato .val{border-bottom:1px solid #aaa;flex:1;padding-bottom:.05rem}
+.portada-footer{font-family:'Henderson Sans Basic',sans-serif;font-size:8pt;color:#777;border-top:1px solid #ddd;padding-top:.4cm;width:100%;text-align:center}
+
+/* ── TABLA DE CONTENIDOS ── */
+.tdc-titulo{font-family:'Henderson Sans Basic',sans-serif;font-size:15pt;font-weight:800;color:var(--azul);text-align:center;text-transform:uppercase;letter-spacing:.06em;border-bottom:3px solid var(--azul);padding-bottom:.4cm;margin-bottom:.7cm}
+.tdc-sec{margin-bottom:.5cm}
+.tdc-sec-hdr{font-family:'Henderson Sans Basic',sans-serif;font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--rojo);margin-bottom:.2cm;padding:.1cm 0;border-bottom:1px solid #e0e4ea}
+.tdc-row{display:flex;align-items:baseline;gap:.15rem;padding:.08cm .25cm;border-radius:3px}
+.tdc-row:hover{background:#f5f7fa}
+.tdc-num{font-family:'Henderson Sans Basic',sans-serif;font-size:8pt;font-weight:700;color:var(--azul);min-width:.8cm}
+.tdc-desc{flex:1;font-size:10.5pt;line-height:1.3}
+.tdc-art{font-size:8.5pt;color:var(--rojo);font-style:italic}
+.tdc-dots{flex:1;border-bottom:1.5px dotted #bbb;margin:0 .3cm .2em;align-self:flex-end}
+.tdc-folio{font-family:'Henderson Sans Basic',sans-serif;font-size:8.5pt;font-weight:600;color:#888;min-width:1.6cm;text-align:right}
+.tdc-nota{margin-top:.7cm;background:#f0f6ff;border-left:4px solid var(--azul);padding:.35cm .55cm;font-size:9pt;font-family:'Henderson Sans Basic',sans-serif;color:#444;border-radius:0 6px 6px 0;line-height:1.55}
+
+/* ══ PRINT ══ */
+@media print{
+  @page{size:letter;margin:0}
+  html,body{margin:0;padding:0;background:white!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  #topbar,#case-nav,#dashboard,#modal-overlay,.screen-actions,.page-btn,[class*="btn-new"],.dash-search,#toast,button{display:none!important}
+  #pages-area{padding:0;gap:0;background:white!important;width:100%}
+  .a4{display:block!important;box-shadow:none!important;border-radius:0;width:21.59cm!important;height:27.94cm!important;
+    page-break-after:always;break-after:page;overflow:hidden;border:none!important;
+    background-image:url('fondo.png')!important;background-size:100% auto!important;
+    -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .a4:last-child{page-break-after:auto!important;break-after:auto!important}
+  .a4.no-print{display:none!important}
+  .a4-inner{padding:3.2cm 2.2cm 2.8cm 2.5cm}
+}
+@media screen and (max-width:900px){
+  .a4{width:95vw}
+  .a4-inner{padding:1.5rem 1rem}
+  .modal-body{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TOP BAR ══ -->
+<header id="topbar">
+  <span class="brand">📋 Debido Proceso MEP</span>
+  <span id="topbar-case-name" style="font-size:.8rem;opacity:.7;display:none"></span>
+  <button onclick="irDashboard()" id="btn-back" style="display:none">← Todos los expedientes</button>
+  <button id="btn-print-all" class="btn-gold" onclick="imprimirTodo()" style="display:none">🖨 Imprimir expediente</button>
+</header>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="dashboard" class="view active">
+  <div style="padding:2rem">
+    <div class="dash-header">
+      <div>
+        <h1>📁 Expedientes de Debido Proceso</h1>
+        <p>Reglamento de Evaluación de los Aprendizajes y la Conducta – MEP 2026</p>
+      </div>
+      <input class="dash-search" type="text" placeholder="🔍 Buscar por estudiante, expediente..." oninput="filtrarCasos(this.value)" id="search-input"/>
+      <div style="display:flex; gap:.6rem">
+        <button class="btn-new" onclick="abrirModal()">＋ Nuevo expediente</button>
+        <button class="btn-new" style="background:var(--oro); color:var(--azul)" onclick="respaldarDatos()" title="Exportar respaldo de seguridad">💾 Respaldar</button>
+        <button class="btn-new" style="background:#444; color:white" onclick="document.getElementById('restaurar-input').click()" title="Importar respaldo de seguridad de archivo JSON">📤 Restaurar</button>
+      </div>
+    </div>
+    <input type="file" id="restaurar-input" accept=".json" style="display:none" onchange="restaurarDatos(event)">
+
+    <div class="stats-bar" id="stats-bar">
+      <div class="stat-card"><div class="num" id="stat-total">0</div><div class="lbl">Total</div></div>
+      <div class="stat-card" style="border-left-color:#166534"><div class="num" id="stat-abierto">0</div><div class="lbl">Abiertos</div></div>
+      <div class="stat-card" style="border-left-color:#854d0e"><div class="num" id="stat-inv">0</div><div class="lbl">En investigación</div></div>
+      <div class="stat-card" style="border-left-color:#1e40af"><div class="num" id="stat-res">0</div><div class="lbl">Resueltos</div></div>
+      <div class="stat-card" style="border-left-color:#6b7280"><div class="num" id="stat-arch">0</div><div class="lbl">Archivados</div></div>
+    </div>
+
+    <div id="cases-grid"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL NUEVO / EDITAR EXPEDIENTE ══ -->
+<div id="modal-overlay">
+  <div id="modal">
+    <div class="modal-head">
+      <h2 id="modal-title">Nuevo Expediente de Debido Proceso</h2>
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group full">
+        <label>Centro Educativo</label>
+        <input type="text" id="f-colegio" placeholder="Nombre del colegio / escuela"/>
+      </div>
+      <div class="form-group full">
+        <label>Circuito / Dirección Regional</label>
+        <input type="text" id="f-circuito" placeholder="Ej. Circuito 01 – DRE San José Centro"/>
+      </div>
+      <div class="form-group">
+        <label>Nombre del Estudiante</label>
+        <input type="text" id="f-estudiante" placeholder="Apellidos, Nombre"/>
+      </div>
+      <div class="form-group">
+        <label>Cédula / Identificación</label>
+        <input type="text" id="f-cedula" placeholder="0-0000-0000"/>
+      </div>
+      <div class="form-group">
+        <label>Nivel y Sección</label>
+        <input type="text" id="f-nivel" placeholder="Ej. 7.° A"/>
+      </div>
+      <div class="form-group">
+        <label>Nombre del Encargado Legal</label>
+        <input type="text" id="f-encargado" placeholder="Nombre completo"/>
+      </div>
+      <div class="form-group">
+        <label>Profesor(a) Guía</label>
+        <input type="text" id="f-profe" placeholder="Nombre completo"/>
+      </div>
+      <div class="form-group">
+        <label>Año Lectivo</label>
+        <input type="text" id="f-anio" placeholder="2026" value="2026"/>
+      </div>
+      <div class="form-group">
+        <label>Número de Expediente</label>
+        <input type="text" id="f-expediente" placeholder="Ej. DP-2026-001"/>
+      </div>
+      <div class="form-group">
+        <label>Fecha de Apertura</label>
+        <input type="date" id="f-fechaApertura"/>
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <select id="f-estado">
+          <option value="investigacion">En investigación</option>
+          <option value="abierto">Proceso abierto</option>
+          <option value="resuelto">Resuelto</option>
+          <option value="archivado">Archivado</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-save" onclick="guardarCaso()">✔ Guardar expediente</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VISTA DEL CASO ══ -->
+<div id="case-view">
+  <!-- Sub-navbar páginas -->
+  <nav id="case-nav">
+    <span class="case-nav-title" id="nav-case-label">Expediente</span>
+    <button class="page-btn active" onclick="mostrarPagina('portada',this)" id="nbtn-portada">1. Portada</button>
+    <button class="page-btn" onclick="mostrarPagina('tdc',this)" id="nbtn-tdc">2. Tabla Contenidos</button>
+    <button class="page-btn" onclick="irPaso1()" id="nbtn-paso1">3. Com. Prof. Guía</button>
+    <button class="page-btn" onclick="irPaso2()" id="nbtn-paso2">4. Notif. Testigos</button>
+    <button class="page-btn" onclick="irPaso3()" id="nbtn-paso3">5–6. Actas/Declara.</button>
+    <button class="page-btn" onclick="irAnexos()">7. Anexos</button>
+    <button class="page-btn" onclick="irPaso4()" id="nbtn-paso4">8. Resultado Inv.</button>
+    <button class="page-btn" onclick="irPaso5()" id="nbtn-paso5">9. Notif. Apertura</button>
+    <button class="page-btn" onclick="irPaso6()" id="nbtn-paso6">10. Boleta Apertura</button>
+    <button class="page-btn" onclick="irPaso7()" id="nbtn-paso7">11. Solicitud Copia</button>
+    <button class="page-btn" onclick="irPaso9()" id="nbtn-paso9">12. Descargos y Pruebas</button>
+    <button class="page-btn" onclick="irPaso8()" id="nbtn-paso8">13. Dec. Estudiante</button>
+    <button class="page-btn page-btn-print" onclick="imprimirTodo()">🖨 Imprimir todo</button>
+  </nav>
+
+  <div id="pages-area">
+
+    <!-- ─── PORTADA ─── -->
+    <article class="a4 show" id="page-portada">
+      <div class="folio-tag"></div>
+      <div class="a4-inner portada-inner">
+
+        <div class="portada-svg">
+          <img src="Logo/Logo_MINISTERIO DE -EDUCACION PUBLICA- 2 CC_MINISTERIO DE -EDUCACIÓN PÚBLICA-.png" alt="MEP Costa Rica" style="max-width: 320px; max-height: 120px;" />
+        </div>
+
+        <hr class="portada-hr"/>
+        <h1 class="portada-titulo">Expediente de<br/>Debido Proceso</h1>
+        <p class="portada-sub">Procedimiento Disciplinario Estudiantil</p>
+        <p class="portada-ref">Reglamento de Evaluación de los Aprendizajes y la Conducta del MEP — 2026<br/><em>(Art. 147, 148, 149, 150 y siguientes)</em></p>
+        <hr class="portada-hr-rojo"/>
+
+        <div class="datos-box">
+          <h3>Datos del Expediente</h3>
+          <div class="dato"><span class="etq">Centro Educativo:</span><span class="val" id="p1-colegio">_____________________________</span></div>
+          <div class="dato"><span class="etq">Circuito / Dir. Regional:</span><span class="val" id="p1-circuito">_____________________________</span></div>
+          <div class="dato"><span class="etq">Nombre del Estudiante:</span><span class="val" id="p1-estudiante">_____________________________</span></div>
+          <div class="dato"><span class="etq">N.° de Identificación:</span><span class="val" id="p1-cedula">_____________________________</span></div>
+          <div class="dato"><span class="etq">Nivel y Sección:</span><span class="val" id="p1-nivel">_____________________________</span></div>
+          <div class="dato"><span class="etq">Encargado Legal:</span><span class="val" id="p1-encargado">_____________________________</span></div>
+          <div class="dato"><span class="etq">N.° de Expediente:</span><span class="val" id="p1-expediente">_____________________________</span></div>
+          <div class="dato"><span class="etq">Fecha de Apertura:</span><span class="val" id="p1-fechaApertura">_____________________________</span></div>
+          <div class="dato"><span class="etq">Año Lectivo:</span><span class="val" id="p1-anio">2026</span></div>
+        </div>
+
+        <hr class="portada-hr-rojo"/>
+        <p class="portada-footer">Documento confidencial de uso estrictamente institucional.<br/><em>Generado conforme al REAC MEP 2026.</em></p>
+      </div>
+      <div class="screen-actions">
+        <button onclick="imprimirPagina('page-portada')">🖨 Imprimir portada</button>
+      </div>
+    </article>
+
+    <!-- ─── TABLA DE CONTENIDOS ─── -->
+    <article class="a4" id="page-tdc">
+      <div class="folio-tag"></div>
+      <div class="a4-inner">
+        <div style="display:flex;justify-content:flex-end;align-items:center;font-size:7.5pt;color:#555;margin-bottom:1cm">
+          <span>Exp. N.° <b id="p2-expediente" style="color:var(--azul)">—</b> · Año <b id="p2-anio" style="color:var(--azul)">2026</b></span>
+        </div>        <h2 class="tdc-titulo">Tabla de Contenidos</h2>
+
+
+
+        <div class="tdc-sec">
+          <div class="tdc-sec-hdr">I. Comunicación Inicial / Investigación</div>
+          <div class="tdc-row">
+            <span class="tdc-num">01</span>
+            <span class="tdc-desc">COMUNICACIÓN DE LA SUPUESTA FALTA AL PROFESOR(A) GUÍA<br/><span class="tdc-art">Art. 150 inc. a) — REAC 2026</span></span>
+            <span class="tdc-dots"></span><span class="tdc-folio" id="tdc-folio-p1">Folio 1</span>
+          </div>
+        </div>
+
+        <div class="tdc-sec">
+          <div class="tdc-sec-hdr">II. Etapa Probatoria de Testigos</div>
+          <div class="tdc-row">
+            <span class="tdc-num">02</span>
+            <span class="tdc-desc">NOTIFICACIÓN AL PADRE DE FAMILIA O ENCARGADO LEGAL DE TESTIGOS<br/><span class="tdc-art">Art. 150 — REAC 2026</span></span>
+            <span class="tdc-dots"></span><span class="tdc-folio" id="tdc-folio-p2-notif">Folio 2</span>
+          </div>
+          <div class="tdc-row" style="padding-left: 1.2cm; font-size: 0.9em; opacity: 0.8;">
+            <span class="tdc-num">—</span>
+            <span class="tdc-desc">ACTA DE AUSENCIA U OMISIÓN DE LA ENTREVISTA</span>
+            <span class="tdc-dots"></span><span class="tdc-folio" id="tdc-folio-p2-acta">Folio 3</span>
+          </div>
+          <div class="tdc-row">
+            <span class="tdc-num">03</span>
+            <span class="tdc-desc">ENTREVISTA A TESTIGOS (Narración de hechos)</span>
+            <span class="tdc-dots"></span><span class="tdc-folio" id="tdc-folio-p3">Folio 4+</span>
+          </div>
+        </div>
+
+        <div class="tdc-sec">
+          <div class="tdc-sec-hdr">III. Resultados de la Investigación</div>
+          <div class="tdc-row">
+            <span class="tdc-num">04</span>
+            <span class="tdc-desc">ACTA DE RESULTADO DE LA INVESTIGACIÓN<br/><span class="tdc-art">Art. 147, 150 — REAC 2026</span></span>
+            <span class="tdc-dots"></span><span class="tdc-folio" id="tdc-folio-p4">Folio ...</span>
+          </div>
+        </div>
+
+        <div class="tdc-sec">
+          <div class="tdc-sec-hdr">IV. Desarrollo del Debido Proceso</div>
+          <div class="tdc-row">
+            <span class="tdc-num">05</span>
+            <span class="tdc-desc">NOTIFICACIÓN AL PADRE DE FAMILIA O ENCARGADO LEGAL <br/><span class="tdc-art">Art. 150 — REAC 2026</span></span>
+            <span class="tdc-dots"></span><span class="tdc-folio" id="tdc-folio-p5">Folio ...</span>
+          </div>
+          <div class="tdc-row">
+            <span class="tdc-num">06</span>
+            <span class="tdc-desc">BOLETA DE NOTIFICACIÓN DE APERTURA DEL DEBIDO PROCESO</span>
+            <span class="tdc-dots"></span><span class="tdc-folio" id="tdc-folio-p6">Folio ...</span>
+          </div>
+          <div class="tdc-row" style="padding-left: 1.2cm; font-size: 0.9em; opacity: 0.8;">
+            <span class="tdc-num">—</span>
+            <span class="tdc-desc">SOLICITUD DE COPIA DEL EXPEDIENTE</span>
+            <span class="tdc-dots"></span><span class="tdc-folio" id="tdc-folio-p7">Folio ...</span>
+          </div>
+          <div class="tdc-row">
+            <span class="tdc-num">07</span>
+            <span class="tdc-desc">ACTA DE PRESENTACIÓN DE DESCARGOS Y PRUEBAS<br/><span class="tdc-art">Art. 150 inciso e) — REAC 2026</span></span>
+            <span class="tdc-dots"></span><span class="tdc-folio" id="tdc-folio-p9">Folio ...</span>
+          </div>
+          <div class="tdc-row">
+            <span class="tdc-num">08</span>
+            <span class="tdc-desc">ENTREVISTA SUPUESTO IMPUTADO<br/><span class="tdc-art">Art. 150 inciso e) — REAC 2026</span></span>
+            <span class="tdc-dots"></span><span class="tdc-folio" id="tdc-folio-p8">Folio ...</span>
+          </div>
+        </div>
+
+        <div class="tdc-sec" id="tdc-sec-anexos" style="display:none">
+          <div class="tdc-sec-hdr">V. Anexos (Documentos Probatorios)</div>
+          <div id="tdc-anexos-rows"></div>
+        </div>
+
+        <div class="tdc-nota">
+          <b>Nota:</b> El número de folio puede variar dependiendo de la extensión del relato y la cantidad de testigos. El foleo definitivo se asigna una vez impreso y firmado el documento, manteniendo el orden cronológico.
+        </div>
+      </div>
+    </article>
+
+    <!-- PÁGINA 2 DE TDC (Opcional si crece) -->
+    <article class="a4 no-print" id="page-tdc-2">
+      <div class="folio-tag"></div>
+      <div class="a4-inner">
+        <header class="inst-head">
+          <div class="inst-logo">
+            <img src="Logo/Gobierno_ISOTIPO full color principal.jpg" alt="MEP" style="max-width: 75px; mix-blend-mode: multiply;" />
+          </div>
+          <div class="inst-info">
+            <div class="pais">Ministerio de Educación Pública — Costa Rica</div>
+            <div class="colegio" id="p3-colegio">Centro Educativo</div>
+            <div class="circuito" id="p3-circuito">Circuito — Dirección Regional</div>
+          </div>
+          <div class="inst-meta">Exp. N.°<br/><b id="p3-expediente">—</b><br/>Año <b id="p3-anio">2026</b></div>
+        </header>
+        <div id="tdc-cont-2"></div>
+      </div>
+    </article>
+    <div class="tdc-nota">
+          <b>Base legal:</b> REAC MEP 2026 — Art. 147 (naturaleza formativa), Art. 148, 149 y 150 (procedimiento administrativo).
+        </div>
+      </div>
+      <div class="screen-actions">
+        <button onclick="imprimirPagina('page-tdc')">🖨 Imprimir tabla</button>
+      </div>
+    </article>
+
+    <!-- CONTENEDOR DINÁMICO PARA PASOS 1, 2, 3 Y ANEXOS -->
+    <div id="full-dossier-dynamic" style="display:contents"></div>
+
+  </div><!-- /pages-area -->
+</div><!-- /case-view -->
+
+<!-- ══ TOAST ══ -->
+<div id="toast" style="position:fixed;bottom:2rem;right:2rem;background:#003876;color:#FFC72C;padding:.7rem 1.4rem;border-radius:8px;font-family:'Henderson Sans Basic',sans-serif;font-size:.83rem;font-weight:700;box-shadow:0 4px 20px rgba(0,0,0,.3);z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none"></div>
+
+<script>
+/* ════════════════════════════════════════
+   STORAGE
+════════════════════════════════════════ */
+const LS_KEY = 'mep_dp_casos_v2';
+let casos = [];
+let casoActual = null;
+let editandoId = null;
+
+function cargarStorage(){
+  try{ casos = JSON.parse(localStorage.getItem(LS_KEY)) || []; }
+  catch{ casos = []; }
+}
+function guardarStorage(){ localStorage.setItem(LS_KEY, JSON.stringify(casos)); }
+
+function genId(){ return 'c' + Date.now() + Math.random().toString(36).slice(2,6); }
+
+/* ════════════════════════════════════════
+   RESPALDO Y RESTAURACIÓN
+════════════════════════════════════════ */
+function respaldarDatos(){
+  const data = {};
+  for(let i=0; i < localStorage.length; i++){
+    const k = localStorage.key(i);
+    if(k.startsWith('mep_dp_')){
+      try {
+        data[k] = JSON.parse(localStorage.getItem(k));
+      } catch(e) {
+        data[k] = localStorage.getItem(k);
+      }
+    }
+  }
+  
+  if(!Object.keys(data).length){
+    toast('⚠ No hay información para respaldar.');
+    return;
+  }
+
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `Respaldo_DebidoProceso_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('✔ Respaldo generado y descargado correctamente.');
+}
+
+function restaurarDatos(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  
+  if(!confirm('¿Restaurar los datos desde el archivo? Esto sobrescribirá o se mezclará con la información actual.')) {
+     event.target.value = '';
+     return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      let count = 0;
+      for(const k in data){
+        if(k.startsWith('mep_dp_')){
+          const val = typeof data[k] === 'object' ? JSON.stringify(data[k]) : data[k];
+          localStorage.setItem(k, val);
+          count++;
+        }
+      }
+      toast(`✔ Se restauraron ${count} entradas de datos correctamente.`);
+      cargarStorage();
+      renderDashboard();
+    } catch(err) {
+      toast('❌ Error: El archivo no es un formato de respaldo válido.');
+      console.error(err);
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+/* ════════════════════════════════════════
+   DASHBOARD
+════════════════════════════════════════ */
+function renderDashboard(filtro=''){
+  const q = filtro.toLowerCase();
+  const lista = q ? casos.filter(c=>
+    (c.estudiante||'').toLowerCase().includes(q) ||
+    (c.expediente||'').toLowerCase().includes(q) ||
+    (c.colegio||'').toLowerCase().includes(q)
+  ) : casos;
+
+  // Stats
+  document.getElementById('stat-total').textContent   = casos.length;
+  document.getElementById('stat-abierto').textContent  = casos.filter(c=>c.estado==='abierto').length;
+  document.getElementById('stat-inv').textContent      = casos.filter(c=>c.estado==='investigacion').length;
+  document.getElementById('stat-res').textContent      = casos.filter(c=>c.estado==='resuelto').length;
+  document.getElementById('stat-arch').textContent     = casos.filter(c=>c.estado==='archivado').length;
+
+  const grid = document.getElementById('cases-grid');
+  if(!lista.length){
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="icon">📂</div>
+      <p>${q ? 'No se encontraron expedientes con esa búsqueda.' : 'No hay expedientes creados todavía.<br/>Haga clic en <b>+ Nuevo expediente</b> para comenzar.'}</p></div>`;
+    return;
+  }
+
+  const BADGES = {
+    abierto:      '<span class="badge badge-abierto">Proceso abierto</span>',
+    investigacion:'<span class="badge badge-investigacion">En investigación</span>',
+    resuelto:     '<span class="badge badge-resuelto">Resuelto</span>',
+    archivado:    '<span class="badge badge-archivado">Archivado</span>',
+  };
+
+  grid.innerHTML = lista.map(c => `
+    <div class="case-card" id="card-${c.id}">
+      <div class="case-card-top">
+        <div class="exp-num">${c.expediente || 'Sin número'} · ${c.anio || '2026'}</div>
+        <div class="exp-name">${c.estudiante || 'Estudiante sin nombre'}</div>
+        <div class="exp-nivel">${c.nivel || ''} — ${c.colegio || 'Centro educativo'}</div>
+      </div>
+      <div class="case-card-body">
+        <div class="case-meta">
+          <span>Encargado: <b>${c.encargado || '—'}</b></span>
+          ${BADGES[c.estado] || ''}
+        </div>
+        <div class="case-meta">
+          <span>Prof. Guía: <b>${c.profe || '—'}</b></span>
+          <span style="font-size:.72rem;color:#777">${c.fechaCreacion ? 'Creado: '+c.fechaCreacion : ''}</span>
+        </div>
+        <div class="case-meta" style="margin-top:.3rem; padding-top:.3rem; border-top:1px dashed #eee">
+          ${renderPlazoBadge(c)}
+        </div>
+      </div>
+      <div class="case-actions">
+        <button class="btn-open" onclick="abrirCaso('${c.id}')">📂 Abrir</button>
+        <button onclick="editarCaso('${c.id}')">✏ Editar</button>
+        <button class="btn-del" onclick="eliminarCaso('${c.id}')">🗑 Eliminar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filtrarCasos(q){ renderDashboard(q); }
+
+/* ════════════════════════════════════════
+   MODAL
+════════════════════════════════════════ */
+function abrirModal(id=null){
+  editandoId = id;
+  const m = document.getElementById('modal-title');
+  if(id){
+    const c = casos.find(x=>x.id===id);
+    m.textContent = 'Editar Expediente';
+    document.getElementById('f-colegio').value    = c.colegio||'';
+    document.getElementById('f-circuito').value   = c.circuito||'';
+    document.getElementById('f-estudiante').value = c.estudiante||'';
+    document.getElementById('f-cedula').value     = c.cedula||'';
+    document.getElementById('f-nivel').value      = c.nivel||'';
+    document.getElementById('f-encargado').value  = c.encargado||'';
+    document.getElementById('f-profe').value      = c.profe||'';
+    document.getElementById('f-anio').value       = c.anio||'2026';
+    document.getElementById('f-expediente').value = c.expediente||'';
+    document.getElementById('f-fechaApertura').value = c.fechaApertura||'';
+    document.getElementById('f-estado').value     = c.estado||'investigacion';
+  } else {
+    m.textContent = 'Nuevo Expediente de Debido Proceso';
+    ['f-colegio','f-circuito','f-estudiante','f-cedula','f-nivel','f-encargado','f-profe','f-expediente','f-fechaApertura'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f-anio').value = '2026';
+    document.getElementById('f-estado').value = 'investigacion';
+  }
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function cerrarModal(){
+  document.getElementById('modal-overlay').classList.remove('open');
+  editandoId = null;
+}
+
+function guardarCaso(){
+  const est = document.getElementById('f-estudiante').value.trim();
+  if(!est){ toast('⚠ Ingresa el nombre del estudiante'); return; }
+
+  const data = {
+    colegio:   document.getElementById('f-colegio').value.trim(),
+    circuito:  document.getElementById('f-circuito').value.trim(),
+    estudiante:est,
+    cedula:    document.getElementById('f-cedula').value.trim(),
+    nivel:     document.getElementById('f-nivel').value.trim(),
+    encargado: document.getElementById('f-encargado').value.trim(),
+    profe:     document.getElementById('f-profe').value.trim(),
+    anio:      document.getElementById('f-anio').value.trim()||'2026',
+    expediente:document.getElementById('f-expediente').value.trim(),
+    fechaApertura: document.getElementById('f-fechaApertura').value,
+    estado:    document.getElementById('f-estado').value,
+  };
+
+  if(editandoId){
+    const idx = casos.findIndex(x=>x.id===editandoId);
+    if(idx>=0) casos[idx] = {...casos[idx],...data};
+    toast('✔ Expediente actualizado');
+  } else {
+    data.id = genId();
+    data.fechaCreacion = new Date().toLocaleDateString('es-CR');
+    casos.unshift(data);
+    toast('✔ Expediente creado');
+  }
+
+  guardarStorage();
+  cerrarModal();
+  renderDashboard();
+}
+
+function editarCaso(id){ abrirModal(id); }
+
+function eliminarCaso(id){
+  const c = casos.find(x=>x.id===id);
+  if(!confirm(`¿Eliminar el expediente de ${c?.estudiante || 'este estudiante'}? Esta acción no se puede deshacer.`)) return;
+  casos = casos.filter(x=>x.id!==id);
+  guardarStorage();
+  renderDashboard();
+  toast('🗑 Expediente eliminado');
+}
+
+/* ════════════════════════════════════════
+   ABRIR / CERRAR CASO
+════════════════════════════════════════ */
+function abrirCaso(id){
+  casoActual = casos.find(c=>c.id===id);
+  if(!casoActual) return;
+
+  // Rellenar páginas
+  rellenarPaginas(casoActual);
+
+  // Cambiar vista
+  document.getElementById('dashboard').classList.remove('active');
+  document.getElementById('case-view').style.display='flex';
+  document.getElementById('case-view').style.flexDirection='column';
+
+  // Topbar
+  document.getElementById('topbar-case-name').textContent = casoActual.estudiante || 'Expediente';
+  document.getElementById('topbar-case-name').style.display='inline';
+  document.getElementById('btn-back').style.display='inline';
+  document.getElementById('btn-print-all').style.display='inline';
+
+  // Ir a portada
+  mostrarPagina('portada', document.getElementById('nbtn-portada'));
+  document.getElementById('nav-case-label').textContent = casoActual.expediente || 'Expediente';
+}
+
+function irDashboard(){
+  casoActual = null;
+  document.getElementById('case-view').style.display='none';
+  document.getElementById('dashboard').classList.add('active');
+  document.getElementById('topbar-case-name').style.display='none';
+  document.getElementById('btn-back').style.display='none';
+  document.getElementById('btn-print-all').style.display='none';
+  renderDashboard(document.getElementById('search-input').value);
+}
+
+function irPaso1(){
+  if(!casoActual) return;
+  location.href = 'paso1.html?id=' + casoActual.id;
+}
+
+function irPaso2(){
+  if(!casoActual) return;
+  location.href = 'paso2.html?id=' + casoActual.id;
+}
+
+function irPaso3(){
+  if(!casoActual) return;
+  location.href = 'paso3.html?id=' + casoActual.id;
+}
+function irAnexos(){
+  if(!casoActual) return;
+  location.href = 'anexos.html?id=' + casoActual.id;
+}
+function irPaso4(){
+  if(!casoActual) return;
+  location.href = 'paso4.html?id=' + casoActual.id;
+}
+function irPaso5(){
+  if(!casoActual) return;
+  location.href = 'paso5.html?id=' + casoActual.id;
+}
+function irPaso6(){
+  if(!casoActual) return;
+  location.href = 'paso6.html?id=' + casoActual.id;
+}
+function irPaso7(){
+  if(!casoActual) return;
+  location.href = 'paso7.html?id=' + casoActual.id;
+}
+function irPaso8(){
+  if(!casoActual) return;
+  location.href = 'paso8.html?id=' + casoActual.id;
+}
+function irPaso9(){
+  if(!casoActual) return;
+  location.href = 'paso9.html?id=' + casoActual.id;
+}
+
+/* ════════════════════════════════════════
+   RELLENAR PÁGINAS
+════════════════════════════════════════ */
+function rellenarPaginas(c){
+  const bl = '______________________________';
+  setText('p1-colegio',   c.colegio    || bl);
+  setText('p1-circuito',  c.circuito   || bl);
+  setText('p1-estudiante',c.estudiante || bl);
+  setText('p1-cedula',    c.cedula     || bl);
+  setText('p1-nivel',     c.nivel      || bl);
+  setText('p1-encargado', c.encargado  || bl);
+  setText('p1-expediente',c.expediente || bl);
+  function formatFecha(f){ return f ? f.split('-').reverse().join('/') : bl; }
+  setText('p1-fechaApertura', formatFecha(c.fechaApertura));
+  setText('p1-anio',      c.anio       || '2026');
+
+  // Tabla Contenidos (Header)
+  // Tabla Contenidos (Header)
+  setText('p2-colegio',   c.colegio    || 'Centro Educativo');
+  setText('p2-circuito',  c.circuito   || 'Circuito — Dirección Regional');
+  setText('p2-expediente',c.expediente || '—');
+  setText('p2-anio',      c.anio       || '2026');
+
+  setText('p3-colegio',   c.colegio    || 'Centro Educativo');
+  setText('p3-circuito',  c.circuito   || 'Circuito — Dirección Regional');
+  setText('p3-expediente',c.expediente || '—');
+  setText('p3-anio',      c.anio       || '2026');
+
+  // Vaciar y rellenar contenedor dinámico de folios completos
+  const dossier = document.getElementById('full-dossier-dynamic');
+  dossier.innerHTML = '';
+
+  // Actualizar folios dinámicos en TDC
+  let f_cursor = 1;
+
+  try {
+    // PASO 1
+    const d1 = JSON.parse(localStorage.getItem('mep_dp_paso1_v1_' + c.id));
+    let n_p1 = (d1 && d1.totalFoliosP1) ? d1.totalFoliosP1 : 1;
+    let f_p1_end = f_cursor + n_p1 - 1;
+    setText('tdc-folio-p1', n_p1 > 1 ? `Folio ${f_cursor} - ${f_p1_end}` : `Folio ${f_cursor}`);
+    f_cursor = f_p1_end + 1;
+
+    // PASO 2
+    const d2 = JSON.parse(localStorage.getItem('mep_dp_paso2_v1_' + c.id));
+    if (d2) {
+      const n_testigos = Object.keys(d2.infoTestigos || {}).length;
+      const n_actas = Object.values(d2.infoTestigos || {}).filter(t => t.noAsiste).length;
+      
+      if (n_testigos > 0) {
+        let f_notif_end = f_cursor + n_testigos - 1;
+        setText('tdc-folio-p2-notif', n_testigos > 1 ? `Folio ${f_cursor} - ${f_notif_end}` : `Folio ${f_cursor}`);
+        f_cursor = f_notif_end + 1;
+      } else {
+        setText('tdc-folio-p2-notif', '—');
+      }
+      
+      if (n_actas > 0) {
+        let f_actas_end = f_cursor + n_actas - 1;
+        setText('tdc-folio-p2-acta', n_actas > 1 ? `Folio ${f_cursor} - ${f_actas_end}` : `Folio ${f_cursor}`);
+        f_cursor = f_actas_end + 1;
+      } else {
+        setText('tdc-folio-p2-acta', '—');
+      }
+    } else {
+      setText('tdc-folio-p2-notif', '—');
+      setText('tdc-folio-p2-acta', '—');
+    }
+
+    // PASO 3
+    const d3 = JSON.parse(localStorage.getItem('mep_dp_paso3_v1_' + c.id));
+    if (d3 && d3.totalFoliosP3 > 0) {
+      const n_p3 = d3.totalFoliosP3;
+      let f_p3_end = f_cursor + n_p3 - 1;
+      setText('tdc-folio-p3', n_p3 > 1 ? `Folio ${f_cursor} - ${f_p3_end}` : `Folio ${f_cursor}`);
+      f_cursor = f_p3_end + 1;
+    } else {
+      setText('tdc-folio-p3', '—');
+    }
+
+    // PASO 4
+    const d4 = JSON.parse(localStorage.getItem('mep_dp_paso4_v1_' + c.id));
+    if (d4 && d4.numPaginas > 0) {
+      const n_p4 = d4.numPaginas;
+      let f_p4_end = f_cursor + n_p4 - 1;
+      setText('tdc-folio-p4', n_p4 > 1 ? `Folio ${f_cursor} - ${f_p4_end}` : `Folio ${f_cursor}`);
+      f_cursor = f_p4_end + 1;
+    } else {
+      setText('tdc-folio-p4', '—');
+    }
+
+    // PASO 5
+    const d5 = JSON.parse(localStorage.getItem('mep_dp_paso5_v1_' + c.id));
+    if (d5 && d5.numPaginas > 0) {
+      const n_p5 = d5.numPaginas;
+      let f_p5_end = f_cursor + n_p5 - 1;
+      setText('tdc-folio-p5', n_p5 > 1 ? `Folio ${f_cursor} - ${f_p5_end}` : `Folio ${f_cursor}`);
+      f_cursor = f_p5_end + 1;
+    } else {
+      setText('tdc-folio-p5', '—');
+    }
+
+    // PASO 6
+    const d6 = JSON.parse(localStorage.getItem('mep_dp_paso6_v1_' + c.id));
+    if (d6 && d6.numPaginas > 0) {
+      const n_p6 = d6.numPaginas;
+      let f_p6_end = f_cursor + n_p6 - 1;
+      setText('tdc-folio-p6', n_p6 > 1 ? `Folio ${f_cursor} - ${f_p6_end}` : `Folio ${f_cursor}`);
+      f_cursor = f_p6_end + 1;
+    } else {
+      setText('tdc-folio-p6', '—');
+    }
+
+    // PASO 7
+    const d7 = JSON.parse(localStorage.getItem('mep_dp_paso7_v1_' + c.id));
+    if (d7 && d7.numPaginas > 0) {
+      const n_p7 = d7.numPaginas;
+      let f_p7_end = f_cursor + n_p7 - 1;
+      setText('tdc-folio-p7', n_p7 > 1 ? `Folio ${f_cursor} - ${f_p7_end}` : `Folio ${f_cursor}`);
+      f_cursor = f_p7_end + 1;
+    } else {
+      setText('tdc-folio-p7', '—');
+    }
+    // PASO 9 (Descargos) - Visible only if requested in Step 10 (Boleta Apertura)
+    const nbtnPaso9 = document.getElementById('nbtn-paso9');
+    const tdcRowP9 = document.getElementById('tdc-folio-p9')?.closest('.tdc-row');
+    if (d6 && d6.descargosPruebas === 'no') {
+      if(nbtnPaso9) nbtnPaso9.style.display = 'none';
+      if(tdcRowP9) tdcRowP9.style.display = 'none';
+      setText('tdc-folio-p9', '—');
+    } else {
+      if(nbtnPaso9) nbtnPaso9.style.display = 'inline-block';
+      if(tdcRowP9) tdcRowP9.style.display = 'flex';
+      const d9 = JSON.parse(localStorage.getItem('mep_dp_paso9_v1_' + c.id));
+      if (d9 && d9.numPaginas > 0) {
+        const n_p9 = d9.numPaginas;
+        let f_p9_end = f_cursor + n_p9 - 1;
+        setText('tdc-folio-p9', n_p9 > 1 ? `Folio ${f_cursor} - ${f_p9_end}` : `Folio ${f_cursor}`);
+        f_cursor = f_p9_end + 1;
+      } else {
+        setText('tdc-folio-p9', '—');
+      }
+    }
+
+    // PASO 8 (Declaración Estudiante) - Visible only if student accepts in Step 10
+    const nbtnPaso8 = document.getElementById('nbtn-paso8');
+    const tdcRowP8 = document.getElementById('tdc-folio-p8')?.closest('.tdc-row');
+    if (d6 && d6.declara === 'no') {
+      if(nbtnPaso8) nbtnPaso8.style.display = 'none';
+      if(tdcRowP8) tdcRowP8.style.display = 'none';
+      setText('tdc-folio-p8', '—');
+    } else {
+      if(nbtnPaso8) nbtnPaso8.style.display = 'inline-block';
+      if(tdcRowP8) tdcRowP8.style.display = 'flex';
+      const d8 = JSON.parse(localStorage.getItem('mep_dp_paso8_v1_' + c.id));
+      if (d8 && d8.numPaginas > 0) {
+        const n_p8 = d8.numPaginas;
+        let f_p8_end = f_cursor + n_p8 - 1;
+        setText('tdc-folio-p8', n_p8 > 1 ? `Folio ${f_cursor} - ${f_p8_end}` : `Folio ${f_cursor}`);
+        f_cursor = f_p8_end + 1;
+      } else {
+        setText('tdc-folio-p8', '—');
+      }
+    }
+
+    // ANEXOS - Section V
+    const dAnexos = JSON.parse(localStorage.getItem('mep_dp_anexos_v1_' + c.id));
+    const tdcSec = document.getElementById('tdc-sec-anexos');
+    const tdcRows = document.getElementById('tdc-anexos-rows');
+    
+    if (dAnexos && dAnexos.length > 0) {
+       const totalAnexosFolios = dAnexos.length + 1; // +1 de la portada de anexos
+       let f_anexo_end = f_cursor + totalAnexosFolios - 1;
+       
+       if (tdcSec) tdcSec.style.display = 'block';
+       if (tdcRows) {
+         let sub_cursor = f_cursor;
+         tdcRows.innerHTML = dAnexos.map((a, idx) => {
+           let str = `<div class="tdc-row"><span class="tdc-num">A${idx+1}</span><span class="tdc-desc">Anexo ${idx+1}: ${escH(a.descripcion||a.nombre)}</span><span class="tdc-dots"></span><span class="tdc-folio">Folio ${sub_cursor+1}</span></div>`;
+           sub_cursor++;
+           return str;
+         }).join('');
+       }
+       f_cursor = f_anexo_end + 1;
+    } else {
+       if (tdcSec) tdcSec.style.display = 'none';
+       if (tdcRows) tdcRows.innerHTML = '';
+    }
+
+    // ─── RENDERIZAR PASO 1 (COMUNICACIÓN) EN EL ÍNDICE ───────────────────
+    renderPaso1EnIndex(c);
+
+  } catch (e) { console.error("Error rellenando páginas:", e); }
+}
+
+function renderPaso1EnIndex(c) {
+  const dossier = document.getElementById('full-dossier-dynamic');
+  const d1 = JSON.parse(localStorage.getItem('mep_dp_paso1_v1_' + c.id));
+  
+  if(!d1) {
+    const art = document.createElement('article');
+    art.className = 'a4';
+    art.id = 'page-p1-f1';
+    art.innerHTML = `
+      <div class="a4-inner" style="align-items:center;justify-content:center;text-align:center">
+        <h2 style="color:var(--azul)">Paso 1: Comunicación Inicial</h2>
+        <p style="color:#666;margin:1cm 0">No se ha encontrado información registrada para este paso.</p>
+        <button class="btn-new" onclick="irPaso1()">✍️ Abrir editor del Paso 1</button>
+      </div>
+    `;
+    dossier.appendChild(art);
+    return;
+  }
+  
+  const totalFolios = d1.totalFoliosP1 || 1;
+  const exp = c.expediente || '—';
+  const anio = c.anio || '2026';
+
+  for(let i=0; i<totalFolios; i++) {
+    const art = document.createElement('article');
+    art.className = 'a4';
+    art.id = `page-p1-f${i+1}`;
+    
+    let contentHtml = '';
+    if(i === 0) {
+      const relatoHtml = d1.relato ? d1.relato.split('\n\n').map(p=>`<p style="margin-bottom:.3cm">${escH(p)}</p>`).join('') : '<p style="color:#aaa;font-style:italic">Relato no disponible.</p>';
+      const testigosHtml = (d1.testigos && d1.testigos.length) 
+        ? d1.testigos.map(t=>`<div style="font-size:10pt;margin-bottom:.2cm">• <b>${escH(t.nombre)}</b>${t.seccion?' ('+escH(t.seccion)+')':''}</div>`).join('')
+        : '<p style="color:#aaa;font-style:italic;font-size:10pt">Sin testigos registrados.</p>';
+      
+      contentHtml = `
+        <h2 style="text-align:center; color:var(--azul); text-transform:uppercase; font-size:13pt; margin: .5cm 0">Comunicación de la Supuesta Falta</h2>
+        <div style="font-size:9.5pt; color:#666; font-style:italic; text-align:center; margin-bottom:.4cm">Artículo 150 inc. a) — REAC MEP 2026</div>
+        <p style="font-size:10.5pt; margin-bottom:.2cm"><b>Persona que informa:</b> ${escH(d1.nombreInformante || '—')}</p>
+        <p style="font-size:10.5pt; margin-bottom:.4cm"><b>Fecha de recepción:</b> ${escH(d1.fechaRecepcion || '—')}</p>
+        <div style="border-top:1px solid #eee; padding-top:.3cm; margin-top:.3cm; border-bottom:1px solid #eee; padding-bottom:.3cm; margin-bottom:.4cm">
+          <div style="font-weight:800; color:var(--azul); text-transform:uppercase; font-size:10pt; margin-bottom:.2cm">Relato de la situación:</div>
+          <div style="font-size:10pt; line-height:1.6; text-align:justify">${relatoHtml}</div>
+        </div>
+        <div>
+          <div style="font-weight:800; color:var(--azul); text-transform:uppercase; font-size:10pt; margin-bottom:.2cm">Testigos identificados:</div>
+          ${testigosHtml}
+        </div>
+      `;
+    } else {
+      contentHtml = `
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px dashed #eee; border-radius:10px; color:#aaa; font-style:italic; text-align:center; padding:2cm">
+           <div style="font-size:2rem; margin-bottom:1rem">📄</div>
+           <p>Esta es la página de continuación #${i+1} del comunicado al docente.</p>
+           <p style="font-size:9pt; margin-top:.5cm">El contenido se distribuye automáticamente al imprimir desde la página específica de "Comunicación de Falta".</p>
+        </div>`;
+    }
+
+    art.innerHTML = `
+      <div class="a4-inner">
+        <header class="inst-head">
+          <div class="inst-logo"><img src="Logo/Gobierno_ISOTIPO full color principal.jpg" style="max-width:75px; mix-blend-mode:multiply;"/></div>
+          <div class="inst-info">
+             <div class="pais">Ministerio de Educación Pública — Costa Rica</div>
+             <div class="colegio">${escH(c.colegio || 'Centro Educativo')}</div>
+             <div class="circuito">${escH(c.circuito || '—')}</div>
+          </div>
+          <div style="flex:1;text-align:right;font-size:7.5pt;color:#555">
+            Exp. N.° <b>${escH(exp)}</b> · Año <b>${escH(anio)}</b> · Folio <b>${i+1}</b>
+          </div>
+        </header>
+        <div style="flex:1; display:flex; flex-direction:column">${contentHtml}</div>
+        <div style="margin-top:1cm; display:grid; grid-template-columns:1fr 1fr; gap:1.5cm">
+           <div style="border-top:1.5px solid #444; padding-top:.15cm; text-align:center; font-size:8.5pt; font-weight:700">Firma de quien informa</div>
+           <div style="border-top:1.5px solid #444; padding-top:.15cm; text-align:center; font-size:8.5pt; font-weight:700">Firma de quien recibe</div>
+        </div>
+      </div>
+      <div class="screen-actions">
+        <button onclick="irPaso1()">✏ Ir al editor (Paso 1)</button>
+        <button onclick="window.print()">🖨 Imprimir estos folios</button>
+      </div>
+    `;
+    dossier.appendChild(art);
+  }
+  
+  // Renderizar Anexos al final
+  renderAnexosEnIndex(c);
+}
+
+function renderAnexosEnIndex(c) {
+  const dossier = document.getElementById('full-dossier-dynamic');
+  const dAnexos = JSON.parse(localStorage.getItem('mep_dp_anexos_v1_' + c.id)) || [];
+  if(!dAnexos.length) return;
+
+  const exp = c.expediente || '—';
+  const anio = c.anio || '2026';
+  
+  // Actualizar TDC Sec
+  const tdcSec = document.getElementById('tdc-sec-anexos');
+  const tdcRows = document.getElementById('tdc-anexos-rows');
+  if(tdcSec) tdcSec.style.display = 'block';
+  if(tdcRows) tdcRows.innerHTML = dAnexos.map((a,idx)=>`
+    <div class="tdc-row">
+      <span class="tdc-num">A${idx+1}</span>
+      <span class="tdc-desc">Anexo ${idx+1}: ${escH(a.descripcion||a.nombre)}</span>
+      <span class="tdc-dots"></span><span class="tdc-folio">Folio Final</span>
+    </div>
+  `).join('');
+
+  // Portada de Anexos
+  const port = document.createElement('article');
+  port.className = 'a4';
+  port.id = 'page-anexos-portada';
+  port.innerHTML = `<div class="a4-inner" style="align-items:center;justify-content:center;text-align:center">
+     <div class="folio-tag">Sección de Anexos</div>
+     <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">
+        <h1 style="font-size:32pt; color:var(--azul); text-transform:uppercase; margin:0">Anexos</h1>
+        <p style="font-size:12pt; color:var(--rojo); letter-spacing:.1em; font-weight:700; margin-bottom:1.5cm">PROCEDIMIENTO ADMINISTRATIVO</p>
+        <div style="text-align:left; width:100%; max-width:14cm; font-size:10.5pt; line-height:1.7; border-top:2px solid var(--azul); padding-top:1cm">
+          ${dAnexos.map((a,i)=>`<div style="margin-bottom:.4cm"><b>Anexo ${i+1}:</b> ${escH(a.descripcion||a.nombre)}</div>`).join('')}
+        </div>
+     </div>
+  </div>`;
+  dossier.appendChild(port);
+
+  // Folios individuales de anexos
+  dAnexos.forEach((a,i)=>{
+    const art = document.createElement('article');
+    art.className = 'a4';
+    art.innerHTML = `<div class="a4-inner">
+      <header class="inst-head">
+        <div class="inst-info" style="text-align:left">
+          <div class="pais">Ministerio de Educación Pública</div>
+          <div class="colegio" style="font-size:10pt">${escH(c.colegio)}</div>
+        </div>
+        <div class="inst-meta">Anexo <b>${i+1}</b><br/>Exp. <b>${exp}</b></div>
+      </header>
+      <div style="flex:1; display:flex; flex-direction:column">
+        <h2 style="text-align:center; color:var(--azul); text-transform:uppercase; font-size:14pt; margin: 1cm 0">Anexo N.° ${i+1}</h2>
+        <div style="background:#f8f9fa; padding:.8cm; border:2.5px solid var(--azul); border-radius:10px; margin-bottom:1.5cm">
+          <label style="font-size:.75rem; font-weight:800; color:var(--azul); text-transform:uppercase; display:block; margin-bottom:.3rem">Descripción:</label>
+          <div style="font-size:11pt; line-height:1.6">${escH(a.descripcion||'(Sin descripción)')}</div>
+          <div style="font-size:8.5pt; color:#888; margin-top:.5cm">Nombre del archivo: ${escH(a.nombre)}</div>
+        </div>
+        <div style="flex:1; border:2px dashed #cbd5e0; border-radius:15px; display:flex; align-items:center; justify-content:center; color:#a0aec0; text-align:center; padding:2cm">
+          <p>[ EL DOCUMENTO PROBATORIO ORIGINAL<br/>DEBE SER ADJUNTADO FÍSICAMENTE BAJO ESTE FOLIO ]</p>
+        </div>
+      </div>
+    </div>`;
+    dossier.appendChild(art);
+  });
+}
+
+function escH(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function imprimirTodo(){
+  // Mostrar TODAS las páginas antes de imprimir
+  document.querySelectorAll('.a4').forEach(p=>p.classList.add('show'));
+  
+  // Pequeña pausa para asegurar renderizado
+  setTimeout(() => {
+    window.print();
+    // Revertir a solo mostrar portada
+    setTimeout(()=>{
+      document.querySelectorAll('.a4').forEach(p=>p.classList.remove('show'));
+      document.getElementById('page-portada')?.classList.add('show');
+      const activeBtn = document.querySelector('.page-btn.active');
+      if(activeBtn) activeBtn.click(); // Restaurar vista previa actual
+    }, 1000);
+  }, 200);
+}
+
+function setText(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}
+
+/* ════════════════════════════════════════
+   NAVEGACIÓN DE PÁGINAS
+════════════════════════════════════════ */
+function mostrarPagina(pid, btn){
+  document.querySelectorAll('.a4').forEach(p=>p.classList.remove('show'));
+  
+  if(pid === 'tdc'){
+    document.getElementById('page-tdc').classList.add('show');
+  } else if(pid === 'p1-folio'){
+    // Mostrar todos los folios dinámicos de P1
+    document.querySelectorAll('[id^="page-p1-f"]').forEach(p=>p.classList.add('show'));
+  } else {
+    const t = document.getElementById('page-'+pid);
+    if(t) t.classList.add('show');
+  }
+
+  document.querySelectorAll('.page-btn:not(.locked):not(.page-btn-print)').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+/* ════════════════════════════════════════
+   IMPRESIÓN
+════════════════════════════════════════ */
+function imprimirPagina(pid){
+  document.querySelectorAll('.a4').forEach(p=>p.classList.remove('show'));
+  document.getElementById(pid)?.classList.add('show');
+  window.print();
+}
+
+function imprimirTodo(){
+  document.querySelectorAll('.a4').forEach(p=>p.classList.add('show'));
+  window.print();
+  setTimeout(()=>{
+    document.querySelectorAll('.a4').forEach(p=>p.classList.remove('show'));
+    document.getElementById('page-portada')?.classList.add('show');
+  }, 800);
+}
+
+/* ════════════════════════════════════════
+   TOAST
+════════════════════════════════════════ */
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity='1';
+  clearTimeout(t._t);
+  t._t = setTimeout(()=>t.style.opacity='0', 2800);
+}
+
+/* ════════════════════════════════════════
+   CERRAR MODAL AL CLICK FUERA
+════════════════════════════════════════ */
+document.getElementById('modal-overlay').addEventListener('click', e=>{
+  if(e.target === document.getElementById('modal-overlay')) cerrarModal();
+});
+
+/* ════════════════════════════════════════
+   INIT
+ ════════════════════════════════════════ */
+function init(){
+  const params = new URLSearchParams(location.search);
+  const page = params.get('page');
+  const id = params.get('id');
+  cargarStorage();
+  
+  if (id) {
+    abrirCaso(id);
+    if (page) {
+      const btnId = 'nbtn-'+page;
+      const btn = document.getElementById(btnId);
+      if(btn) mostrarPagina(page, btn);
+    }
+  } else {
+    renderDashboard();
+  }
+}
+init();
+
+function renderPlazoBadge(c) {
+  if(!c.fechaApertura) return '<span style="color:#aaa; font-size:.65rem; font-style:italic">⚠️ Sin fecha de apertura</span>';
+  
+  const fApertura = new Date(c.fechaApertura + 'T12:00:00');
+  const hoy = new Date();
+  const limite = calcularHabiles(fApertura, 15); // Suponemos 15 para todo el proceso inicial
+  const diff = Math.ceil((limite - hoy) / (1000 * 60 * 60 * 24));
+  
+  if (diff < 0) return `<span style="color:var(--rojo); font-weight:700; font-size:.7rem">⏳ Plazo vencido hace ${Math.abs(diff)}d</span>`;
+  if (diff <= 2) return `<span style="color:#E0A800; font-weight:700; font-size:.7rem">⚠️ Vence en ${diff} días</span>`;
+  return `<span style="color:#166534; font-size:.7rem">✅ ${diff} días para investigación</span>`;
+}
+
+function calcularHabiles(fecha, dias) {
+  let f = new Date(fecha.getTime());
+  let count = 0;
+  while (count < dias) {
+    f.setDate(f.getDate() + 1);
+    const d = f.getDay();
+    if (d !== 0 && d !== 6) count++;
+  }
+  return f;
+}
+</script>
+</body>
+</html>

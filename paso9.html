@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Paso 9 – Descargos y Pruebas | Debido Proceso MEP</title>
+  <style>
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic Light.ttf') format('truetype');
+      font-weight: 300
+    }
+
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic SemiBd.ttf') format('truetype');
+      font-weight: 600
+    }
+
+    @font-face {
+      font-family: 'Henderson Sans Basic';
+      src: url('Logo/Henderson Sans Basic Bold.ttf') format('truetype');
+      font-weight: 700
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --azul: #1c2847;
+      --azul-cl: #273966;
+      --rojo: #C8102E;
+      --oro: #C9A86A;
+      --gris: #f0f4f9;
+      --borde: #cbd5e0;
+      --texto: #0f1a2e;
+      --blanco: #fff;
+      --sombra: 0 4px 24px rgba(28, 40, 71, .13);
+    }
+
+    body,
+    input,
+    select,
+    textarea,
+    button {
+      font-family: 'Henderson Sans Basic', sans-serif;
+    }
+
+    body {
+      background: var(--gris);
+      color: var(--texto);
+      min-height: 100vh
+    }
+
+    /* ── TOPBAR ── */
+    #topbar {
+      background: var(--azul);
+      color: var(--blanco);
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: 0 1.5rem;
+      height: 54px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .35)
+    }
+
+    #topbar .brand {
+      font-size: .9rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      color: var(--oro);
+      margin-right: auto
+    }
+
+    #topbar .case-info {
+      font-size: .78rem;
+      opacity: .75;
+      max-width: 340px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    #topbar button {
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .25);
+      color: var(--blanco);
+      padding: .3rem .9rem;
+      border-radius: 6px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    #topbar button:hover {
+      background: rgba(255, 255, 255, .25)
+    }
+
+    .btn-gold {
+      background: var(--oro) !important;
+      color: var(--azul) !important;
+      border-color: var(--oro) !important
+    }
+
+    .btn-gold:hover {
+      background: #e0a800 !important
+    }
+
+    /* ── CASE NAV ── */
+    #case-nav {
+      background: #1a3a6b;
+      color: var(--blanco);
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .5rem 1.5rem;
+      flex-wrap: wrap;
+      border-bottom: 2px solid var(--azul)
+    }
+
+    .case-nav-title {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--oro);
+      white-space: nowrap;
+      margin-right: .5rem
+    }
+
+    .page-btn {
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .18);
+      color: rgba(255, 255, 255, .85);
+      padding: .28rem .7rem;
+      border-radius: 5px;
+      font-size: .72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+
+    .page-btn:hover {
+      background: rgba(255, 255, 255, .2)
+    }
+
+    .page-btn.active {
+      background: var(--oro);
+      color: var(--azul);
+      border-color: var(--oro)
+    }
+
+    /* ── LAYOUT ── */
+    #app {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 0;
+      min-height: calc(100vh - 100px)
+    }
+
+    /* ── PANEL EDITOR ── */
+    #panel-editor {
+      background: var(--blanco);
+      border-right: 2px solid var(--borde);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column
+    }
+
+    .panel-body {
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem
+    }
+
+    .sec {
+      border: 1.5px solid var(--borde);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    .sec-hdr {
+      background: var(--gris);
+      padding: .55rem .9rem;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--azul);
+      display: flex;
+      align-items: center;
+      gap: .4rem
+    }
+
+    .sec-body {
+      padding: .85rem .9rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem
+    }
+
+    .fg label {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #555
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      border: 1.5px solid var(--borde);
+      border-radius: 7px;
+      padding: .45rem .75rem;
+      font-size: .83rem;
+      background: #fafbfc;
+      transition: border-color .2s;
+      color: var(--texto)
+    }
+
+    .fg input:focus,
+    .fg select:focus,
+    .fg textarea:focus {
+      outline: none;
+      border-color: var(--azul-cl);
+      background: var(--blanco)
+    }
+
+    /* ── PREVIEW ── */
+    #panel-preview {
+      background: #dde3ed;
+      overflow-y: auto;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem
+    }
+
+    #carta-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%
+    }
+
+    /* Estilos de la carta */
+    .carta {
+      width: 21.59cm;
+      height: 27.94cm;
+      background: white url('fondo.png') no-repeat top center;
+      background-size: 100% auto;
+      box-shadow: var(--sombra);
+      border-radius: 3px;
+      font-family: 'Henderson Sans Basic', sans-serif;
+      font-size: 11pt;
+      line-height: 1.5;
+      overflow: hidden;
+      flex-shrink: 0;
+      margin-bottom: 2rem;
+    }
+
+    .carta-inner {
+      padding: 3.2cm 2.2cm 2cm 2.5cm;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .folio-line {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 7.5pt;
+      color: #555;
+      margin-bottom: .3cm
+    }
+
+    .folio-line b {
+      color: var(--azul)
+    }
+
+    /* Estilos del Acta */
+    .acta-header {
+      margin-bottom: .5cm;
+      display: flex;
+      flex-direction: column;
+      gap: .1cm;
+    }
+
+    .acta-pagi {
+      font-weight: 700;
+      font-size: 8.5pt;
+      color: #333;
+      text-transform: uppercase;
+      text-align: right;
+      margin-bottom: .2rem;
+      letter-spacing: .05em;
+    }
+
+    .acta-titulo {
+      font-size: 10.5pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--azul);
+      line-height: 1.4;
+      letter-spacing: .02em;
+      text-align: center;
+      margin-bottom: 0.6cm;
+    }
+
+    .acta-art {
+      font-size: 8.5pt;
+      color: var(--rojo);
+      font-style: italic;
+      margin-top: .15cm;
+      text-align: center;
+    }
+
+    .acta-intro {
+      text-align: justify;
+      font-size: 10.5pt;
+      margin-bottom: .4cm;
+      line-height: 1.65;
+    }
+
+    .acta-intro b {
+      color: var(--azul);
+    }
+
+    .acta-sec-title {
+      font-weight: 800;
+      font-size: 10.5pt;
+      margin-bottom: .3cm;
+      text-transform: uppercase;
+      color: var(--azul);
+      border-bottom: 1.5px solid var(--azul);
+      display: inline-block;
+      margin-top: 0.4cm;
+    }
+
+    .acta-relato-box {
+      background: #f8fafc;
+      border-left: 4px solid var(--oro);
+      padding: .2cm .35cm;
+      margin: 0;
+      font-size: 9.5pt;
+      line-height: 1.42;
+      text-align: justify;
+      border-radius: 0 6px 6px 0;
+      white-space: pre-wrap;
+      color: #222;
+    }
+
+    .acta-relato-box p {
+      margin-bottom: .15cm;
+    }
+
+    .acta-cierre {
+      font-size: 9pt;
+      margin-top: .3cm;
+      margin-bottom: .4cm;
+      text-align: justify;
+      border-top: 1px solid #eee;
+      padding-top: .15cm;
+      line-height: 1.35;
+      font-style: italic;
+      color: #444;
+    }
+
+    .acta-firmas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5cm;
+      margin-top: 1.2cm;
+    }
+
+    .firma-bloque {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .1cm;
+    }
+
+    .firma-linea {
+      width: 100%;
+      border-bottom: 1.5px solid #444;
+      margin-bottom: .1cm;
+    }
+
+    .firma-nombre {
+      font-size: 9pt;
+      font-weight: 700;
+      color: var(--azul);
+      text-align: center;
+    }
+
+    .firma-label {
+      font-size: 8pt;
+      color: #666;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* Print */
+    @media print {
+      @page {
+        size: letter;
+        margin: 0
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important
+      }
+
+      #topbar,
+      #case-nav,
+      #panel-editor,
+      .preview-label,
+      #carta-source,
+      #toast,
+      button {
+        display: none !important
+      }
+
+      #app {
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 100%
+      }
+
+      #panel-preview {
+        display: block !important;
+        padding: 0;
+        background: white !important;
+        width: 100%
+      }
+
+      .carta {
+        width: 21.59cm !important;
+        height: 27.94cm !important;
+        box-shadow: none !important;
+        page-break-after: always;
+        break-after: page;
+        border: none !important;
+        background-image: url('fondo.png') !important;
+        background-size: 100% auto !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important
+      }
+
+      .carta:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important
+      }
+
+      .carta-inner {
+        padding: 3.2cm 2.2cm 2cm 2.5cm
+      }
+    }
+
+    .anexo-item {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      background: #f8f9fa;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--borde);
+    }
+
+    .anexo-item input {
+      flex: 1;
+      font-size: 0.8rem;
+      padding: 0.3rem;
+    }
+
+    .btn-remove {
+      background: var(--rojo);
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header id="topbar">
+    <span class="brand">📋 Debido Proceso MEP</span>
+    <span class="case-info" id="case-info-label">—</span>
+    <button onclick="location.href='index.html'">← Expedientes</button>
+    <button class="btn-gold" onclick="window.print()" title="Imprimir este documento">🖨 Imprimir Documento</button>
+    <div id="deadline-timer"
+      style="margin-left: 1rem; border-left: 1px solid rgba(255,255,255,.2); padding-left: 1rem; display: flex; align-items: center; gap: .5rem; font-size: .8rem; color: white;">
+      <span style="opacity: .6;">⏳ Plazo Inv:</span>
+      <span id="dt-label" style="font-weight: 700; color: #fff;">Calculando...</span>
+      <span id="dt-status" style="width: 10px; height: 10px; border-radius: 50%; background: #999;"></span>
+    </div>
+  </header>
+
+  <nav id="case-nav">
+    <span class="case-nav-title">Expediente</span>
+    <button class="page-btn" onclick="irIndice('portada')">1. Portada</button>
+    <button class="page-btn" onclick="irIndice('tdc')">2. Tabla Contenidos</button>
+    <button class="page-btn" onclick="irPaso1()">3. Com. Prof. Guía</button>
+    <button class="page-btn" onclick="irPaso2()">4. Notif. Testigos</button>
+    <button class="page-btn" onclick="irPaso3()">5–6. Actas/Declara.</button>
+    <button class="page-btn" onclick="irAnexos()">7. Anexos</button>
+    <button class="page-btn" onclick="irPaso4()">8. Resultado Inv.</button>
+    <button class="page-btn" onclick="irPaso5()">9. Notif. Apertura</button>
+    <button class="page-btn" onclick="irPaso6()">10. Boleta Apertura</button>
+    <button class="page-btn" onclick="irPaso7()">11. Solicitud Copia</button>
+    <button class="page-btn active" id="btn-nav-paso9">12. Descargos y Pruebas</button>
+    <button class="page-btn" onclick="irPaso8()">13. Dec. Estudiante</button>
+  </nav>
+
+  <div id="app">
+    <aside id="panel-editor">
+      <div class="panel-body">
+
+        <div id="form-content">
+          <div class="sec">
+            <div class="sec-hdr">📅 Datos de los Descargos</div>
+            <div class="sec-body" style="display:flex; flex-direction:column; gap:1rem;">
+              <div style="display:flex; gap:0.5rem;">
+                <div class="fg" style="flex:1">
+                  <label>Fecha de Presentación</label>
+                  <input type="date" id="f-fecha" onchange="updateLive()" />
+                </div>
+                <div class="fg" style="flex:1">
+                  <label>Hora</label>
+                  <input type="time" id="f-hora" onchange="updateLive()" />
+                </div>
+              </div>
+              <div class="fg">
+                <label>Quien presenta los descargos</label>
+                <input type="text" id="f-presenta" placeholder="Nombre completo" oninput="updateLive()" />
+              </div>
+              <div class="fg">
+                <label>Calidad en la que actúa</label>
+                <select id="f-calidad" onchange="updateLive()">
+                  <option value="Padre de familia">Padre de familia</option>
+                  <option value="Madre de familia">Madre de familia</option>
+                  <option value="Encargado(a) Legal">Encargado(a) Legal</option>
+                  <option value="Persona Estudiante">Persona Estudiante</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-hdr">⚖️ Argumentos de Defensa</div>
+            <div class="sec-body" style="display:flex; flex-direction:column; gap:1rem;">
+              <div class="fg">
+                <label>Detalle de los descargos y alegatos</label>
+                <button type="button" id="btn-mic" onclick="toggleMic()"
+                  style="padding:.5rem; border-radius:6px; border:1px solid var(--borde); background:#eef2f6; color:var(--azul); font-weight:bold; cursor:pointer; margin-bottom:.5rem; display:inline-flex; align-items:center; gap:.4rem; align-self:flex-start">🎤
+                  Iniciar Dictado</button>
+                <textarea id="f-argumentos" rows="8" oninput="updateLive()"
+                  placeholder="Escriba aquí los argumentos de defensa presentados..."
+                  style="line-height:1.5"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-hdr">📎 Pruebas / Anexos Aportados</div>
+            <div class="sec-body" style="display:flex; flex-direction:column; gap:0.8rem;">
+              <p style="font-size:0.75rem; color:#666; font-style:italic">Indique brevemente qué aporta cada anexo (ej:
+                Fotos, Video, Certificación...)</p>
+              <div id="anexos-list" style="display:flex; flex-direction:column; gap:0.5rem;">
+                <!-- Items dinámicos -->
+              </div>
+              <button class="page-btn" style="background:var(--azul); color:white; border:none; padding:0.5rem"
+                onclick="addAnexoItem()">＋ Agregar Anexo</button>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:.6rem;">
+            <button class="btn-gold" style="padding:.7rem; border-radius:8px; font-weight:700; cursor:pointer;"
+              onclick="guardar()">💾 Guardar Descargos</button>
+            <button class="page-btn"
+              style="padding:.7rem; border-radius:8px; width:100%; background:var(--azul); color:white; border:none"
+              onclick="irPaso8()">➡️ Siguiente / Declaración Est.</button>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <main id="panel-preview">
+      <div id="carta-display"></div>
+    </main>
+  </div>
+
+  <div id="carta-source"
+    style="position:fixed; left:-9999px; top:0; width:16.89cm; visibility:hidden; pointer-events:none;">
+    <div id="sg-header">
+      <div class="acta-header">
+        <div class="acta-pagi" id="doc-acta-txt">Acta ____ de ____</div>
+        <h2 class="acta-titulo">ACTA DE PRESENTACIÓN DE DESCARGOS Y PRUEBAS</h2>
+        <div class="acta-art">Artículo 150 inciso e) — REAC MEP 2026</div>
+      </div>
+
+      <div class="acta-intro" id="doc-intro">
+        En el centro educativo <b id="doc-colegio">_____________________</b>, siendo las <b id="doc-hora">______</b>
+        horas del día <b id="doc-fecha">______________</b>, se hace constar que la persona <b
+          id="doc-presenta">_________________________</b> en su condición de <b id="doc-calidad">_________________</b>,
+        procede a ejercer su derecho de defensa dentro del expediente administrativo <b
+          id="doc-expediente">__________</b> seguido contra la persona estudiante <b
+          id="doc-estudiante">___________________________</b>, presentando sus descargos y alegatos de la siguiente
+        manera:
+      </div>
+    </div>
+
+    <!-- Bloques de contenido fuera del header -->
+    <div id="sg-title-1" class="sg-title"><div class="acta-sec-title">I. ARGUMENTOS DE DEFENSA Y DESCARGOS:</div></div>
+    <!-- sg-relato solo contendrá los párrafos internos -->
+    <div id="sg-relato"></div>
+
+    <div id="sg-title-2" class="sg-title"><div class="acta-sec-title">II. PRUEBAS APORTADAS / ANEXOS:</div></div>
+    <!-- sg-anexos-box contendrá la lista de anexos -->
+    <div id="sg-anexos-box">
+      <div id="doc-anexos" style="text-align: justify; line-height: 1.2; padding: 0.1cm 0; margin: 0;">
+        <ul id="doc-anexos-list" style="padding-left: 0.6cm; font-size: 9pt; list-style-type: square; margin: 0;">
+          <li>Sin pruebas adicionales aportadas.</li>
+        </ul>
+      </div>
+    </div>
+    <div id="sg-cierre">
+      <div class="acta-cierre">
+        Siendo todo lo planteado, luego de haber leído y estar conforme, se procede a dar por finalizada la presentación
+        de descargos y se firma este documento a las ____________ horas del día indicado inicialmente.
+      </div>
+
+      <div class="acta-firmas">
+        <div class="firma-bloque">
+          <div class="firma-linea"></div>
+          <div class="firma-nombre" id="doc-f-presenta">_____________________</div>
+          <div class="firma-label">Persona que presenta Descargos</div>
+        </div>
+        <div class="firma-bloque">
+          <div class="firma-linea"></div>
+          <div class="firma-nombre" id="doc-f-profe">_____________________</div>
+          <div class="firma-label">Docente Guía / Recibe</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"
+    style="position:fixed; bottom:2rem; right:2rem; background:var(--azul); color:var(--oro); padding:.7rem 1.4rem; border-radius:8px; display:none; z-index:9999;">
+  </div>
+
+  <script>
+    /* ══ ESTADO ══ */
+    const LS_CASOS = 'mep_dp_casos_v2';
+    const LS_PASO1 = 'mep_dp_paso1_v1';
+    const LS_PASO2 = 'mep_dp_paso2_v1';
+    const LS_PASO3 = 'mep_dp_paso3_v1';
+    const LS_PASO4 = 'mep_dp_paso4_v1';
+    const LS_PASO5 = 'mep_dp_paso5_v1';
+    const LS_PASO6 = 'mep_dp_paso6_v1';
+    const LS_PASO7 = 'mep_dp_paso7_v1';
+    const LS_PASO8 = 'mep_dp_paso8_v1';
+    const LS_PASO9 = 'mep_dp_paso9_v1';
+    const LS_ANEXOS = 'mep_dp_anexos_v1';
+    const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+    let caso = null;
+    let annexItems = [];
+    let autoSaveTimeout;
+
+    /* ══ INIT ══ */
+    function init() {
+      const id = new URLSearchParams(location.search).get('id');
+      try {
+        const casos = JSON.parse(localStorage.getItem(LS_CASOS)) || [];
+        caso = id ? casos.find(c => c.id === id) : casos[0];
+      } catch { caso = null; }
+
+      if (caso) {
+        document.getElementById('case-info-label').textContent = `${caso.expediente || 'Sin N°'} — ${caso.estudiante || 'Estudiante'}`;
+      }
+
+      const savedP9 = JSON.parse(localStorage.getItem(LS_PASO9 + (caso ? '_' + caso.id : ''))) || {};
+
+      document.getElementById('f-fecha').value = savedP9.fecha || new Date().toISOString().split('T')[0];
+      document.getElementById('f-hora').value = savedP9.hora || '';
+      document.getElementById('f-presenta').value = savedP9.presenta || caso?.encargado || '';
+      if (savedP9.calidad) document.getElementById('f-calidad').value = savedP9.calidad;
+      document.getElementById('f-argumentos').value = savedP9.argumentos || '';
+
+      annexItems = savedP9.annexItems || [];
+      if (annexItems.length === 0) {
+        // addAnexoItem();
+      } else {
+        renderAnnexInputs();
+      }
+
+      updateLive();
+    }
+
+    function addAnexoItem() {
+      annexItems.push({ desc: '' });
+      renderAnnexInputs();
+      updateLive();
+    }
+
+    function removeAnexoItem(idx) {
+      annexItems.splice(idx, 1);
+      renderAnnexInputs();
+      updateLive();
+    }
+
+    function renderAnnexInputs() {
+      const container = document.getElementById('anexos-list');
+      container.innerHTML = '';
+      annexItems.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'anexo-item';
+        div.style = "display:flex; flex-direction:column; gap:0.4rem; padding:0.5rem; background:#fff; border:1px solid #ddd; border-radius:6px;";
+        div.innerHTML = `
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <input type="text" placeholder="Descripción: Ej. Certificado Médico..." value="${escH(item.desc)}" oninput="updateAnnexDesc(${idx}, this.value)" style="flex:1">
+            <button class="btn-remove" onclick="removeAnexoItem(${idx})" style="padding:0.2rem 0.5rem;">×</button>
+          </div>
+          <div style="display:flex; gap:0.5rem; align-items:center; font-size:0.8rem;">
+            <label style="cursor:pointer; color:var(--azul); font-weight:700;">
+              📎 ${item.fileName ? 'Archivo: ' + item.fileName : 'Adjuntar Archivo'}
+              <input type="file" style="display:none" onchange="handleAnnexFile(${idx}, this)">
+            </label>
+            ${item.fileData ? '<span style="color:green">✔ Cargado</span>' : ''}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function handleAnnexFile(idx, input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        annexItems[idx].fileName = file.name;
+        annexItems[idx].fileType = file.type;
+        annexItems[idx].fileData = e.target.result;
+        renderAnnexInputs();
+        updateLive();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateAnnexDesc(idx, val) {
+      annexItems[idx].desc = val;
+      updateLive();
+    }
+
+    function updateLive() {
+      const f = document.getElementById('f-fecha').value;
+      const h = document.getElementById('f-hora').value;
+      const p = document.getElementById('f-presenta').value || '_________________________';
+      const c = document.getElementById('f-calidad').value;
+      const arg = document.getElementById('f-argumentos').value || '(Argumentos no detallados todavía...)';
+
+      document.getElementById('doc-colegio').textContent = caso?.colegio || '_______________________';
+      document.getElementById('doc-fecha').textContent = f ? fmtFecha(f) : '______________';
+      document.getElementById('doc-hora').textContent = h || '______';
+      document.getElementById('doc-presenta').textContent = p;
+      document.getElementById('doc-calidad').textContent = c;
+      document.getElementById('doc-expediente').textContent = caso?.expediente || '__________';
+      document.getElementById('doc-estudiante').textContent = caso?.estudiante || '___________________________';
+
+      const relCont = document.getElementById('sg-relato');
+      relCont.innerHTML = arg ? arg.split('\n').map(pLine => `<p style="margin-bottom:.3cm">${pLine}</p>`).join('') : '<p style="color:#aaa; font-style:italic">Argumentos de defensa pendientes...</p>';
+
+
+      const list = document.getElementById('doc-anexos-list');
+      if (annexItems.length > 0) {
+        list.innerHTML = annexItems.map(it => {
+          let html = `<li>${escH(it.desc || 'Anexo sin descripción detallada.')}`;
+          if (it.fileData) {
+            html += ` <a href="${it.fileData}" target="_blank" class="no-print" style="color:var(--azul); font-size:8.5pt; margin-left:10px; text-decoration:none; font-weight:bold;">[Ver Adjunto]</a>`;
+          }
+          html += `</li>`;
+          return html;
+        }).join('');
+      } else {
+        list.innerHTML = '<li>Sin pruebas adicionales aportadas.</li>';
+      }
+
+      document.getElementById('doc-f-presenta').textContent = p;
+      document.getElementById('doc-f-profe').textContent = caso?.profe || '_____________________';
+
+      requestAnimationFrame(paginateActa);
+      autoSave();
+      updateDeadlineAlarm();
+    }
+
+    function paginateActa() {
+      const CM = 37.8;
+      const CONTENT_PX = Math.floor(19.5 * CM);
+      const display = document.getElementById('carta-display');
+      display.innerHTML = '';
+
+      const header = document.getElementById('sg-header');
+      const title1 = document.getElementById('sg-title-1');
+      const title2 = document.getElementById('sg-title-2');
+      const relato = document.getElementById('sg-relato');
+      const anexos = document.getElementById('sg-anexos-box');
+      const footer = document.getElementById('sg-cierre');
+
+      function stripIds(n) {
+        if (!n) return n;
+        const clone = n.cloneNode(true);
+        if (clone.removeAttribute) clone.removeAttribute('id');
+        if (clone.querySelectorAll) clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+        return clone;
+      }
+
+      const paragraphs = Array.from(relato.querySelectorAll('p'));
+      const headerH = header.getBoundingClientRect().height;
+      const t1H = title1.getBoundingClientRect().height;
+      const t2H = title2.getBoundingClientRect().height;
+      const anexosH = anexos.getBoundingClientRect().height;
+      const footerH = footer.getBoundingClientRect().height + (1.5 * CM);
+
+      let inicioFolio = 1;
+      try {
+        const kid = caso?.id ? '_' + caso.id : '';
+        const d1 = JSON.parse(localStorage.getItem(LS_PASO1 + kid)) || {};
+        const d2 = JSON.parse(localStorage.getItem(LS_PASO2 + kid)) || {};
+        const d3 = JSON.parse(localStorage.getItem(LS_PASO3 + kid)) || {};
+        const d4 = JSON.parse(localStorage.getItem(LS_PASO4 + kid)) || {};
+        const d5 = JSON.parse(localStorage.getItem(LS_PASO5 + kid)) || {};
+        const d6 = JSON.parse(localStorage.getItem(LS_PASO6 + kid)) || {};
+        const d7 = JSON.parse(localStorage.getItem(LS_PASO7 + kid)) || {};
+        
+        inicioFolio = (d1.totalFoliosP1 || 1) + (d2.totalFoliosP2 || 0) + (d3.totalFoliosP3 || 0) + (d4.numPaginas || 0) + (d5.numPaginas || 0) + (d6.numPaginas || 0) + (d7.numPaginas || 0) + 1;
+      } catch (e) { }
+
+      const pages = [];
+      let curH = 0;
+
+      const commitPage = () => {
+        pages.push({ headerNodes: [], bodyNodes: [], isLast: false });
+        curH = 1.0 * CM;
+      };
+
+      commitPage();
+      pages[0].headerNodes.push(stripIds(header));
+      curH += headerH;
+
+      // Titulo I
+      pages[0].bodyNodes.push(stripIds(title1));
+      curH += t1H;
+
+      // Distribuir párrafos de argumentos
+      paragraphs.forEach(p => {
+        const h = p.getBoundingClientRect().height;
+        if (curH + h + footerH > CONTENT_PX) {
+          commitPage();
+        }
+        pages[pages.length - 1].bodyNodes.push(stripIds(p));
+        curH += h;
+      });
+
+      // Titulo II
+      if (curH + t2H + anexosH + footerH > CONTENT_PX) {
+        commitPage();
+      }
+      pages[pages.length - 1].bodyNodes.push(stripIds(title2));
+      curH += t2H;
+
+      // Lista Anexos
+      pages[pages.length - 1].bodyNodes.push(stripIds(anexos));
+      curH += anexosH;
+
+      const exp = escH(caso?.expediente || '—');
+      const anio = escH(caso?.anio || '2026');
+
+      const totalP = pages.length;
+      pages.forEach((p, pi) => {
+        const art = document.createElement('article');
+        art.className = 'carta';
+        const inner = document.createElement('div');
+        inner.className = 'carta-inner';
+
+        // Folio line
+        const foliSpan = document.createElement('div');
+        foliSpan.className = 'folio-line';
+        foliSpan.innerHTML = `<span>Exp. N.° <b>${exp}</b> · Año <b>${anio}</b> · Folio <b>${inicioFolio + pi}</b></span>`;
+        inner.appendChild(foliSpan);
+
+        // Header (solo en pág 1)
+        if (pi === 0) {
+          const hNode = p.headerNodes[0];
+          const pLabel = hNode.querySelector('.acta-pagi');
+          if(pLabel) pLabel.textContent = `Acta 1 de ${totalP}`;
+          inner.appendChild(hNode);
+        } else {
+          const cont = document.createElement('div');
+          cont.className = 'acta-pagi';
+          cont.style.textAlign = 'right';
+          cont.style.fontWeight = 'bold';
+          cont.style.fontSize = '10pt';
+          cont.textContent = `Acta ${pi + 1} de ${totalP}`;
+          inner.appendChild(cont);
+        }
+
+        // Body (párrafos + anexos si toca) agrupados en cajas
+        let currentBox = null;
+        p.bodyNodes.forEach(n => {
+          if (n.classList.contains('sg-title')) {
+            currentBox = null;
+            inner.appendChild(n);
+          } else {
+            if (!currentBox) {
+              currentBox = document.createElement('div');
+              currentBox.className = 'acta-relato-box';
+              inner.appendChild(currentBox);
+            }
+            currentBox.appendChild(n);
+          }
+        });
+
+        // Footer (firmas)
+        const isLastPage = (pi === totalP - 1);
+        const f = stripIds(footer);
+        if (!isLastPage) {
+          const cie = f.querySelector('.acta-cierre');
+          if (cie) cie.textContent = '— Pasa al folio siguiente —';
+        }
+        inner.appendChild(f);
+
+        art.appendChild(inner);
+        display.appendChild(art);
+
+        if (pi < totalP - 1) {
+          const lbl = document.createElement('div');
+          lbl.className = 'preview-label';
+          lbl.style.cssText = 'margin-top:.4rem;color:#aab;font-size:.68rem;letter-spacing:.06em';
+          lbl.textContent = `— Página ${pi + 2} —`;
+          display.appendChild(lbl);
+        }
+      });
+    }
+
+    function guardar(silent = false) {
+      const payload = {
+        fecha: document.getElementById('f-fecha').value,
+        hora: document.getElementById('f-hora').value,
+        presenta: document.getElementById('f-presenta').value,
+        calidad: document.getElementById('f-calidad').value,
+        argumentos: document.getElementById('f-argumentos').value,
+        annexItems: annexItems,
+        numPaginas: document.querySelectorAll('#carta-display .carta').length
+      };
+
+      localStorage.setItem(LS_PASO9 + (caso ? '_' + caso.id : ''), JSON.stringify(payload));
+
+      // Update Global Annexes
+      try {
+        const keyAnexos = LS_ANEXOS + (caso ? '_' + caso.id : '');
+        let currentAnexos = JSON.parse(localStorage.getItem(keyAnexos)) || [];
+
+        // Remove old auto-generated ones from this step to refresh
+        currentAnexos = currentAnexos.filter(a => !a._fromPaso9);
+
+        annexItems.forEach((item, idx) => {
+          if (item.desc.trim()) {
+            currentAnexos.push({
+              nombre: `Prueba Defensa #${idx + 1}`,
+              descripcion: item.desc,
+              tipo: 'document/defense',
+              fecha: payload.fecha.split('-').reverse().join('/'),
+              _fromPaso9: true
+            });
+          }
+        });
+
+        localStorage.setItem(keyAnexos, JSON.stringify(currentAnexos));
+      } catch (e) { }
+
+      if (!silent) toast('✔ Descargos y Pruebas guardados');
+    }
+
+    /* ══ UTILS ══ */
+    function fmtFecha(v) {
+      if (!v) return '_____________';
+      const d = new Date(v + 'T12:00:00');
+      return `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+    }
+
+    function trySave() {
+      if (typeof guardar === 'function') {
+        try { guardar(true); } catch (e) { }
+      }
+    }
+
+    function irIndice(pag) { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './index.html?id=' + (id || '') + '&page=' + (pag || 'portada'); }
+    function irPaso1() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso1.html' + (id ? '?id=' + id : ''); }
+    function irPaso2() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso2.html' + (id ? '?id=' + id : ''); }
+    function irPaso3() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso3.html' + (id ? '?id=' + id : ''); }
+    function irPaso4() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso4.html' + (id ? '?id=' + id : ''); }
+    function irPaso5() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso5.html' + (id ? '?id=' + id : ''); }
+    function irPaso6() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso6.html' + (id ? '?id=' + id : ''); }
+    function irPaso7() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso7.html' + (id ? '?id=' + id : ''); }
+    function irPaso8() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso8.html' + (id ? '?id=' + id : ''); }
+    function irAnexos() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './anexos.html' + (id ? '?id=' + id : ''); }
+
+    function toast(m) {
+      const t = document.getElementById('toast');
+      t.textContent = m; t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3000);
+    }
+    function escH(s) { if (!s) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    function autoSave() {
+      clearTimeout(autoSaveTimeout);
+      autoSaveTimeout = setTimeout(() => { guardar(true); }, 1500);
+    }
+
+    function updateDeadlineAlarm() {
+      const lbl = document.getElementById('dt-label');
+      const dot = document.getElementById('dt-status');
+      if (!caso || !caso.fechaApertura) {
+        lbl.textContent = 'Sin fecha apertura';
+        dot.style.background = '#aaa';
+        return;
+      }
+      const fApertura = new Date(caso.fechaApertura + 'T12:00:00');
+      const hoy = new Date();
+      const limite = calcularHabiles(fApertura, 15);
+      const diffTiempo = limite - hoy;
+      const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
+
+      if (diffDias < 0) {
+        lbl.textContent = `Vencido (${Math.abs(diffDias)}d)`;
+        dot.style.background = '#C8102E';
+      } else if (diffDias <= 2) {
+        lbl.textContent = `¡Faltan ${diffDias}d!`;
+        dot.style.background = '#E0A800';
+      } else {
+        lbl.textContent = `${diffDias} d restantes`;
+        dot.style.background = '#166534';
+      }
+    }
+
+    function calcularHabiles(fecha, dias) {
+      let f = new Date(fecha.getTime());
+      let count = 0;
+      while (count < dias) {
+        f.setDate(f.getDate() + 1);
+        const d = f.getDay();
+        if (d !== 0 && d !== 6) count++;
+      }
+      return f;
+    }
+
+    /* Speech to text logic */
+    let recoActivo = false;
+    let reco = null;
+    function toggleMic() {
+      const btn = document.getElementById('btn-mic');
+      const text = document.getElementById('f-argumentos');
+      if (recoActivo) {
+        if (reco) reco.stop();
+        return;
+      }
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Este navegador no soporta el reconocimiento de voz nativo. Use Google Chrome.');
+        return;
+      }
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      reco = new SpeechRecognition();
+      reco.lang = 'es-CR';
+      reco.continuous = true;
+      reco.interimResults = false;
+
+      reco.onstart = () => {
+        recoActivo = true;
+        btn.innerHTML = '🛑 Detener Dictado';
+        btn.style.background = '#fee2e2';
+        btn.style.color = '#dc2626';
+      };
+      reco.onresult = (event) => {
+        let final = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) final += event.results[i][0].transcript;
+        }
+        if (final) {
+          const processed = procesarPuntuacion(final);
+          text.value += (text.value ? ' ' : '') + processed;
+          updateLive();
+        }
+      };
+      reco.onerror = () => { stopMic(); };
+      reco.onend = () => { stopMic(); };
+      reco.start();
+    }
+    function stopMic() {
+      recoActivo = false;
+      const btn = document.getElementById('btn-mic');
+      btn.innerHTML = '🎤 Iniciar Dictado';
+      btn.style.background = '#eef2f6';
+      btn.style.color = 'var(--azul)';
+    }
+
+    function procesarPuntuacion(raw) {
+      let t = raw.trim();
+      if (!t) return '';
+      const box = document.getElementById('f-argumentos');
+      if (!box.value) t = t.charAt(0).toUpperCase() + t.slice(1);
+      const reglas = [
+        [/\s*\bpunto y aparte\b/gi, '.\n\n'],
+        [/\s*\bpunto y seguido\b/gi, '. '],
+        [/\s*\bpunto y coma\b/gi, '; '],
+        [/\s*\bdos puntos\b/gi, ': '],
+        [/\s*\bpuntos suspensivos\b/gi, '... '],
+        [/\s*\bsigno de interrogación\b/gi, '? '],
+        [/\s*\bsigno de exclamación\b/gi, '! '],
+        [/\s*\bcoma\b/gi, ', '],
+        [/\s*\bpunto\b/gi, '. '],
+      ];
+      for (const [re, rep] of reglas) t = t.replace(re, rep);
+      t = t.replace(/\s+([.,!?;:])/g, '$1');
+      t = t.replace(/([.!?\n]\s*)([a-záéíóúüñ])/g, (m, p1, p2) => p1 + p2.toUpperCase());
+      return t;
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
