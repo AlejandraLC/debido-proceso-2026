@@ -5,39 +5,65 @@
 }
 
 /* ── NAVEGACIÓN (Case Nav / Step Bar) ── */
-/* Mantenemos todos los botones en una sola línea con scroll horizontal en pantallas pequeñas */
 #case-nav {
   display: flex !important;
-  flex-wrap: nowrap !important;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-  -webkit-overflow-scrolling: touch;
+  flex-wrap: wrap !important; /* Volver a permitir envoltura por defecto para ver todos los botones */
   gap: 0.5rem !important;
   padding: 0.6rem 1rem !important;
-  background: #112a52 !important; /* Un poco más oscuro para contraste */
-  scrollbar-width: none; /* Firefox */
+  background: #112a52 !important;
+  border-bottom: 2px solid var(--azul);
 }
-#case-nav::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
-}
-.case-nav-title {
-  position: sticky;
-  left: 0;
-  background: #112a52;
-  padding-right: 0.5rem;
-  z-index: 5;
-  margin-right: 0.2rem !important;
-}
+
 .page-btn {
   flex: 0 0 auto !important;
-  padding: 0.5rem 0.9rem !important; /* Más grandes para touch */
-  font-size: 0.78rem !important;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.72rem;
+}
+
+/* Solo aplicar el scroll horizontal en tablets y móviles para ahorrar espacio vertical */
+@media screen and (max-width: 1100px) {
+  #case-nav {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin; /* Mostrar una barra delgada si es necesario */
+  }
+  #case-nav::-webkit-scrollbar {
+    display: block; /* Mostrar barra en tablets/móvil si hay desborde */
+    height: 4px;
+  }
+  #case-nav::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+  }
+  .case-nav-title {
+    position: sticky;
+    left: 0;
+    background: #112a52;
+    padding-right: 0.5rem;
+    z-index: 5;
+    margin-right: 0.2rem !important;
+  }
+  .page-btn {
+    padding: 0.5rem 0.9rem !important;
+    font-size: 0.78rem !important;
+  }
 }
 
 /* ── TOPBAR ── */
+#topbar {
+  display: flex !important;
+  flex-wrap: wrap !important; /* Permitir envolver botones si el espacio es reducido */
+  height: auto !important;
+  min-height: 54px !important;
+  padding: 0.5rem 1.5rem !important;
+  gap: 0.8rem !important;
+}
+
 @media screen and (max-width: 900px) {
   #topbar {
-    padding: 0 0.8rem !important;
+    padding: 0.5rem 0.8rem !important;
     gap: 0.5rem !important;
   }
   #topbar .brand {
