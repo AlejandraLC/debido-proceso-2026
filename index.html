@@ -233,6 +233,9 @@ body{background:var(--gris);color:var(--texto);min-height:100vh}
 }
 </style>
   <link rel="stylesheet" href="responsive.css">
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1c2847">
 </head>
 <body>
 
@@ -1291,6 +1294,16 @@ function calcularHabiles(fecha, dias) {
   }
   return f;
 }
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('SW Registered', reg))
+        .catch(err => console.log('SW Error', err));
+    });
+  }
 </script>
 </body>
 </html>
