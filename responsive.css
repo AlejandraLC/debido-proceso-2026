@@ -189,3 +189,26 @@
 #modal-overlay {
   -webkit-overflow-scrolling: touch;
 }
+
+/* ── CORRECCIONES PARA IMPRESIÓN ── */
+@media print {
+  /* Ocultar barras de navegación y herramientas que no deben imprimirse */
+  #topbar, #case-nav, .action-bar, .preview-label, #toast, .mic-status, button, .mic-btn-main {
+    display: none !important;
+  }
+  
+  /* Asegurar que el contenido principal ocupe todo el espacio */
+  #app {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+  
+  #panel-preview {
+    display: block !important;
+    padding: 0 !important;
+    background: white !important;
+    width: 100% !important;
+  }
+}
