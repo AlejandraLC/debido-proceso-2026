@@ -233,9 +233,15 @@ body{background:var(--gris);color:var(--texto);min-height:100vh}
 }
 </style>
   <link rel="stylesheet" href="responsive.css">
-
-  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1c2847">
+
+  <script>
+    if (location.protocol !== 'file:') {
+      const mLink = document.createElement('link');
+      mLink.rel = 'manifest'; mLink.href = 'manifest.json';
+      document.head.appendChild(mLink);
+    }
+  </script>
 </head>
 <body>
 
@@ -358,6 +364,7 @@ body{background:var(--gris);color:var(--texto);min-height:100vh}
     <button class="page-btn" onclick="irPaso7()" id="nbtn-paso7">11. Solicitud Copia</button>
     <button class="page-btn" onclick="irPaso9()" id="nbtn-paso9">12. Descargos y Pruebas</button>
     <button class="page-btn" onclick="irPaso8()" id="nbtn-paso8">13. Dec. Estudiante</button>
+    <button class="page-btn" onclick="irPaso10()">14. Resolución Final</button>
     <button class="page-btn page-btn-print" onclick="imprimirTodo()">🖨 Imprimir todo</button>
   </nav>
 

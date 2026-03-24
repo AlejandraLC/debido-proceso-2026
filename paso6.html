@@ -373,9 +373,15 @@
     }
   </style>
   <link rel="stylesheet" href="responsive.css">
-
-  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1c2847">
+
+  <script>
+    if (location.protocol !== 'file:') {
+      const mLink = document.createElement('link');
+      mLink.rel = 'manifest'; mLink.href = 'manifest.json';
+      document.head.appendChild(mLink);
+    }
+  </script>
 </head>
 
 <body>
@@ -406,7 +412,8 @@
     <button class="page-btn" onclick="irPaso6()">10. Boleta Apertura</button>
     <button class="page-btn" onclick="irPaso7()">11. Solicitud Copia</button>
     <button class="page-btn" onclick="irPaso9()">12. Descargos y Pruebas</button>
-    <button class="page-btn" onclick="irPaso8()">13. Dec. Estudiante</button>
+    
+    <button class="page-btn" onclick="irPaso10()">14. Resolución Final</button>
   </nav>
 
   <div id="app">
@@ -869,7 +876,8 @@ function irPaso6() { trySave(); const id = new URLSearchParams(location.search).
 function irPaso7() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso7.html' + (id ? '?id='+id : ''); }
 function irPaso8() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso8.html' + (id ? '?id='+id : ''); }
 function irPaso9() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso9.html' + (id ? '?id='+id : ''); }
-function irAnexos() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './anexos.html' + (id ? '?id='+id : ''); }
+
+function irPaso10() { trySave(); const id = new URLSearchParams(location.search).get('id'); location.href = './paso10.html' + (id ? '?id='+id : ''); }
     function toast(m) {
       const t = document.getElementById('toast');
       t.textContent = m; t.style.display = 'block';
